@@ -1,6 +1,10 @@
 # SWE-330-and-380
 Joint project repository for the presentation of both classes. We have opted, with approval, to construct a single compiled project that should fulfill the presentation requirements of both assignments.
 
+SkillGuard will scan AI-agent 'SKILL.MD' files for instructions that may allow an agent to run commands, access the internet, read or change files, use credentials, install software, or execute bundled scripts. The team will then use the GitSkills dataset to study whether these capabilities appear more often in widely reused Skills than in Skills that occur only once.
+
+The project does not label a Skill as malicious. It detects observable capability signals that may deserve human review.
+
 # Background
 We have access to public datasets involving many language-model Skills files and an extent of related information about them 
 The quick example was that a slight majority, 50.5%, are copied across projects without editing.
