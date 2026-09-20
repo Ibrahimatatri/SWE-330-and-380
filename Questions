@@ -1,0 +1,46 @@
+Meaning and Scope of the Dataset
+
+1. What exactly qualifies as a “Skill” in the GitSkills dataset?
+
+2. Does the dataset contain all publicly available GitSkills, or only Skills collected during a specific period and through a particular method?
+
+3. Does each row represent a unique Skill file, repository, commit, or version?
+
+
+Schema, Fields, and Relationships
+
+4. Which fields identify the Skill file, repository, file path, content, and collection date?
+
+5. Can file_sha reliably identify Skills with identical content across different repositories?
+
+6. Does the dataset include dates or commit histories that can show which version of a Skill appeared first?
+
+
+Feasibility of the Research Question
+
+7. How should we define a “widely reused” Skill: two or more copies, a fixed number of copies, or a percentile?
+
+8. Is the dataset large and complete enough to fairly compare reused and non-reused Skills?
+
+9. Could reused Skills appear riskier simply because they are longer or contain more detailed instructions?
+
+
+Implementation and Validation
+
+10. How will SkillGuard identify potentially risky capabilities such as command execution, network access, file operations, and credential access?
+
+11. How will SkillGuard distinguish actual instructions from examples, quoted code, warnings, and negated instructions?
+
+12. How many Skills should we manually review to measure false positives, false negatives, and agreement between reviewers?
+
+
+Ethical, Privacy, and Security Concerns
+
+13. How can we safely analyze commands and scripts without executing untrusted content or exposing sensitive information?
+
+14. How should we report the results without unfairly labeling a Skill or its developer as malicious or unsafe?
+
+
+What the Available Sources Do Not Establish
+
+15. Since identical files do not prove copying direction, malicious intent, actual execution, software quality, or real-world harm, what conclusions can we responsibly make from the available data?
