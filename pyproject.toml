@@ -1,0 +1,20 @@
+[project]
+name = "skillguard"
+version = "0.1.0"
+description = "Static scanner for potentially risky capability signals in AI-agent SKILL.md files"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest>=7"]
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
