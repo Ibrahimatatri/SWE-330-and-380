@@ -1,6 +1,6 @@
 # Threat Model and Capability Taxonomy
 
-**Courses:** both (SWE 380 direction A.4 requires a threat model; the SWE 330 security decision depends on it). **Issue:** #5 · **Status:** Draft v0.1, 2026-10-07. Rules will be tuned after the annotation guide is written (#19).
+**Courses:** both (SWE 380 direction A.4 requires a threat model; the SWE 330 security decision depends on it). **Issue:** #5 · **Status:** v0.2, 2026-10-26. Rules are implemented in `src/skillguard/detectors/` and will be tuned after manual validation (#19).
 
 ## 1. What we are protecting against
 
@@ -21,6 +21,8 @@ A Skill is a set of instructions that an AI agent follows with the permissions o
 **Actors considered:** a careless or over-broad Skill author (most likely); a Skill that was benign originally but altered in a copy; a deliberately malicious author (possible but **never asserted** by SkillGuard).
 
 ### B. Risks *to the team* from handling the dataset (how we stay safe)
+The pipeline only reads text, so these are design constraints more than likely threats: the controls keep it that way and make it checkable in tests.
+
 | Threat | Control |
 |---|---|
 | Accidentally executing dataset content | Content is only ever a Python `str`. No `subprocess`, `os.system`, `eval`, `exec`, `importlib`, network clients, or installers on any data path. A test asserts this (issue #10). |
@@ -43,23 +45,27 @@ A Skill is a set of instructions that an AI agent follows with the permissions o
 
 Each rule has a stable ID of the form `<CATEGORY>-<NNN>` (for example, `NET-001`). Rule IDs are never reused once published.
 
+**Implemented in v0.2 (23 rules):** CMD-001–004, NET-001–004, FS-001–005, CRED-001–004, INST-001–004, SCRIPT-001–002. Each rule's pattern, contexts, and explanation are in `src/skillguard/detectors/<category>.py`, and each has a positive and a negative test. `PRIV` is held out on purpose: adding it later is the SWE 330 extensibility experiment (GQM Q1).
+
+**Bundled executables:** `SCRIPT-001` tags every instruction to run a script file (for example `python scripts/x.py` or `./run.sh`), and the release's `has_scripts` flag records which Skill folders ship scripts at all.
+
 ## 3. Finding record
 
-Every finding must contain: `category`, `rule_id`, `source_file`, `line` (and character span where available), `evidence` (a trimmed snippet), `explanation`, `review_level` (`info` / `review` / `high-review`), and `context` (one of `prose`, `code_fence`, `inline_code`, `front_matter`, `link`).
+Every finding contains: `category`, `rule_id`, `line`, `evidence` (at most 160 characters, secrets masked), `explanation`, `review_level` (`info` / `review` / `high`), `context` (`front_matter`, `prose`, or `code:<language>`), and `source` (repository/path). Only `review` and `high` findings count toward the research outcomes; `info` findings are kept for transparency. On the Sprint 2 sample, 100% of 207,645 findings carried every field.
 
 Categories are always reported separately. Any aggregate score is secondary and never replaces the per-category flags.
 
 ## 4. Context handling (known hard cases)
 
-| Case | Planned handling | Error-taxonomy label |
+| Case | Handling in v0.2 | Error-taxonomy label |
 |---|---|---|
-| URL that is only a documentation link | `link` context gets a lower review level than an explicit fetch command | `doc-url` |
-| Quoted example output | Lower level when the surrounding prose says "example" or "output" | `quoted-example` |
-| Negated instruction ("never run `rm -rf`") | Negation cue near the match lowers the level, but the finding is still recorded | `negation` |
-| Code fence without a language tag | Treated as possible commands | `code-fence` |
-| Benign setup command | Reported as `INST` at `info` level | `benign-setup` |
-| Ambiguous credential wording | `CRED` only when an action verb is present (read, print, send, export) | `ambiguous-cred` |
-| Context lost while parsing | Counted per run, reviewed in the error analysis | `parse-context` |
+| URL that is only a documentation link | URLs in prose are `NET-002` at `info` (never counted); URLs in shell code are `NET-003` at `review` | `doc-url` |
+| Quoted example output | Not handled yet; tracked in validation | `quoted-example` |
+| Negated instruction ("never run `rm -rf`") | In prose, a cue (never, do not, avoid, ...) within 40 characters before the match lowers it to `info`; the finding is still recorded | `negation` |
+| Code fence without a language tag | Only prompt-style lines (`$ cmd`) count as commands (`CMD-002`); other untagged lines do not | `code-fence` |
+| Benign setup command | Currently counted as `INST` at `review`; to be reconsidered after validation | `benign-setup` |
+| Ambiguous credential wording | `CRED-003` needs an action verb (read, print, send, copy, log, ...) near the credential word | `ambiguous-cred` |
+| Context lost while parsing | Not measured yet; reviewed in the error analysis | `parse-context` |
 
 ## 5. What SkillGuard does not establish
 

@@ -2,6 +2,8 @@
 
 **Issue:** #6 · **Courses:** both · **Status:** Draft. Each member confirms by commenting on issue #6.
 
+Treat this as a starting baseline, not a strict rulebook: any member can propose changes, and they are agreed at a sprint review (feedback from Baiselaired on #6).
+
 ## Roles (Sprint 1, may rotate at sprint boundaries)
 
 | GitHub | Role | Main responsibilities |

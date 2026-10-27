@@ -23,7 +23,7 @@ Lock the research question, establish the data foundation, and submit the SWE 33
 - **Dataset download not complete by the sprint deadline.** Impact: acceptance criteria "pipeline runs on an approved sample" and "at least one result is generated" cannot yet be met. Response: built against hand-written fixtures so the real data can be plugged in immediately. No results were fabricated.
 
 ## Backlog changes
-- Secondary research question changed from AI-model targeting to near-duplicate variants (see the change log in `RESEARCH_QUESTION.md`).
+- Secondary research question: the AI-model idea was dropped. A near-duplicate replacement proposed in PR #31 was dropped after review, because the team had agreed not to analyze near-duplicates; there is no secondary question (change log in `RESEARCH_QUESTION.md`).
 - Issue #3 was closed without the skeleton being in `main`; it is reopened and addressed by the skeleton PR.
 - Issue #29 (notebook interview) is closed, but its artifact is not yet in the repository. _TBD: add `docs/elicitation/notebook-interview.md`._
 

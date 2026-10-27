@@ -1,6 +1,6 @@
 # Phase 1 Requirements Notes (preserved)
 
-> Moved from the original `README.md` on 2026-10-07 so the README can describe the current project. Kept for project history. The "Our chosen direction" section below describes the **earlier** idea (AI-model targeting). That idea was superseded by the locked research question in `RESEARCH_QUESTION.md`. The 50.5% figure in "Background" has **not** been verified against the dataset.
+> Moved from the original `README.md` on 2026-10-07 so the README can describe the current project. Kept for project history. The "Our chosen direction" section below describes the **earlier** idea (AI-model targeting). That idea was superseded by the locked research question in `RESEARCH_QUESTION.md`. The 50.5% figure in "Background" comes from the dataset's MSR presentation and matches the release: (3,797,117 − 1,877,981) / 3,797,117 = 50.5% of `SKILL.md` files are copies of another file's content.
 
 # Background
 We have access to public datasets involving many language-model Skills files and an extent of related information about them 

@@ -8,7 +8,7 @@
 |---|---|
 | Rule matches may not reflect real capabilities (false positives from documentation URLs, quoted examples, negations) | Context handling (`THREAT_MODEL.md` §4); manual validation of ≥ 120 Skills; precision, recall, and F1 per category |
 | `repository_count` may not measure "reuse" (forks, mirrors, monorepos) | Inspect the top groups manually; sensitivity analysis with fork-like duplicates excluded if the data allows |
-| Exact hashes miss near-identical copies | Acknowledged for RQ1; RQ2 handles near-duplicates |
+| Exact hashes miss near-identical copies, so reuse is undercounted | Stated as a limitation; near-duplicate analysis is out of scope by team agreement |
 
 ## 2. Internal validity / confounding
 | Threat | Mitigation |
@@ -27,15 +27,15 @@
 ## 4. Conclusion validity
 | Threat | Mitigation |
 |---|---|
-| Many comparisons (7 categories × thresholds) | Report effect sizes with confidence intervals; note multiplicity; pre-state the primary outcome (`any_risky_capability`) |
+| Many comparisons (7 categories × thresholds) | Report effect sizes with confidence intervals; note multiplicity; pre-state the primary outcome (`any_risky`) |
 | Small "widely reused" group | Report group sizes; sensitivity analysis with alternative thresholds and continuous reuse |
 
 ## 5. Reproducibility
 | Threat | Mitigation |
 |---|---|
-| Dataset not redistributable or changes over time | Pin the version and checksum in `DATA_DICTIONARY.md`; scripted acquisition steps |
-| Environment drift | Pinned dependencies; clean-setup trials (SWE 330 Q3) |
-| Nondeterministic output | Fixed seeds, sorted output, output hashes compared across runs |
+| The release is large (44 GB) and slow to obtain | It is a fixed snapshot (v1.0.0, July 2026, CC-BY-4.0), so versioning is not a risk. Zenodo record, size, and MD5 are pinned in `DATA_DICTIONARY.md`. The sample is drawn deterministically from the release, so nobody has to host it |
+| Environment drift | Minimum dependency versions in `pyproject.toml`; clean-setup trial by a non-author (SWE 330 Q3, pending) |
+| Nondeterministic output | Sorted rows, fixed-precision CSVs, and a hash-ordered sample; two full runs on 2026-10-26 produced byte-identical outputs |
 
 ## 6. Architecture-evaluation threats (SWE 330)
 | Threat | Mitigation |
