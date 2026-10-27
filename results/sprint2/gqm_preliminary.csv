@@ -1,0 +1,23 @@
+question,metric,baseline,modular,status,source
+Q1 extensibility,production files changed to add PRIV,1,2,pilot,scripts/measure_change.py on throwaway copies (PRIV not merged)
+Q1 extensibility,modules touched,1,1,pilot,scripts/measure_change.py
+Q1 extensibility,non-test lines changed,7,19,pilot,scripts/measure_change.py
+Q1 extensibility,core modules modified (core fixed in ADR-0003),n/a (no core split),0,pilot,scripts/measure_change.py
+Q1 extensibility,edit sites inside existing production files,4,2,pilot,scripts/measure_change.py
+Q1 extensibility,test cases added,1,2,pilot,scripts/measure_change.py
+Q1 extensibility,implementation time (minutes),not measured,not measured,pending,AI-assisted pilot; a timed human run is planned for Phase 3
+Q2 change isolation,existing test lines that had to change,1,0,pilot,scripts/measure_change.py
+Q2 change isolation,regression pass rate after adding PRIV,53/53,54/54,measured,pytest in each throwaway copy
+Q2 change isolation,non-PRIV findings changed on 3000 Skills,0,0,measured,before/after comparison of 35894 (baseline) and 39349 (modular) findings
+Q2 change isolation,dependency-rule violations,n/a,0,measured,tests/unit/test_architecture.py
+Q3 reproducibility,byte-identical outputs across two full runs (same machine),n/a,10 of 10 artifacts,measured,shasum of tables + sample + findings + outcomes + figure
+Q3 reproducibility,clean-setup success by a non-author,n/a,not yet run,pending,trial template in docs/evaluation (Phase 3)
+Q3 reproducibility,pipeline wall-clock (index + sample + scan + analyze),n/a,about 153 s,measured,63 s + 9 s + 70 s + 11 s (time)
+Q4 performance,throughput on 3000 Skills (Skills/s),2710,1748 (same 4 rules) / 975 (CMD+NET) / 228 (all 6),measured,results/sprint2/benchmark.csv (median of 5)
+Q4 performance,runtime ratio vs baseline,1.00,1.55 (same rules) / 2.78 (CMD+NET) / 11.87 (all 6),measured,results/sprint2/benchmark.csv
+Q4 performance,peak resident memory for full 15000-Skill scan (MB),n/a,133,measured,/usr/bin/time -l
+Q5 explainability,findings with category + rule ID + line + evidence + explanation + level,n/a,207645 of 207645 (100%),measured,scripts/check_outputs.py
+Q5 explainability,output schema check,n/a,pass (0 bad rows),measured,scripts/check_outputs.py
+Q5 testability,line+branch coverage of detectors and parsing,n/a,100%,measured,coverage.py --branch
+Q5 testability,line+branch coverage of core modules,n/a,96%,measured,coverage.py --branch
+Q5 testability,rules with a positive and a negative test case,n/a,23 of 23,measured,tests/unit/test_detectors.py

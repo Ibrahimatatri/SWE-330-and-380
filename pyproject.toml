@@ -1,12 +1,16 @@
 [project]
 name = "skillguard"
-version = "0.1.0"
+version = "0.2.0"
 description = "Static scanner for potentially risky capability signals in AI-agent SKILL.md files"
 requires-python = ">=3.10"
-dependencies = []
+dependencies = []  # the scanner core uses the standard library only (ADR-0002)
 
 [project.optional-dependencies]
-dev = ["pytest>=7"]
+dev = ["pytest>=7", "coverage>=7"]
+analysis = ["numpy>=1.26", "pandas>=2.2", "statsmodels>=0.14", "matplotlib>=3.8"]
+
+[project.scripts]
+skillguard = "skillguard.cli:main"
 
 [build-system]
 requires = ["setuptools>=61"]
