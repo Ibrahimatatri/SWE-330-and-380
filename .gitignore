@@ -1,0 +1,27 @@
+# Dataset and bulk data — never commit (see data/README.md)
+data/raw/
+data/interim/
+*.db
+*.sqlite
+*.sqlite3
+*.parquet
+*.zip
+*.tar.gz
+*.zst
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+.ipynb_checkpoints/
+
+# Secrets and local files
+.env
+.env.*
+.DS_Store
+.claude/
