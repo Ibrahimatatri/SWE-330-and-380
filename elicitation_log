@@ -1,0 +1,158 @@
+Prompt given 9/21/2026 @ 2:32 P.M. EST:
+# Dataset: GitSkills
+# Proposal: We have elected to research the reuse of skills, specifically the amount of trust -- in terms of potentially dangerous executable data -- written into a skill over the number of copies and reuses of it. Subsequently, we intend to evaluate whether these skills that gain measurable trust are directed at particular AI models, to show whether particular models (or perhaps brands of models) are targeted and afforded more power than others.
+
+This exercise is to create well-defined boundaries of what research is possible given the selected dataset, and to direct said research. List the source from which the response to each question is derived.
+
+1. Describe the purpose and scope of the dataset.
+
+2. Describe the schema of the dataset.
+
+3. Which fields identify the Skill file, repository, file path, content, and collection date?
+
+4. Can file_sha reliably identify Skills with identical content across different repositories? The dataset presentation mentions a content hash for each skill file, can that be used reliably to exclude duplicates, if any exist?
+
+5. How should we define a “widely reused” Skill: two or more copies, a fixed number of copies, or a percentile?
+
+6. How will the project identify potentially risky capabilities such as command execution, network access, file operations, and credential access?
+
+7. How will the project distinguish actual instructions from examples, quoted code, warnings, and negated instructions?
+
+8. Suggest general approaches to implementation -- that is, how to efficiently analyze the dataset in a way conducive to the proposal.
+
+9. Propose tools that might help actualize the proposal's implementation -- that is, that would allow for approaches presented in the previous point.
+
+10. How many Skills should we manually review to measure false positives, false negatives, and agreement between reviewers?
+
+11. Evaluate whether there are any potential privacy concerns that could arise from use of the dataset.
+
+12. Consider and present any ethical or security concerns related to the proposal.
+
+
+Response:
+1. Purpose and Scope of the Dataset
+Primary Sources: GitSkills: A Dataset of Agent Skills on GitHub (Zenodo & arXiv:2608.10906), GitSkills Sample README / MSR 2027 Challenge Description, and Hugging Face GitSkills Dataset Card.
+Purpose: The GitSkills dataset was created to support empirical software engineering research on "agent skills"—modular folders containing a SKILL.md file (alongside optional scripts and reference materials) that provide natural-language instructions to language-model AI agents. Unlike traditional source code, skills are selected probabilistically by LLMs at runtime and lack central registries or package managers, spreading instead via direct file copying across GitHub repositories. The dataset enables research into skill adoption, reuse, structure, authorship, maintenance, and security.
+Scope & Scale:
+File Occurrences: 3,797,117 total SKILL.md file instances.
+Distinct Contents: 1,877,981 unique content groups derived via git blob hashes.
+Repository & Account Coverage: Mined from 282,200 public GitHub repositories across 195,841 owner accounts in July 2026.
+Bundled Assets & History: Includes 7,264,865 sibling files (scripts/docs) and 458,548 sampled commit histories.
+Distribution Formats: Delivered as a single 44.4 GB SQLite database (agent_skills_release.db), a 277 MB 500-repo sample, or a Parquet mirror on Hugging Face.
+Boundaries & Limitations: It is a point-in-time snapshot (July 2026) covering default branches of public repositories (excluding non-default branches, files >384 KB, repos with >500k files, and forks unless they have more stars than their parent).
+ 
+2. Schema of the Dataset
+Primary Sources: GitSkills Sample Schema Documentation, Zenodo Dataset Description, and Hugging Face Dataset Structure.
+Dataset Schema Overview: The dataset consists of four primary relational tables:
+artifacts (3,797,117 rows): Contains one record per discovered skill file occurrence.
+Key fields: repo_full_name, path (Primary Key composite), filename, location_class (canonical, skills-dir, other), file_sha, discovered_at, dedup_primary (1 for primary representative), content (full UTF-8 text for representatives), frontmatter_valid, name, description, body_chars, sibling_count, sibling_bytes, has_scripts, has_references, and commit history tracking (first_commit_at, last_commit_at, commit_count, first_commit_author, last_commit_author).
+repos (282,200 rows): Repository-level metadata.
+Key fields: full_name, owner, stars, forks, is_fork, language, license, description, created_at, pushed_at, metadata_fetched.
+artifact_siblings (7,264,865 rows): Captures files/folders bundled alongside representative skills.
+Key fields: repo_full_name, artifact_path (foreign key to artifacts.path), entry_name, entry_type (file or dir), entry_size, entry_sha, content (text up to 100 KB), content_fetched, skipped_reason.
+mining_runs (7 rows): Audit log of collection queries, timestamps, and result counts.
+ 
+3. Fields Identifying Key Attributes
+Primary Sources: artifacts Table Specification and Hugging Face artifacts Data Dictionary.
+Attribute Mapping in artifacts Table:
+Skill File (Basename): filename (preserves exact basename case, e.g., SKILL.md).
+Repository: repo_full_name (formatted as owner/repository_name).
+File Path: path (relative file path within the repository; combined with repo_full_name as the primary key).
+Content: content (holds the full raw Markdown text string; populated on rows where dedup_primary = 1).
+Collection Date: discovered_at (ISO-8601 UTC timestamp recording when the file was indexed).
+ 
+4. Duplicate Exclusion via Content Hashes (file_sha)
+Primary Sources: GitSkills Collection & Deduplication Methodology.
+Reliability of file_sha for Verbatim Duplicates: Yes. file_sha is the Git SHA-1 blob hash calculated directly from the file bytes. Identical file_sha values strictly guarantee byte-for-byte identical content across different repositories.
+Excluding Verbatim Duplicates: To isolate unique skill texts and exclude verbatim duplicates, filter queries using dedup_primary = 1. The dataset maintainers designated exactly one representative per content hash group (dedup_primary = 1) to carry the full content text, parsed front matter, and folder composition.
+Boundary Limitation for Research Proposal: file_sha only identifies exact byte-level clones. If a skill is copied and slightly altered (e.g., changing a single line, reformatting whitespace, or editing a prompt command), Git generates a completely different file_sha. To track near-duplicate reuse or changed copies, researchers must complement file_sha with semantic similarity hashing (such as MinHash/LSH or TF-IDF/embeddings).
+ 
+5. Defining a "Widely Reused" Skill
+Primary Sources: GitSkills Descriptive Statistics & Challenge Research Questions.
+Dataset Context: In GitSkills, 50.5% of all file occurrences are verbatim copies, exhibiting a heavy long-tail distribution: a massive tail of singletons (1 copy) and a small head of mass-copied contents appearing across hundreds of repositories.
+Evaluation of Definition Strategies for Proposal:
+Two or More Copies (copies >= 2): Defines any reuse versus singletons. While useful for binary clone filtering, setting the boundary at 2 is too low for "widely reused," as many skills are duplicated just once across a user's forks or boilerplate templates.
+Fixed Number of Copies (e.g., copies >= 10 or copies >= 50): Provides explicit, intuitive boundaries for queries (e.g., GROUP BY file_sha HAVING COUNT(*) >= 10). However, fixed thresholds can be arbitrary across differing dataset sub-samples.
+Percentile Threshold (e.g., Top 1% or Top 5% of Copy Counts): Recommended Approach. Due to the extreme power-law distribution, defining "widely reused" as skills above the 95th or 99th percentile of copy counts statistically isolates the true mass-copied "head" templates from casual reuses.
+ 
+6. Identifying Risky Capabilities
+Primary Sources: GitSkills Table Specifications & Maintenance/Trust RQ 5.
+Dataset Infrastructure Provided:
+artifacts.content: Text of the SKILL.md file.
+artifacts.has_scripts: Binary flag indicating if executable scripts are bundled.
+artifact_siblings.content: Raw text of bundled scripts/references up to 100 KB.
+Methodological Implementation Plan for Proposal:
+Regex & Keyword Scanning (Static Patterns): Scan artifacts.content and artifact_siblings.content for explicit risk indicators:
+Command Execution: Shell syntax (bash, sh, exec, eval, subprocess, system(), popen).
+Network Access: Network primitives (curl, wget, fetch(), requests.get, http://, https://, socket connections).
+File Operations: Disk write/delete calls (rm -rf, chmod, unlink, fs.writeFile, open('...', 'w')).
+Credential Access: Environment variable reads (API_KEY, TOKEN, PASSWORD, SECRET, ~/.aws/credentials, ~/.ssh).
+AST Static Code Analysis: For bundled script siblings (entry_type = 'file' in Python, Bash, or JS), run AST parsers (e.g., Python ast, ShellCheck) over artifact_siblings.content to classify dangerous function invocations.
+Natural Language Directives Extraction: Parse prompt instructions in SKILL.md instructing LLMs to perform system calls (e.g., "Run the following command in terminal...").
+ 
+7. Distinguishing Instructions from Examples, Quotes, and Negations
+Primary Sources: Agent Skill Format Specification & Challenge Overview.
+Challenge: Agent skills are written in unconstrained natural language Markdown. A naive string search for rm -rf might misidentify a safety warning ("Do NOT run rm -rf") or an example code snippet as an executable directive.
+Methodological Implementation Plan for Proposal:
+Markdown Abstract Syntax Tree (AST) Parsing: Use Markdown parsers (e.g., mistune or marko) to isolate structural blocks:
+Exclude fenced code blocks (bash ... ) and blockquotes (> ...) when evaluating primary agent prompt instructions, categorizing them as Examples/Quoted Code.
+Rule-Based Negation & Header Context Filtering:
+Header Context: Tag text under headings like ## Examples, ## Usage, or ## Sample Output as non-instructional documentation.
+Negation & Warning Detection: Apply NLP dependency parsing or regular expressions to capture preceding negation tokens (do not, never, avoid, deprecated, WARNING:, IMPORTANT: do not execute).
+LLM / Zero-Shot Prompt Classification: For ambiguous clauses, pass extracted sentences to a lightweight classifier/LLM prompt to categorize text into four mutually exclusive buckets: Imperative Instruction, Example / Code Block, Warning / Negated Directive, and Documentation.
+ 
+8. General Approaches to Implementation
+Primary Sources: GitSkills Quick Start & Example Queries.
+Dataset Architecture Conducive to Proposal: The dataset's single SQLite file (agent_skills_release.db) or DuckDB/Parquet interface allows high-performance SQL transformations across 3.8M rows without network overhead.
+Phased Analysis Pipeline for Proposal:
+Stage 1: Copy Count Aggregation & Cohort Binning: Execute SQL group-bys over artifacts on file_sha to compute total copy counts per skill content. Bin skills into reuse cohorts (e.g., Singletons = 1, Moderate Reuse = 2–9, High Reuse = 10–99, Mass Reused = 100+).
+Stage 2: Targeted Model Extraction: Query artifacts.content (filtering dedup_primary = 1) and artifacts.location_class to extract target model metadata (e.g., parsing front matter, system prompt tags, or paths like .claude/skills/ vs vendor-neutral directories).
+Stage 3: Risk Density Scoring: Run static risk detectors (Question 6) over artifacts.content and artifact_siblings.content to assign a numeric Risk/Dangerous Capability Score to each representative skill.
+Stage 4: Statistical Correlation Analysis: Run regression models (e.g., Poisson or logistic regression) evaluating whether Copy Count (independent variable) correlates with increased Risk Score (dependent variable), and test if specific model targets receive a statistically significant higher density of risky capabilities.
+ 
+9. Proposed Tools to Actualize Implementation
+Primary Sources: GitSkills Recommended Stack & Documentation Examples.
+Toolchain Recommendations:
+Database & Query Engines:
+DuckDB / Polars / Pandas: For high-speed analytical querying directly against the Parquet mirror (mvaccargiu/gitskills).
+SQLite (sqlite3 CLI / Python sqlite3 module): For executing standard relational queries against agent_skills_release.db.
+Parsing & Markdown AST Processing:
+mistune / marko / mdit-py-plugins (Python): To convert SKILL.md content into Markdown ASTs to separate code blocks, blockquotes, and headings.
+Static Security & Code Analysis:
+Semgrep: To write custom structural rule patterns scanning both natural language Markdown and code blocks for risky command execution.
+Bandit / ShellCheck: For static security analysis of bundled script siblings (artifact_siblings) in Python and Bash.
+NLP & Text Classification:
+spaCy / transformers / LLM API (e.g., Gemini API): For dependency parsing (negation detection) and zero-shot categorization of prompt directives.
+Statistics & Visualization:
+scipy / statsmodels / seaborn (Python): For power-law distribution fitting, correlation analysis, and confidence interval plotting.
+ 
+10. Manual Review Sample Size for Validation
+Primary Sources: GitSkills Population Counts & MSR Open Science Guidelines.
+Dataset Context: Population consists of 1,877,981 distinct skill contents.
+Methodological Sample Size Calculation:
+Statistically Representative Sample: To achieve a 95% Confidence Level with a 5% Margin of Error over a population of 1.88M distinct contents, a random sample of 384 skills is required.
+Stratified Sampling Strategy for False Positives / Negatives:
+Sample A (Automated Risk Flags - 200 skills): Randomly pull 200 skills flagged by automated scripts as "risky" to measure Precision / False Positive Rate.
+Sample B (Unflagged Baseline - 200 skills): Randomly pull 200 skills marked "safe" to measure Recall / False Negative Rate.
+Sample C (Cohort Balance): Ensure stratification across copy-count tiers (e.g., 100 singletons, 100 widely reused).
+Inter-Rater Agreement Measurement:
+Have at least two independent reviewers manually code a shared subset of 100 skills.
+Compute Cohen’s Kappa ($\kappa$) (for two raters) or Fleiss’ Kappa (for >2 raters) to report inter-reviewer agreement in the final paper.
+ 
+11. Evaluate whether there are any potential privacy concerns that could arise from use of the dataset.
+Primary Sources: GitSkills Anonymisation, Ethics, & License Statements.
+Dataset Anonymization Controls Provided:
+Commit author accounts were converted to keyed one-way hash codes.
+Email addresses and personal names in commit messages were masked.
+Evaluated Privacy Risks for the Proposal:
+Un-masked Raw File Contents: artifacts.content and artifact_siblings.content reproduce raw files byte-for-byte as published on GitHub. If developers accidentally committed hardcoded credentials (API keys, SSH keys, passwords, bearer tokens) or personal contact information inside SKILL.md or script siblings, those values remain unredacted in the dataset text.
+De-Anonymization Risks: Even though commit authors are hashed, repo_full_name links directly to live public GitHub repositories. Cross-referencing repository owners with external data sources could allow researchers to re-identify individual developers.
+Compliance Obligation: Researchers must strictly avoid deanonymization, maintain PII masking, and present findings solely in aggregate.
+ 
+12. Consider and present any ethical or security concerns related to the proposal.
+Primary Sources: MSR 2027 Mining Challenge Ethics & Licensing Rules.
+Ethical & Security Analysis of Proposal:
+Dual-Use & Weaponization Risks: The research focuses on identifying "potentially dangerous executable data written into a skill". Publicly highlighting specific widely copied skills containing executable risks or backdoors could act as an operational guide for malicious actors seeking to exploit prompt-injection or supply-chain vulnerabilities in AI coding agents.
+Responsible Disclosure: If the automated analysis uncovers active zero-day exploit scripts, live hardcoded secrets, or malicious agent backdoors in public repositories, researchers must follow responsible disclosure protocols rather than publishing raw links or unmasked code.
+Shaming & Bias against AI Models/Brands: The proposal intends to evaluate if specific AI models or brands are "targeted and afforded more power". Researchers must ensure rigorous experimental controls so that differences in model security reflect genuine skill capabilities rather than sampling bias (e.g., Claude using .claude/skills/ while generic models lack canonical directories).
+Licensing Compliance: Skill text contents remain bound by their original source repository SPDX licenses (repos.license). Any published benchmark datasets or quoted code snippets must respect original open-source license terms.
