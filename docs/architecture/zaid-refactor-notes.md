@@ -71,5 +71,7 @@ absent after an end-to-end scan. Fixture output is not a GitSkills research resu
 
 ## Verification
 
-Issue-15 suite: 102 passed, 1 skipped on 2026-10-28 using local Python 3.12.
+Issue-15 suite: 105 passed, 1 skipped on 2026-10-28 using local Python 3.12.
 No full-dataset evaluation or manual detection validation is claimed.
+
+For the file/function map and hands-on checks, see [the reading guide](zaid-reading-guide.md).
