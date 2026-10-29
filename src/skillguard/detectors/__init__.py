@@ -2,9 +2,10 @@
 
 from .commands import CommandDetector
 from .network import NetworkDetector
+from .filesystem import FileSystemDetector
 from .interface import Detector
 
 
 def default_detectors() -> tuple[Detector, ...]:
-    """Return fresh built-in plugins in a stable order (CMD and NET for issue #15)."""
-    return (CommandDetector(), NetworkDetector())
+    """Return fresh built-in plugins in stable order; FS is the first #16 addition."""
+    return (CommandDetector(), NetworkDetector(), FileSystemDetector())
