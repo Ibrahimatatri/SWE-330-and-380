@@ -1,8 +1,8 @@
 # Issue 16: capability detectors
 
-Status: FS implemented locally; CRED, INST and SCRIPT pending. CMD/NET are inherited
+Status: FS and CRED implemented; INST and SCRIPT pending. CMD/NET are inherited
 from issue #15. PRIV remains reserved pending Ibrahim's response on PR #33.
-No issue-16 changes have been committed or pushed.
+FS was committed separately; CRED is the next local change for review.
 
 ## File-system detector
 
@@ -42,3 +42,18 @@ coverage completeness, or manual precision/recall result is claimed.
 - Negation and prose-action handling can misread complex clauses.
 - Local file loading does not establish whether referenced scripts are bundled.
 - Tests are synthetic; real dataset examples still need manual validation.
+
+## Credential detector
+
+`detectors/credentials.py` detects credential references without reading the
+referenced files or environment variables. CRED-101 covers .env (excluding common
+template names), AWS credentials and selected SSH private-key paths. CRED-102
+covers credential environment variables, including Python/JavaScript examples.
+CRED-103 covers explicit prose instructions involving credentials or API keys.
+Prose needs a preceding action; warnings and comments remain informational.
+Evidence uses the shared masking helper, which is not a complete secret filter.
+These finite patterns do not establish that credentials exist or are disclosed.
+
+Verification after CRED: 141 passed, 1 symbolic-link test skipped. Synthetic tests
+cover each rule, contextual negatives, password masking and CSV integration.
+Real GitSkills database validation is still pending.

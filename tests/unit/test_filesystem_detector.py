@@ -67,7 +67,7 @@ def test_metadata_and_plain_prose_not_flagged():
 def test_registered_fs_category_reaches_csv_without_core_changes(tmp_path):
     """A new plugin supplies FS outcomes through the existing pipeline and reports."""
     result = run([Skill("repo", "source", "hash", "```sh\ncat notes.txt\n```")])
-    assert result.categories == ("CMD", "FS", "NET")
+    assert {"CMD", "FS", "NET"}.issubset(result.categories)
     write_reports(result, tmp_path)
     with (tmp_path / "skills.csv").open(encoding="utf-8", newline="") as handle:
         row, = csv.DictReader(handle)
