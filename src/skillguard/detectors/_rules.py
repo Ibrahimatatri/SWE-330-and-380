@@ -6,6 +6,8 @@ No pattern, URL, or instruction is ever executed.
 """
 
 import re
+from dataclasses import dataclass
+from collections.abc import Iterable
 
 from skillguard.domain import Finding, ParsedLine, ParsedSkill
 
@@ -55,3 +57,49 @@ def make_finding(parsed: ParsedSkill, line: ParsedLine, rule_id: str,
     return Finding(source=parsed.skill.source, line=line.number, category=category,
                    rule_id=rule_id, evidence=redact_evidence(line.text),
                    explanation=explanation, context=line.context, review_level=level)
+
+
+@dataclass(frozen=True, slots=True)
+class PatternRule:
+    """One stable text rule with explicit prose and code-context behavior.
+
+    code_languages permits executable API examples outside shell blocks.
+    requires_action needs an earlier action verb for a prose match to count.
+    high prioritizes review only; context can still lower a match to info.
+    """
+
+    rule_id: str
+    pattern: re.Pattern[str]
+    explanation: str
+    requires_action: bool = False
+    code_languages: tuple[str, ...] = ()
+    high: bool = False
+
+
+def evaluate_rules(parsed: ParsedSkill, category: str,
+                   rules: Iterable[PatternRule]) -> list[Finding]:
+    """Evaluate category rules once per line with shared evidence/context policy.
+
+    Metadata and fence delimiters are excluded. Matches in comments, negated
+    prose and non-executable code examples remain informational. Language-aware
+    API rules may count Python or JavaScript code without treating every code
+    block as executable. No input instructions are executed.
+    """
+    rules = tuple(rules)
+    findings = []
+    for line in parsed.lines:
+        if line.is_fence or line.context == "front_matter":
+            continue
+        for rule in rules:
+            match = rule.pattern.search(line.text)
+            if not match:
+                continue
+            level = review_level(line, match.start(), requires_action=rule.requires_action)
+            if (line.context in {f"code:{language}" for language in rule.code_languages}
+                    and not line.text.lstrip().startswith(("#", "//", "/*", "*"))):
+                level = "review"
+            if rule.high and level == "review":
+                level = "high"
+            findings.append(make_finding(parsed, line, rule.rule_id, category,
+                                         rule.explanation, level))
+    return findings
