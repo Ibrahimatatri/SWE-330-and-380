@@ -1,8 +1,8 @@
 # Issue 16: capability detectors
 
-Status: FS and CRED implemented; INST and SCRIPT pending. CMD/NET are inherited
+Status: FS, CRED and INST implemented; SCRIPT pending. CMD/NET are inherited
 from issue #15. PRIV remains reserved pending Ibrahim's response on PR #33.
-FS was committed separately; CRED is the next local change for review.
+FS and CRED were committed separately; INST is the next local change for review.
 
 ## File-system detector
 
@@ -57,3 +57,17 @@ These finite patterns do not establish that credentials exist or are disclosed.
 Verification after CRED: 141 passed, 1 symbolic-link test skipped. Synthetic tests
 cover each rule, contextual negatives, password masking and CSV integration.
 Real GitSkills database validation is still pending.
+
+## Installation detector
+
+`detectors/installation.py` adds INST-101 for common package installation
+commands, INST-102 for package runners that may download dependencies, and
+INST-103 for downloaded content piped to an interpreter (high review priority).
+Prose requires an earlier action verb. Comments, warnings and documentation
+examples remain informational. No software is downloaded or executed.
+These finite patterns do not cover all manager options, multiline commands,
+installer APIs, or system configuration changes. A package runner may use cache;
+a signal does not prove an installation occurred.
+
+Verification after INST: 158 passed, 1 symbolic-link test skipped. Includes
+positive and negative examples, context checks and CSV integration.
