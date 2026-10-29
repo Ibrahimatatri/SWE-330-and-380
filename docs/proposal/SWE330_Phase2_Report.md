@@ -55,7 +55,7 @@ Setup and execution: `make setup`, `make test`, `make pipeline DB=/path/to/agent
 Values come from `results/sprint2/gqm_preliminary.csv`, `benchmark.csv`, and the scripts named there.
 
 | Question | Metric | Baseline | Modular | Phase 1 expectation | Met? |
-|---|---|---|---|---|---|
+|---|---|---|---|---|
 | Q1 Extensibility (pilot: add PRIV) | Production files changed | 1 | 2 | Fewer than baseline | **No** |
 | | Non-test lines changed | 7 | 19 | — | Baseline smaller |
 | | Core modules modified | n/a | 0 | 0 | Yes |
@@ -85,7 +85,7 @@ Values come from `results/sprint2/gqm_preliminary.csv`, `benchmark.csv`, and the
 
 | Risk | Likelihood | Impact | Mitigation |
 |---|---|---|---|
-| Uneven participation: two members have no GitHub activity yet | High | Accountability grade; validation needs two raters | Assign concrete Phase 3 tasks below; record contributions per issue |
+| Uneven, uncoordinated work: two parallel implementations of #15 (#33 and #36) were built separately | Medium | Duplicate effort; merge conflicts | Merge one for Phase 2; integrate the other's strengths in Phase 3; one owner per issue |
 | Detector precision unknown; `CMD-001` very broad | High | Research conclusions | Manual validation before any rule tuning |
 | Q1 time metric still missing | Medium | Weak extensibility claim | Timed PRIV implementation by a member who has not seen the pilot |
 | Clean setup fails on another machine | Medium | Reproducibility claim | Trial template; fall back to a pinned lock file |
@@ -102,14 +102,14 @@ Values come from `results/sprint2/gqm_preliminary.csv`, `benchmark.csv`, and the
 
 ## 8. Individual contribution summary
 
-GitHub evidence as of 2026-10-26 (repository activity only; members add their own statements below):
+GitHub evidence as of 2026-10-28 (repository activity only; members add their own statements below):
 
-| Member | Commits on `main` | PRs authored | PR reviews | Issue comments | Other recorded work |
+| Member | PRs authored | PR reviews | Issue/PR comments | Other recorded work |
 |---|---|---|---|---|---|
-| Ibrahimatatri | 6 | 3 (+ Phase 2 PRs) | 0 | 1 | Phase 1 proposal, skeleton, baseline, Phase 2 implementation and documents (AI-assisted, logged) |
-| Baiselaired | 4 | 0 | 11 | 4 | Reviewed and merged PRs #30 and #32; requested changes on #31; first look at the database (with skyr-csc) |
-| ixmecrash | 0 | 0 | 0 | 0 | Notebook elicitation (#29, all members) |
-| skyr-csc | 0 | 0 | 0 | 0 | Notebook elicitation (#29); first look at the database (with Baiselaired) |
+| Ibrahimatatri | 5 (#30–#34) | 0 | 3 | Phase 1 proposal, skeleton, baseline, Phase 2 implementation and documents (AI-assisted, logged) |
+| Baiselaired | 0 | 15 | 4 | Reviewed all PRs; merged #30, #32, #35; requested changes on #31; elicitation log (branch `Baiselaired-patch-1`); first look at the database (with skyr-csc) |
+| ixmecrash | 1 (#36) | 0 | 2 | Independent modular implementation of #15 (7 commits, 106 tests; CMD, NET, and FS detectors), reading guide; notebook elicitation (#29) |
+| skyr-csc | 1 (#35, merged) | 0 | 0 | User persona (`docs/User Persona.md`); notebook elicitation (#29); first look at the database (with Baiselaired) |
 
 *Member statements (each member writes 2–3 sentences):*
 - Ibrahimatatri:
