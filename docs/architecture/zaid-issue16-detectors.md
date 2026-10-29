@@ -1,8 +1,8 @@
 # Issue 16: capability detectors
 
-Status: FS, CRED and INST implemented; SCRIPT pending. CMD/NET are inherited
+Status: all six planned categories implemented (CMD, NET, FS, CRED, INST, SCRIPT). CMD/NET are inherited
 from issue #15. PRIV remains reserved pending Ibrahim's response on PR #33.
-FS and CRED were committed separately; INST is the next local change for review.
+FS, CRED and INST were committed separately; SCRIPT is the next local change for review.
 
 ## File-system detector
 
@@ -71,3 +71,17 @@ a signal does not prove an installation occurred.
 
 Verification after INST: 158 passed, 1 symbolic-link test skipped. Includes
 positive and negative examples, context checks and CSV integration.
+
+## Script detector
+
+`detectors/scripts.py` recognizes supported interpreter invocations and direct
+relative script commands (SCRIPT-101). Other script-path mentions are retained
+as informational SCRIPT-102 findings, including paths used as data or URLs.
+Only one SCRIPT finding is emitted per line. Comments, warnings and nested
+examples use the shared context policy. Script paths do not prove files exist
+or are bundled. Quoted paths containing spaces, multiline commands, shell aliases,
+and arbitrary interpreter options are outside this initial pattern set.
+
+Verification after SCRIPT: 173 passed, 1 symbolic-link test skipped. Tests cover
+invocations, contextual negatives, all-six-category registration, CSV output,
+and a canary script that must not execute. Full-dataset accuracy remains untested.
