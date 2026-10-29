@@ -1,0 +1,6 @@
+step,description,distinct_contents
+all_hashes,Distinct content hashes (file_sha) in the release,1877981
+exact_name,At least one copy named exactly SKILL.md,1844777
+content_stored,Content text stored in the release,1844777
+hash_matches,Stored content matches its hash (content_sha_ok 1 or 2),1844736
+valid_front_matter,Valid YAML front matter (frontmatter_valid = 1),1612927
