@@ -35,7 +35,7 @@
 _TBD (team)_
 
 ## What did not go well
-_TBD (team)_. Facts to discuss: two members have no repository activity yet; PR #31 waited for changes for most of the sprint.
+_TBD (team)_. Facts to discuss: most work landed in the last days of the sprint; two implementations of #15 (#33 and #36) were built without coordinating; PR #31 waited for changes for most of the sprint.
 
 ## What we will change in Sprint 3
 _TBD (team)_. Suggested: assign each Phase 3 task to one owner at planning; start labelling in week 1; review PRs within 48 hours.
