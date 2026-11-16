@@ -1,0 +1,12 @@
+outcome,auc_log_lines,length_quartile,lines_upper,n,prevalence,share_widely_reused
+has_CMD,0.6408,,,,,
+has_NET,0.7099,,,,,
+has_FS,0.7175,,,,,
+has_CRED,0.7003,,,,,
+has_INST,0.6854,,,,,
+has_SCRIPT,0.6135,,,,,
+any_risky,0.6636,,,,,
+any_risky,,1,72.0000,3792,0.3492,0.2656
+any_risky,,2,149.0000,3730,0.5568,0.2920
+any_risky,,3,282.0000,3729,0.6205,0.3551
+any_risky,,4,,3749,0.7274,0.4214
