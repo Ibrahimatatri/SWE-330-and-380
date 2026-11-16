@@ -5,9 +5,9 @@ Core layer: no I/O. Callers (CLI, adapters) supply Skill objects and handle outp
 
 from dataclasses import replace
 
-from .detectors import DETECTORS
-from .domain import Finding, Skill
-from .parsing import parse
+from detectors import DETECTORS
+from domain import Finding, Skill
+from parsing import parse
 
 
 def scan(skill: Skill, detectors=DETECTORS) -> list[Finding]:

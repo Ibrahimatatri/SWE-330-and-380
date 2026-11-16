@@ -5,9 +5,9 @@ import json
 import sys
 from dataclasses import asdict
 
-from skillguard.adapters.files import load_skills, read_skill
-from skillguard.adapters.report import write_reports
-from skillguard.pipeline import run, scan_skill
+from adapters.files import load_skills, read_skill
+from adapters.report import write_reports
+from pipeline import run, scan_skill
 
 
 def main(argv: list[str] | None = None) -> int:
