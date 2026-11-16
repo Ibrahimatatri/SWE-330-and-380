@@ -88,3 +88,14 @@ Further detail is in [THREATS_TO_VALIDITY.md](THREATS_TO_VALIDITY.md).
 ## Project notes
 
 Early Phase 1 planning notes are preserved in [docs/notes/phase1-requirements-notes.md](docs/notes/phase1-requirements-notes.md).
+
+
+## Zaid's independent issue #15 branch
+
+The modular local-folder scanner on `issue-15-zaid-refactor` is runnable with
+`python -m skillguard scan-folder tests/fixtures/repos --out results/zaid-issue15`.
+It preserves `baseline.py` and currently covers CMD/NET; #16 adds other categories.
+See [implementation notes](docs/architecture/zaid-refactor-notes.md) for structure,
+commands, deliberate baseline differences, tests and limitations. The SQLite
+Sprint 2 pipeline described above belongs to Ibrahim's separate implementation;
+these commands do not imply that his branch is merged into this one.

@@ -5,6 +5,9 @@ description = "Static scanner for potentially risky capability signals in AI-age
 requires-python = ">=3.10"
 dependencies = []  # the scanner core uses the standard library only (ADR-0002)
 
+[project.scripts]
+skillguard = "skillguard.cli:main"
+
 [project.optional-dependencies]
 dev = ["pytest>=7", "coverage>=7"]
 analysis = ["numpy>=1.26", "pandas>=2.2", "statsmodels>=0.14", "matplotlib>=3.8"]

@@ -6,7 +6,7 @@ adjusted_odds_ratios, which imports pandas/statsmodels lazily (analysis extra).
 
 import math
 
-from .domain import COUNTED
+from domain import COUNTED
 
 GROUPS = ("singleton", "reused", "widely_reused")
 WIDELY = 5  # repositories; sensitivity thresholds are passed explicitly where used

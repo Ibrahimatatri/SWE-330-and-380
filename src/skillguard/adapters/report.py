@@ -1,54 +1,60 @@
-"""Output adapters: deterministic CSV tables and the prevalence figure."""
+"""Write deterministic UTF-8 CSV reports with evidence and complete skill outcomes.
+
+findings.csv includes informational evidence; skills.csv includes unflagged
+contents; reuse_summary.csv counts only review/high categories. No timestamps or
+machine-specific absolute paths are added. These are local sample results, not
+validated research findings. Evidence redaction occurs before reaching this layer.
+"""
 
 import csv
-import math
+from dataclasses import asdict
+from pathlib import Path
+from collections.abc import Iterable, Mapping
 
-# Ordinal blue ramp (dataviz reference palette, steps 250/450/650; validator: all checks pass).
-GROUP_COLORS = {"singleton": "#86b6ef", "reused": "#2a78d6", "widely_reused": "#104281"}
-GROUP_LABELS = {"singleton": "Singleton (1 repo)", "reused": "Reused (2-4 repos)", "widely_reused": "Widely reused (5+ repos)"}
-
-
-def _fmt(v):
-    if isinstance(v, float):
-        return "" if math.isnan(v) else f"{v:.4f}"
-    return v
+from pipeline import PipelineResult, counted_categories
 
 
-def write_csv(path, rows, fields=None):
-    """Fixed column order, 4-decimal floats, LF endings, so reruns produce identical bytes (GQM Q3)."""
-    fields = fields or list(rows[0])
-    with open(path, "w", newline="", encoding="utf-8") as fh:
-        w = csv.DictWriter(fh, fieldnames=fields, lineterminator="\n", extrasaction="ignore")
-        w.writeheader()
-        w.writerows({k: _fmt(r.get(k, "")) for k in fields} for r in rows)
+def write_csv(path: Path, rows: Iterable[Mapping], fields: list[str]) -> None:
+    """Write a header even for empty output, replacing an existing UTF-8 report."""
+    with path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fields, lineterminator="\n")
+        writer.writeheader()
+        writer.writerows(rows)
 
 
-def plot_prevalence(rows, outcomes, path):
-    """Grouped bars: share of Skills flagged per outcome and reuse group, with 95% Wilson whiskers."""
-    import matplotlib
+def write_reports(result: PipelineResult, output: str | Path) -> tuple[Path, ...]:
+    """Save four stable reports; surface filesystem failures to the caller.
 
-    matplotlib.use("Agg")
-    import matplotlib.pyplot as plt
-
-    groups = list(GROUP_COLORS)
-    by = {(r["outcome"], r["group"]): r for r in rows}
-    fig, ax = plt.subplots(figsize=(9, 4.2), dpi=150)
-    width = 0.26
-    for i, g in enumerate(groups):
-        xs = [k + (i - 1) * (width + 0.02) for k in range(len(outcomes))]
-        ps = [by[(o, g)]["prevalence"] for o in outcomes]
-        lo = [p - by[(o, g)]["ci_lo"] for o, p in zip(outcomes, ps)]
-        hi = [by[(o, g)]["ci_hi"] - p for o, p in zip(outcomes, ps)]
-        ax.bar(xs, ps, width, color=GROUP_COLORS[g], label=GROUP_LABELS[g], zorder=2)
-        ax.errorbar(xs, ps, yerr=[lo, hi], fmt="none", ecolor="#5f5e57", elinewidth=1, capsize=2, zorder=3)
-    ax.set_xticks(range(len(outcomes)), [o.replace("has_", "").replace("any_risky", "Any category") for o in outcomes])
-    ax.set_ylabel("Share of distinct Skills flagged")
-    ax.yaxis.set_major_formatter(matplotlib.ticker.PercentFormatter(1.0, decimals=0))
-    ax.grid(axis="y", color="#e6e5e0", linewidth=0.8, zorder=0)
-    for side in ("top", "right", "left"):
-        ax.spines[side].set_visible(False)
-    ax.tick_params(length=0)
-    ax.legend(frameon=False, ncol=3, loc="upper left", bbox_to_anchor=(0, 1.12))
-    fig.tight_layout()
-    fig.savefig(path)
-    plt.close(fig)
+    Returns output paths. Existing files with these names are replaced. Input
+    content is not exported wholesale. CSV quoting preserves text, not spreadsheet
+    execution safety; import evidence columns as text in spreadsheet software.
+    """
+    output = Path(output)
+    output.mkdir(parents=True, exist_ok=True)
+    findings, skills, diagnostics = [], [], []
+    summaries = {}
+    for item in result.skills:
+        categories = counted_categories(item)
+        skills.append({"sha256": item.skill.sha256, "source": item.skill.source,
+            "repository_count": item.repository_count, "copy_count": item.copy_count,
+            "reuse_group": item.reuse_group, "any_risky": int(bool(categories)),
+            "n_categories": len(categories), **{f"has_{cat}": int(cat in categories) for cat in result.categories}})
+        for finding in item.findings:
+            findings.append({"sha256": item.skill.sha256, **asdict(finding)})
+        for warning in item.warnings:
+            diagnostics.append({"sha256": item.skill.sha256, "source": item.skill.source, "warning": warning})
+        summary = summaries.setdefault(item.reuse_group, {"reuse_group": item.reuse_group,
+            "skills": 0, **{f"with_{cat}": 0 for cat in result.categories}})
+        summary["skills"] += 1
+        for category in categories:
+            summary[f"with_{category}"] += 1
+    ordered = [summaries[group] for group in ("singleton", "reused", "widely_reused") if group in summaries]
+    tables = (
+        ("findings.csv", findings, ["sha256", "source", "line", "category", "rule_id", "evidence", "explanation", "context", "review_level"]),
+        ("skills.csv", skills, ["sha256", "source", "repository_count", "copy_count", "reuse_group", "any_risky", "n_categories"] + [f"has_{cat}" for cat in result.categories]),
+        ("reuse_summary.csv", ordered, ["reuse_group", "skills"] + [f"with_{cat}" for cat in result.categories]),
+        ("diagnostics.csv", diagnostics, ["sha256", "source", "warning"]),
+    )
+    for name, rows, fields in tables:
+        write_csv(output / name, rows, fields)
+    return tuple(output / name for name, _, _ in tables)

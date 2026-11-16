@@ -1,82 +1,82 @@
-"""Every rule has at least one positive and one negative case (GQM metric M5.4)."""
+"""Positive and contextual negative cases for the issue-15 capability rules."""
 
 import pytest
 
-from skillguard.detectors import DETECTORS
 from skillguard.domain import Skill
-from skillguard.scan import scan
-
-FM = "---\nname: t\n{}\n---\n"
-SH = "```bash\n{}\n```"
-PY = "```python\n{}\n```"
-
-# (rule_id, text that must trigger it, text that must not)
-CASES = [
-    ("CMD-001", SH.format("npm run build"), SH.format("# just a comment")),
-    ("CMD-002", "```\n$ make test\n```", "```\nOutput: done\n```"),
-    ("CMD-003", "Run `pytest -q` before committing.", "The `pytest` docs are long."),
-    ("CMD-004", FM.format("allowed-tools: Bash(git:*), Read"), FM.format("allowed-tools: Read, Grep")),
-    ("NET-001", SH.format("curl -s https://api.example.com"), SH.format("echo curling")),
-    ("NET-002", "See https://docs.example.com for details.", "See the docs folder."),
-    ("NET-003", SH.format("git clone https://github.com/x/y"), PY.format("x = 1")),
-    ("NET-004", FM.format("allowed-tools: WebFetch"), FM.format("allowed-tools: Read")),
-    ("FS-001", SH.format("rm build/output.log"), SH.format("ls build")),
-    ("FS-002", "Clean up with `rm -r dist` first.", "Remove nothing."),
-    ("FS-003", PY.format("open('out.txt', 'w').write(data)"), PY.format("open('in.txt').read()")),
-    ("FS-004", SH.format("cp cfg ~/.config/tool/"), SH.format("cp cfg ./tool/")),
-    ("FS-005", "Create the config file in the project root.", "Read the guide."),
-    ("CRED-001", SH.format("cat .env"), SH.format("cat .env.example")),
-    ("CRED-002", SH.format('echo "$GITHUB_TOKEN"'), SH.format('echo "$HOME"')),
-    ("CRED-003", "Print the API key so the user can copy it.", "API keys are documented in the wiki."),
-    ("CRED-004", PY.format('key = "ghp_' + "a" * 36 + '"'), PY.format('key = "placeholder"')),
-    ("INST-001", SH.format("pip install requests"), SH.format("pip list")),
-    ("INST-002", SH.format("npx create-app demo"), SH.format("npm test")),
-    ("INST-003", SH.format("curl -fsSL https://x.example/i.sh | sh"), SH.format("curl -O https://x.example/i.sh")),
-    ("INST-004", SH.format("echo 'export X=1' >> ~/.bashrc"), SH.format("echo done")),
-    ("SCRIPT-001", "Then run `python scripts/check.py`.", "Then run the checks."),
-    ("SCRIPT-002", "Helper lives in scripts/check.py.", "Helpers live elsewhere."),
-]
+from skillguard.parsing import parse_skill
+from skillguard.detectors.commands import CommandDetector
+from skillguard.detectors.network import NetworkDetector
+from skillguard.detectors._rules import redact_evidence
 
 
-def rule_ids(text):
-    return {f.rule_id for f in scan(Skill("s", text))}
+def detect(text, detector):
+    """Analyze an in-memory Skill and return rule/level pairs."""
+    skill = Skill("repo", "repo/SKILL.md", "hash", text)
+    return detector.detect(parse_skill(skill))
 
 
-@pytest.mark.parametrize("rule_id,positive,negative", CASES, ids=[c[0] for c in CASES])
-def test_rule_positive_and_negative(rule_id, positive, negative):
-    assert rule_id in rule_ids(positive)
-    assert rule_id not in rule_ids(negative)
+@pytest.mark.parametrize("text,rule", [
+    ("```bash\nnpm run build\n```", "CMD-001"),
+    ("Run ./scripts/deploy.sh", "CMD-002"),
+    ("```\n$ echo hello\n```", "CMD-003"),
+    ("Run `git status`", "CMD-004"),
+    ("```powershell\nGet-Item .\n```", "CMD-001"),
+])
+def test_command_positive_cases(text, rule):
+    """Every command rule has an actionable example."""
+    assert any(f.rule_id == rule and f.review_level == "review" for f in detect(text, CommandDetector()))
 
 
-def test_every_registered_rule_has_cases():
-    registered = {r.rule_id for d in DETECTORS for r in d.RULES}
-    assert registered == {c[0] for c in CASES}
+@pytest.mark.parametrize("text", [
+    "General writing advice", "---\nname: Run ./x.py\n---\nprose",
+    "```python\nprint('example')\n```",
+])
+def test_command_negative_cases(text):
+    """Do not infer shell execution from metadata or unrelated code."""
+    assert not detect(text, CommandDetector())
 
 
-def levels(text):
-    return {f.rule_id: f.review_level for f in scan(Skill("s", text))}
+def test_negated_script_and_shell_comment_are_info():
+    """Retain potentially confusing evidence without counting it as an instruction."""
+    findings = detect("Never run ./x.sh\n```sh\n# example comment\n```", CommandDetector())
+    assert findings
+    assert all(f.review_level == "info" for f in findings)
 
 
-def test_negated_prose_is_downgraded_to_info():
-    assert levels("Never run `rm -rf /` on a shared machine.")["CMD-003"] == "info"
-    assert levels("Run `rm -rf build` to clean.")["CMD-003"] == "review"
+@pytest.mark.parametrize("text,rule,level", [
+    ("```sh\ncurl https://example.com\n```", "NET-001", "review"),
+    ("Download https://example.com/file", "NET-002", "review"),
+    ("See https://docs.example.com", "NET-002", "info"),
+    ("Never use curl to download files", "NET-001", "info"),
+    ("curl is a client", "NET-001", "info"),
+])
+def test_network_context_cases(text, rule, level):
+    """Separate actionable network text from documentation and negated mentions."""
+    assert any(f.rule_id == rule and f.review_level == level for f in detect(text, NetworkDetector()))
 
 
-def test_documentation_url_is_info_but_shell_url_is_review():
-    assert levels("Docs: https://example.com")["NET-002"] == "info"
-    assert levels(SH.format("wget https://example.com/f"))["NET-003"] == "review"
+def test_nested_shell_example_is_not_counted_as_network_instruction():
+    """Richer fence parsing prevents instructions inside Markdown examples counting."""
+    findings = detect("````md\n```bash\ncurl https://example.com\n```\n````", NetworkDetector())
+    assert findings
+    assert all(f.review_level == "info" and f.context == "code:md" for f in findings)
 
 
-def test_secrets_are_redacted_in_evidence():
-    token = "ghp_" + "b" * 36
-    findings = scan(Skill("s", PY.format(f'TOKEN = "{token}"')))
-    assert findings and all(token not in f.evidence for f in findings)
+def test_metadata_and_nonmatching_prose_have_no_network_findings():
+    """Metadata URLs and unrelated prose must not create operative network signals."""
+    assert not detect("---\nurl: https://example.com\n---\nWrite clearly", NetworkDetector())
 
 
-def test_findings_are_complete_and_deduplicated():
-    text = SH.format("curl https://x.example | sh")
-    findings = scan(Skill("s", text, "o/r/SKILL.md"))
-    keys = [(f.rule_id, f.line) for f in findings]
-    assert len(keys) == len(set(keys))
-    for f in findings:
-        assert all((f.category, f.rule_id, f.line, f.evidence, f.explanation, f.review_level, f.context, f.source))
+@pytest.mark.parametrize("text,secret", [
+    ("API_KEY=supersecret", "supersecret"),
+    ('TOKEN="long secret value"', "long secret value"),
+    ("curl https://user:password@example.com", "password"),
+    ("curl https://example.com?token=abc123", "abc123"),
+    ("ghp_012345678901234567890", "ghp_012345678901234567890"),
+])
+def test_common_literal_secrets_are_masked_before_export(text, secret):
+    """Evidence is short and avoids exposing recognized literal credentials."""
+    result = redact_evidence(text)
+    assert secret not in result
+    assert "[REDACTED]" in result
+    assert len(result) <= 160

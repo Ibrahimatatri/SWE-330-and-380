@@ -1,63 +1,57 @@
-"""Shared machinery for regex rules, so each detector stays a declarative list of Rules."""
+"""Shared text-rule support: context classification and bounded, masked evidence.
+
+These are transparent heuristics, not intent detection. Metadata is excluded;
+negated prose, shell comments and non-shell code examples remain informational.
+No pattern, URL, or instruction is ever executed.
+"""
 
 import re
-from dataclasses import dataclass
 
-from ..domain import Finding, Line
-from ..parsing import is_shell
+from domain import Finding, ParsedLine, ParsedSkill
 
-# Negation cue within the 40 characters before a match, prose only ("Never run `rm -rf /`").
-# ponytail: cue list is naive (no scope parsing); the error taxonomy tracks misses as `negation`.
-NEGATION = re.compile(
-    r"\b(never|do not|don't|dont|must not|mustn't|should not|shouldn't|avoid|no need to|refrain from)\b[^.!?]{0,40}$",
-    re.I,
-)
-
-# Secrets are masked in evidence so reports never repeat a credential (THREAT_MODEL §1B).
+NEGATION = re.compile(r"\b(?:do\s+not|don't|never|avoid|must\s+not|should\s+not|cannot)\b", re.I)
+ACTION = re.compile(r"\b(?:run|execute|invoke|use|download|fetch|send|post|call|install|read|print|copy|write|open|delete|move|set|export)\b", re.I)
 SECRET = re.compile(
-    r"(gh[pousr]_[A-Za-z0-9]{20,}|github_pat_\w{20,}|sk-[A-Za-z0-9_-]{20,}|AKIA[0-9A-Z]{16}|xox[baprs]-[\w-]{10,}"
-    r"|AIza[0-9A-Za-z_-]{35}|-----BEGIN [A-Z ]*PRIVATE KEY-----)"
+    r"(?i)(\b(?:[A-Z_]*(?:TOKEN|SECRET|PASSWORD|API_KEY|ACCESS_KEY)[A-Z_]*|authorization)\b"
+    r"\s*[:=]\s*)(?:\"[^\"]*\"|'[^']*'|[^\s,;]+)"
 )
-SECRET_ASSIGN = re.compile(r"(?i)\b(password|passwd|secret|token|api[_-]?key)(\s*[:=]\s*)(['\"]?)[^\s'\"`]{6,}")
+URL_AUTH = re.compile(r"(https?://)[^\s/@]+:[^\s/@]+@", re.I)
+QUERY_SECRET = re.compile(r"(?i)([?&](?:token|key|api_key|password|secret|access_token)=)[^\s&#]+")
+TOKEN = re.compile(r"\b(?:gh[pousr]_[A-Za-z0-9_]{15,}|sk-[A-Za-z0-9_-]{12,}|AKIA[A-Z0-9]{16})\b")
 
 
-def redact(text: str) -> str:
-    text = SECRET.sub("[REDACTED]", text)
-    return SECRET_ASSIGN.sub(r"\1\2\3[REDACTED]", text)
+def redact_evidence(text: str, limit: int = 160) -> str:
+    """Mask common literal secrets before truncation; this is not a full DLP filter."""
+    text = URL_AUTH.sub(r"\1[REDACTED]@", text.strip())
+    text = QUERY_SECRET.sub(r"\1[REDACTED]", text)
+    text = SECRET.sub(r"\1[REDACTED]", text)
+    text = TOKEN.sub("[REDACTED]", text)
+    return text[:limit]
 
 
-@dataclass(frozen=True)
-class Rule:
-    rule_id: str
-    pattern: re.Pattern
-    explanation: str
-    where: tuple = ("prose", "code", "front_matter")  # also "shell" = shell-language fences only
-    level: str = "review"
-    prose_level: str | None = None  # level when the match is in prose (e.g., doc URLs -> "info")
+def review_level(line: ParsedLine, start: int, *, requires_action: bool = False) -> str:
+    """Assign review priority using local context, conservatively retaining matches.
+
+    Negation is checked within 40 preceding characters in prose only. Conflicting
+    clauses and quotations remain known limitations for manual validation.
+    """
+    if line.context == "front_matter" or line.is_fence:
+        return "info"
+    if line.in_code_block:
+        if not line.in_shell_block or line.text.lstrip().startswith(("#", "//", "REM ", "rem ")):
+            return "info"
+        return "review"
+    prefix = line.text[max(0, start - 40):start]
+    if NEGATION.search(prefix):
+        return "info"
+    if requires_action and not ACTION.search(line.text[:start]):
+        return "info"
+    return "review"
 
 
-def applies(where: tuple, context: str) -> bool:
-    if context in where:
-        return True
-    if context.startswith("code:"):
-        return "code" in where or ("shell" in where and is_shell(context))
-    return False
-
-
-def evaluate(category: str, rules: tuple, lines: list[Line]) -> list[Finding]:
-    out = []
-    for line in lines:
-        for rule in rules:
-            if not applies(rule.where, line.context):
-                continue
-            m = rule.pattern.search(line.text)
-            if not m:
-                continue
-            level = rule.level
-            if line.context == "prose":
-                level = rule.prose_level or level
-                if NEGATION.search(line.text[: m.start()]):
-                    level = "info"
-            out.append(Finding(category, rule.rule_id, line.no, redact(line.text.strip())[:160],
-                               rule.explanation, level, line.context))
-    return out
+def make_finding(parsed: ParsedSkill, line: ParsedLine, rule_id: str,
+                 category: str, explanation: str, level: str) -> Finding:
+    """Attach source, original context and masked evidence to one rule match."""
+    return Finding(source=parsed.skill.source, line=line.number, category=category,
+                   rule_id=rule_id, evidence=redact_evidence(line.text),
+                   explanation=explanation, context=line.context, review_level=level)
