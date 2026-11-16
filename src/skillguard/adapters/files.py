@@ -13,7 +13,7 @@ import warnings
 from collections.abc import Iterator
 from pathlib import Path
 
-from skillguard.domain import Skill
+from domain import Skill
 
 MAX_BYTES = 1_000_000
 
