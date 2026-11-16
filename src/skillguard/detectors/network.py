@@ -6,7 +6,7 @@ URLs count for review. Prose URLs alone are not proof of a network instruction.
 
 import re
 
-from skillguard.domain import Finding, ParsedSkill
+from domain import Finding, ParsedSkill
 from .interface import Detector
 from ._rules import make_finding, review_level
 

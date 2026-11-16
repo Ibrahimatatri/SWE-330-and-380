@@ -9,7 +9,7 @@ are not automatic runtime validation of returned findings.
 
 from abc import ABC, abstractmethod
 
-from skillguard.domain import Finding, ParsedSkill
+from domain import Finding, ParsedSkill
 
 
 class Detector(ABC):

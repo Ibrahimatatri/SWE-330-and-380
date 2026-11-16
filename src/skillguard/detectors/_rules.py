@@ -7,7 +7,7 @@ No pattern, URL, or instruction is ever executed.
 
 import re
 
-from skillguard.domain import Finding, ParsedLine, ParsedSkill
+from domain import Finding, ParsedLine, ParsedSkill
 
 NEGATION = re.compile(r"\b(?:do\s+not|don't|never|avoid|must\s+not|should\s+not|cannot)\b", re.I)
 ACTION = re.compile(r"\b(?:run|execute|invoke|use|download|fetch|send|post|call|install|read|print|copy|write|open|delete|move|set|export)\b", re.I)
