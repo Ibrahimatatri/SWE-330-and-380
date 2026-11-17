@@ -1,6 +1,6 @@
 # ADR-0006: Fail fast on configuration; degrade gracefully on data
 
-**Status:** Proposed · **Date:** 2026-10-26 · **Issues:** #15, #18
+**Status:** Accepted (approved in the PR #34 review, 2026-10-28) · **Date:** 2026-10-26 · **Issues:** #15, #18
 
 ## Context
 Configuration errors (wrong database path) should stop a run immediately. Data problems (odd encodings, missing text, statistical edge cases on small groups) are expected in 1.6 million public files and must not crash a run or silently bias it.
