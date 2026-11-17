@@ -1,6 +1,6 @@
 """Score the manual validation (issue #19): inter-rater agreement and detector precision/recall.
 
-Each rater fills a copy of data/annotations/sprint2_validation_sheet.csv (label_<CAT> = 1, 0, or ?,
+Each rater fills a copy of data/annotations/validation_sheet.csv (label_<CAT> = 1, 0, or ?,
 plus "rater"). Usage:
     PYTHONPATH=src python3 scripts/score_validation.py RATER_A.csv RATER_B.csv [--key data/annotations/sprint2_validation_key.csv]
 Agreement uses the items both raters labelled. Precision/recall use one gold label per item: a
@@ -10,16 +10,17 @@ left out and counted as unsure.
 
 import argparse
 import csv
+from pathlib import Path
 
-from skillguard.adapters import report
+from skillguard.adapters.tables import write_table
 from skillguard.analysis import cohen_kappa, confusion
-from skillguard.detectors import CATEGORIES
+from skillguard.research import CATEGORIES
 
 ap = argparse.ArgumentParser()
 ap.add_argument("rater_a")
 ap.add_argument("rater_b")
-ap.add_argument("--key", default="data/annotations/sprint2_validation_key.csv")
-ap.add_argument("--out", default="results/sprint2/validation_scores.csv")
+ap.add_argument("--key", default="data/annotations/validation_key.csv")
+ap.add_argument("--out", default="results/validation/validation_scores.csv")
 a = ap.parse_args()
 
 
@@ -43,7 +44,8 @@ for c in CATEGORIES:
     rows.append({"category": c, "double_coded_items": len(both),
                  "cohen_kappa": cohen_kappa([A[i][col] for i in both], [B[i][col] for i in both]),
                  "items_scored": len(usable), "unsure": sum(v == "?" for v in gold.values()), **m})
-report.write_csv(a.out, rows)
+Path(a.out).parent.mkdir(parents=True, exist_ok=True)
+write_table(a.out, rows)
 for r in rows:
     print(f"{r['category']:<7} kappa={r['cohen_kappa']:.2f} (n={r['double_coded_items']})  "
           f"precision={r['precision']:.2f} recall={r['recall']:.2f} f1={r['f1']:.2f}  (n={r['items_scored']})")

@@ -6,7 +6,7 @@ adjusted_odds_ratios, which imports pandas/statsmodels lazily (analysis extra).
 
 import math
 
-from domain import COUNTED
+from skillguard.domain import COUNTED_LEVELS
 
 GROUPS = ("singleton", "reused", "widely_reused")
 WIDELY = 5  # repositories; sensitivity thresholds are passed explicitly where used
@@ -21,7 +21,7 @@ def reuse_group(repository_count: int, widely: int = WIDELY) -> str:
 
 def outcomes(text: str, findings, categories) -> dict:
     """Per-Skill outcome row. Only review/high findings count; "info" findings never do."""
-    counted = [f for f in findings if f.review_level in COUNTED]
+    counted = [f for f in findings if f.review_level in COUNTED_LEVELS]
     cats = {f.category for f in counted}
     row = {"length_lines": len(text.splitlines()), "length_chars": len(text), "n_findings": len(counted)}
     row.update({f"has_{c}": int(c in cats) for c in categories})
@@ -118,3 +118,30 @@ def confusion(predicted: list, actual: list) -> dict:
     recall = tp / (tp + fn) if tp + fn else float("nan")
     f1 = 2 * precision * recall / (precision + recall) if tp else float("nan")
     return {"tp": tp, "fp": fp, "fn": fn, "tn": tn, "precision": precision, "recall": recall, "f1": f1}
+
+
+def continuous_reuse_or(rows: list[dict], outcome: str, adjust_length: bool = True):
+    """Odds ratio per doubling of repository_count (logit on log2 reuse, optionally + log lines).
+
+    Returns (OR, lo, hi), or None when the model cannot be estimated.
+    """
+    import warnings
+
+    import numpy as np
+    import pandas as pd
+    import statsmodels.formula.api as smf
+
+    df = pd.DataFrame(rows)
+    if df[outcome].nunique() < 2:
+        return None
+    df["log2_repos"] = np.log2(df["repository_count"].astype(float))
+    df["log_lines"] = np.log1p(df["length_lines"].astype(float))
+    formula = f"{outcome} ~ log2_repos" + (" + log_lines" if adjust_length else "")
+    try:
+        with warnings.catch_warnings():
+            warnings.simplefilter("error")
+            fit = smf.logit(formula, data=df).fit(disp=0)
+    except Exception:
+        return None
+    lo, hi = fit.conf_int().loc["log2_repos"]
+    return math.exp(fit.params["log2_repos"]), math.exp(lo), math.exp(hi)

@@ -12,10 +12,10 @@ import argparse
 import re
 import subprocess
 
-# ADR-0003: the extension point (detector modules + registry) is NOT core.
-CORE = ("src/skillguard/domain.py", "src/skillguard/parsing.py", "src/skillguard/scan.py",
-        "src/skillguard/detectors/_rules.py", "src/skillguard/analysis.py", "src/skillguard/cli.py",
-        "src/skillguard/adapters/")
+# ADR-0003/0010: the extension point (detector modules + the registry in detectors/__init__.py) is NOT core.
+CORE = ("src/skillguard/domain.py", "src/skillguard/parsing.py", "src/skillguard/pipeline.py",
+        "src/skillguard/detectors/_rules.py", "src/skillguard/detectors/interface.py", "src/skillguard/analysis.py",
+        "src/skillguard/research.py", "src/skillguard/cli.py", "src/skillguard/adapters/")
 NEW_TEST = re.compile(r"^\+\s*(def test_|\(\")")  # new test functions or new parametrized cases
 
 

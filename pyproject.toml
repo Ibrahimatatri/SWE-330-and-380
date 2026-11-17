@@ -12,9 +12,6 @@ skillguard = "skillguard.cli:main"
 dev = ["pytest>=7", "coverage>=7"]
 analysis = ["numpy>=1.26", "pandas>=2.2", "statsmodels>=0.14", "matplotlib>=3.8"]
 
-[project.scripts]
-skillguard = "skillguard.cli:main"
-
 [build-system]
 requires = ["setuptools>=61"]
 build-backend = "setuptools.build_meta"

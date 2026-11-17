@@ -37,24 +37,30 @@ def test_pipeline_end_to_end(tmp_path, monkeypatch):
     (tmp_path / "data/interim").mkdir(parents=True)
     (tmp_path / "figures").mkdir()
     (tmp_path / "data/annotations").mkdir()
-    main(["index", "--db", db])
-    main(["sample", "--db", db, "--per-group", "10"])
-    main(["scan"])
-    main(["analyze"])
-    main(["annotation-sample", "--n", "4", "--overlap", "2"])
+    assert main(["index", "--db", db]) == 0
+    assert main(["sample", "--db", db, "--per-group", "10"]) == 0
+    assert main(["scan-sample"]) == 0
+    assert main(["analyze"]) == 0
+    assert main(["annotation-sample", "--n", "4", "--overlap", "2"]) == 0
+    assert main(["census", "--db", db, "--workers", "1"]) == 0
+    assert main(["analyze", "--outcomes", "data/interim/census_outcomes.csv", "--rules",
+                 "data/interim/census_rule_counts.csv", "--results", "results/census",
+                 "--figure", "figures/census.png"]) == 0
 
-    rows = {r["group"]: r for r in csv.DictReader(open("results/sprint2/reuse_groups_population.csv"))}
+    rows = {r["group"]: r for r in csv.DictReader(open("results/sample/reuse_groups_population.csv"))}
     assert (rows["singleton"]["distinct_contents"], rows["reused"]["distinct_contents"],
             rows["widely_reused"]["distinct_contents"]) == ("3", "1", "1")
-    prev = {(r["outcome"], r["group"]): r for r in csv.DictReader(open("results/sprint2/prevalence_by_group.csv"))}
+    prev = {(r["outcome"], r["group"]): r for r in csv.DictReader(open("results/sample/prevalence_by_group.csv"))}
     assert prev[("has_INST", "widely_reused")]["flagged"] == "1"
     assert prev[("any_risky", "singleton")]["flagged"] == "1"
-    assert (tmp_path / "figures/sprint2_prevalence_by_reuse.png").stat().st_size > 0
-    sheet = list(csv.DictReader(open("data/annotations/sprint2_validation_sheet.csv")))
+    assert (tmp_path / "figures/prevalence_by_reuse_sample.png").stat().st_size > 0
+    sheet = list(csv.DictReader(open("data/annotations/validation_sheet.csv")))
     assert len(sheet) == 4 and sum(int(r["double_coded"]) for r in sheet) == 2
     assert "predicted" not in sheet[0]  # blind: predictions live only in the key file
-    key = list(csv.DictReader(open("data/annotations/sprint2_validation_key.csv")))
+    key = list(csv.DictReader(open("data/annotations/validation_key.csv")))
     assert [k["sha"] for k in key] == [r["sha"] for r in sheet]
+    census = {(r["outcome"], r["group"]): r for r in csv.DictReader(open("results/census/prevalence_by_group.csv"))}
+    assert census[("any_risky", "widely_reused")]["flagged"] == "1"  # the census covers the same 5 Skills
 
 
 def test_rerun_produces_identical_tables(tmp_path, monkeypatch):
@@ -65,9 +71,24 @@ def test_rerun_produces_identical_tables(tmp_path, monkeypatch):
     (tmp_path / "figures").mkdir()
     digests = []
     for run in ("r1", "r2"):
-        main(["index", "--db", str(tmp_path / "rel.db")])
-        main(["sample", "--db", str(tmp_path / "rel.db")])
-        main(["scan"])
-        main(["analyze", "--results", run])
+        assert main(["index", "--db", str(tmp_path / "rel.db")]) == 0
+        assert main(["sample", "--db", str(tmp_path / "rel.db")]) == 0
+        assert main(["scan-sample"]) == 0
+        assert main(["analyze", "--results", run]) == 0
         digests.append(sorted(hashlib.sha256(p.read_bytes()).hexdigest() for p in (tmp_path / run).glob("*.csv")))
     assert digests[0] == digests[1]
+
+
+def test_census_counts_each_hash_once_when_text_is_stored_twice(tmp_path, monkeypatch):
+    """The release stores some texts on two rows; the census must still scan each hash once."""
+    monkeypatch.chdir(tmp_path)
+    make_release(tmp_path / "rel.db", [(RISKY, ["o/a", "o/b"]), (PLAIN, ["o/c"])])
+    con = sqlite3.connect(tmp_path / "rel.db")
+    con.execute("UPDATE artifacts SET content = ?, frontmatter_valid = 1, content_sha_ok = 1, body_chars = 1 "
+                "WHERE repo_full_name = 'o/b'", (RISKY,))
+    con.commit()
+    (tmp_path / "data/interim").mkdir(parents=True)
+    assert main(["index", "--db", str(tmp_path / "rel.db")]) == 0
+    assert main(["census", "--db", str(tmp_path / "rel.db"), "--workers", "1"]) == 0
+    rows = list(csv.DictReader(open("data/interim/census_outcomes.csv")))
+    assert len(rows) == len({r["sha"] for r in rows}) == 2
