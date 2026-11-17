@@ -1,0 +1,17 @@
+question,metric,result,expectation_from_phase1,met,source
+Q1 extensibility,files changed to add a category (first addition FS / later CRED INST SCRIPT),3 / 2 2 2,fewer than baseline (baseline pilot: 1),no (but changes stay in the extension point),results/evaluation/extensibility.csv
+Q1 extensibility,core modules modified (first / later),1 / 0 0 0,0,yes after the first addition,results/evaluation/extensibility.csv
+Q1 extensibility,non-test lines changed (first / later),97 / 39 35 48,n/a,n/a,results/evaluation/extensibility.csv
+Q1 extensibility,edit sites in existing production files (first / later),4 / 2 2 2,n/a (baseline pilot: 4),modular smaller after the first,results/evaluation/extensibility.csv
+Q1 extensibility,implementation time,not measured (AI-assisted additions); human-timed PRIV experiment pending,n/a,pending,docs/reports/SWE330_Final_Report.md
+Q2 change isolation,regression pass rate after each addition,100% (106 -> 127 -> 142 -> 159 -> 174 tests),100%,yes,pytest at commits 0b852d4 be3b885 2912a71 4f2e5e3 5517eed
+Q2 change isolation,existing test lines that had to change,1 in 4 additions (registered-category list),0,mostly,results/evaluation/extensibility.csv
+Q2 change isolation,dependency-rule violations,0 (two checkers),0,yes,tests/unit/test_architecture.py; tests/unit/test_layer_boundaries.py
+Q3 reproducibility,identical outputs across two runs,13 of 13 sample artifacts; census outcomes identical (1612927 rows),identical,yes,results/evaluation/reproducibility.csv
+Q3 reproducibility,fresh-environment setup (Python 3.15),2 commands; 34 s; 188 tests passed,<= 3 manual steps,yes (non-author trial pending),README Setup and execution
+Q4 performance,runtime vs baseline with the same 4 rules,1.46x,<= 2x,yes,results/evaluation/benchmark.csv
+Q4 performance,runtime vs baseline with all 6 plugins,10.48x (280 Skills/s per core),n/a,n/a,results/evaluation/benchmark.csv
+Q4 performance,whole population (1612927 Skills),1473 s with 8 workers (second run; first run 1461 s),n/a,n/a,make census
+Q5 explainability,findings with every required field,272075 of 272075 (100%),100%,yes,scripts/check_outputs.py
+Q5 testability,line+branch coverage detectors and parsing / core,99% / 94%,n/a,n/a,coverage.py --branch
+Q5 testability,automated tests,188 passed,n/a,n/a,make test

@@ -1,0 +1,12 @@
+check,outcome,n,estimate,lo,hi,measure,median_lines
+widely reused threshold >= 3 repositories,any_risky,124821,1.1675,1.1540,1.1811,odds ratio vs singleton,172.0000
+widely reused threshold >= 5 repositories,any_risky,57803,1.2598,1.2390,1.2810,odds ratio vs singleton,184.0000
+widely reused threshold >= 10 repositories,any_risky,24364,1.1700,1.1407,1.2000,odds ratio vs singleton,199.0000
+continuous reuse (unadjusted),any_risky,1612927,1.0474,1.0432,1.0516,odds ratio per doubling of repository_count,
+continuous reuse (adjusted for log lines),any_risky,1612927,0.9731,0.9690,0.9772,odds ratio per doubling of repository_count,
+continuous reuse (unadjusted),any_risky_without_CMD,1612927,1.0947,1.0901,1.0993,odds ratio per doubling of repository_count,
+continuous reuse (adjusted for log lines),any_risky_without_CMD,1612927,1.0166,1.0121,1.0211,odds ratio per doubling of repository_count,
+continuous reuse (unadjusted),has_INST,1612927,1.1850,1.1783,1.1919,odds ratio per doubling of repository_count,
+continuous reuse (adjusted for log lines),has_INST,1612927,1.1067,1.1001,1.1133,odds ratio per doubling of repository_count,
+continuous reuse (unadjusted),has_NET,1612927,1.1497,1.1430,1.1565,odds ratio per doubling of repository_count,
+continuous reuse (adjusted for log lines),has_NET,1612927,1.0636,1.0571,1.0701,odds ratio per doubling of repository_count,
