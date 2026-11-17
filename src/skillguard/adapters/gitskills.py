@@ -4,10 +4,11 @@ The release is opened with mode=ro&immutable=1: nothing is written to it and no 
 files are created. Skill content is returned as text and is never executed or fetched.
 """
 
+import hashlib
 import json
 import sqlite3
 
-from ..domain import Skill
+from skillguard.domain import Skill
 
 # One pass over `artifacts` -> one row per content hash. The CTE is MATERIALIZED so the
 # GROUP BY sorter holds small flags, not the content column itself.
@@ -92,9 +93,34 @@ def fetch_content(con: sqlite3.Connection, sha: str) -> str:
     return row[0] if row else ""
 
 
+def to_skill(file_sha: str, text: str, source: str) -> Skill:
+    """Build a domain Skill; `source` is "owner/repo/path". The Git blob hash stays in metadata."""
+    repository = "/".join(source.split("/", 2)[:2])
+    return Skill(repository, source or file_sha, hashlib.sha256(text.encode("utf-8")).hexdigest(), text)
+
+
 def read_sample(jsonl_path: str):
-    """Yield (Skill, metadata dict) pairs from a sample file."""
+    """Yield (Skill, metadata dict) pairs from a sample file; metadata["sha"] is the file_sha."""
     with open(jsonl_path, encoding="utf-8") as fh:
         for line in fh:
             rec = json.loads(line)
-            yield Skill(rec.pop("sha"), rec.pop("text"), rec.get("source", "")), rec
+            yield to_skill(rec["sha"], rec.pop("text"), rec.get("source", "")), rec
+
+
+def population_metadata(index_path: str) -> dict:
+    """Map file_sha -> (repository_count, copy_count, has_scripts_any) for every population hash."""
+    return {sha: (repos, copies, scripts or 0)
+            for sha, repos, copies, _body, scripts in population(index_path)}
+
+
+def iter_contents(db_path: str, wanted: dict):
+    """Yield (file_sha, "owner/repo/path", text) once per hash in `wanted`: one sequential, read-only pass.
+
+    The release stores text on two rows for 2,042 hashes (identical text), so later rows are skipped.
+    """
+    query = "SELECT file_sha, repo_full_name, path, content FROM artifacts WHERE content IS NOT NULL"
+    seen = set()
+    for sha, repo, path, text in connect(db_path).execute(query):
+        if sha in wanted and sha not in seen:
+            seen.add(sha)
+            yield sha, f"{repo}/{path}", text

@@ -34,7 +34,8 @@ Skills are instruction files that agents follow, and they are frequently copied:
 ## Population and sample
 
 - **Population:** distinct contents with at least one copy named exactly `SKILL.md`, stored text that matches its hash, and valid YAML front matter: **1,612,927** of 1,877,981 hashes. Each filter step and its count are in `DATA_DICTIONARY.md` section 4.
-- **Sample (Sprint 2):** 5,000 distinct contents per reuse group (15,000 in total). Within each group, the 5,000 lowest `file_sha` values are taken; Git blob hashes are uniform over contents, so this behaves like a simple random sample and needs no seed. Results are reported per group; population-level prevalence would need group weights.
+- **Final results (Sprint 3):** the whole population is scanned (`census`, ADR-0011), so prevalence by group describes GitSkills directly.
+- **Sample:** 5,000 distinct contents per reuse group (15,000 in total), used for the manual validation and as a check on the census. Within each group, the 5,000 lowest `file_sha` values are taken; Git blob hashes are uniform over contents, so this behaves like a simple random sample and needs no seed.
 
 ## Variables
 
@@ -49,7 +50,7 @@ Skills are instruction files that agents follow, and they are frequently copied:
 | `length_lines`, `length_chars` | Covariate | Size of the Skill text |
 | `has_scripts_any` | Covariate (population) | 1 if any copy's folder holds scripts (`artifacts.has_scripts`) |
 
-The widely-reused threshold is sensitivity-tested at 3, 5, and 10 repositories.
+The widely-reused threshold is sensitivity-tested at 3, 5, and 10 repositories, and reuse is also modelled continuously (odds ratio per doubling of `repository_count`). A second outcome, `any_risky_without_CMD`, checks that the broadest rule does not drive the result.
 
 ## Competing explanation
 
@@ -91,3 +92,4 @@ The widely-reused threshold is sensitivity-tested at 3, 5, and 10 repositories.
 | 2026-10-07 | Secondary question changed from AI-model targeting to near-duplicate variants (proposed in PR #31) | Closer fit to course direction A.4; model references unverified | Ibrahimatatri (PO) |
 | 2026-10-26 | Near-duplicate secondary question removed; no secondary question | Review of PR #31 (Baiselaired): the team had agreed not to analyze near-duplicates because of workload | Ibrahimatatri (PO), following team agreement |
 | 2026-10-26 | Unit, population, filters, and variables updated from proposed to verified definitions | Schema and counts verified against the release | Ibrahimatatri (PO) |
+| 2026-11-16 | Final results from the whole population (census); detectors replaced by the final plugin set (18 rules); robustness outcome without CMD added | ADR-0010, ADR-0011; the broadest rule should not drive the conclusion | Ibrahimatatri (PO) |

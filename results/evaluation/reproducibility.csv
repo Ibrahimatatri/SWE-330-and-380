@@ -1,0 +1,14 @@
+artifact,sha256_run1,sha256_run2,identical
+data/interim/findings.csv,4bd826acc34a8d28,4bd826acc34a8d28,1
+data/interim/outcomes.csv,ceb3bc41f32bb5d5,ceb3bc41f32bb5d5,1
+figures/prevalence_by_reuse_sample.png,c4e994d6aaa64143,c4e994d6aaa64143,1
+data/annotations/validation_sheet.csv,00394fe1c1976adf,00394fe1c1976adf,1
+data/annotations/validation_key.csv,bbddd6f5ad4eb63c,bbddd6f5ad4eb63c,1
+results/sample/comparisons.csv,066da54f4201ef56,066da54f4201ef56,1
+results/sample/length_baseline.csv,ecd7ef8253001bdf,ecd7ef8253001bdf,1
+results/sample/population_funnel.csv,0a41abf29eefaa82,0a41abf29eefaa82,1
+results/sample/prevalence_by_group.csv,03d13f758907c3b9,03d13f758907c3b9,1
+results/sample/reuse_groups_population.csv,d58a11a5beed8da2,d58a11a5beed8da2,1
+results/sample/robustness.csv,535424f1f9129804,535424f1f9129804,1
+results/sample/rule_counts.csv,89515a65ecedb23b,89515a65ecedb23b,1
+results/sample/subgroups.csv,1791b5aac1f04203,1791b5aac1f04203,1

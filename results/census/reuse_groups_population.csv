@@ -1,0 +1,4 @@
+group,distinct_contents,share,file_copies,body_chars_q1,body_chars_median,body_chars_q3,share_with_scripts
+singleton,1355955,0.8407,1478253,2129.0000,4790.0000,8711.0000,0.1187
+reused,199169,0.1235,632776,2316.0000,5505.0000,9984.0000,0.1118
+widely_reused,57803,0.0358,1274046,2754.0000,6352.0000,11198.0000,0.1621

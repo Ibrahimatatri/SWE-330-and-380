@@ -13,14 +13,15 @@ SRC = Path(__file__).parents[2] / "src" / "skillguard"
 ALLOWED = {
     "domain": set(),
     "parsing": {"domain"},
-    "detectors": {"domain", "parsing", "detectors"},
-    "scan": {"domain", "parsing", "detectors"},
+    "detectors": {"domain", "detectors"},
+    "pipeline": {"domain", "parsing", "detectors"},
     "analysis": {"domain"},
-    "adapters": {"domain", "adapters"},
-    "cli": {"analysis", "adapters", "detectors", "scan", "domain"},
+    "adapters": {"domain", "adapters", "pipeline"},
+    "research": {"analysis", "adapters", "detectors", "pipeline", "domain"},
+    "cli": {"adapters", "pipeline", "research", "domain", "analysis"},
     "baseline": set(),  # Sprint 1 baseline stays a standalone single file
 }
-CORE = ("domain", "parsing", "detectors", "scan", "analysis")
+CORE = ("domain", "parsing", "detectors", "pipeline", "analysis")
 CORE_FORBIDDEN_STDLIB = {"sqlite3", "csv", "json", "os", "pathlib", "io", "shutil", "subprocess", "socket", "urllib"}
 
 
@@ -43,6 +44,13 @@ def imports(path: Path):
                     yield alias.name, alias.name
             else:
                 yield parts[0].removesuffix(".py"), parts[0]
+        elif isinstance(node, ast.ImportFrom) and (node.module or "").startswith("skillguard"):
+            parts = (node.module or "").split(".")
+            if len(parts) > 1:
+                yield parts[1], parts[1]
+            else:  # "from skillguard import analysis"
+                for alias in node.names:
+                    yield alias.name, alias.name
         elif isinstance(node, ast.ImportFrom):
             yield None, (node.module or "").split(".")[0]
         elif isinstance(node, ast.Import):
@@ -71,6 +79,8 @@ def test_no_dependency_rule_violations():
 def test_checker_catches_a_violation(tmp_path, monkeypatch):
     fake = tmp_path / "skillguard"
     (fake / "detectors").mkdir(parents=True)
-    (fake / "detectors" / "bad.py").write_text("import sqlite3\nfrom ..adapters import report\n")
+    (fake / "detectors" / "bad.py").write_text(
+        "import sqlite3\nfrom ..adapters import report\nfrom skillguard.cli import main\n")
     monkeypatch.setattr(sys.modules[__name__], "SRC", fake)
-    assert sorted(violations()) == ["detectors/bad.py -> adapters", "detectors/bad.py -> sqlite3 (I/O in core)"]
+    assert sorted(violations()) == ["detectors/bad.py -> adapters", "detectors/bad.py -> cli",
+                                    "detectors/bad.py -> sqlite3 (I/O in core)"]

@@ -34,7 +34,7 @@
 | `filename` | Basename. 3,742,828 rows are exactly `SKILL.md`; 54,289 are case variants (`skill.md`, `Skill.md`, `SKILL.MD`, ...) | Yes: population filter |
 | `location_class` | Folder convention: `skills-dir`, `canonical`, or `other` | No |
 | `file_sha` | Git blob SHA-1 of the file content (re-hashing stored text reproduces it). 1,877,981 distinct values; never NULL | Yes: unit of analysis |
-| `content` | Full text, stored on **one representative row per hash** (Zenodo description; in inspected rows that row has `dedup_primary = 1`); NULL on the other copies. All 1,877,981 hashes have stored text | Yes: detection input |
+| `content` | Full text, stored on **one representative row per hash** (Zenodo description; in inspected rows that row has `dedup_primary = 1`); NULL on the other copies. Exception found by the census: 2,042 population hashes have identical text on two rows, so the pipeline reads each hash once. All 1,877,981 hashes have stored text | Yes: detection input |
 | `content_sha_ok` | Integrity flag: values 0 (42 hashes), 1 (1,851,131), 2 (26,808). Re-hashing matched `file_sha` for 1 and 2 and never for 0 (4 of 4 each); the release does not document value 2 | Yes: filter (> 0) |
 | `frontmatter_valid` | 1 if the YAML front matter parsed, else 0 | Yes: filter |
 | `body_chars` | Characters after the front matter | Yes: population length |
@@ -51,7 +51,7 @@
 
 ## 3. Derived variables
 
-Computed by `python -m skillguard index` (one row per hash) and `python -m skillguard scan` (one row per sampled Skill).
+Computed by `python -m skillguard index` (one row per hash), `scan-sample` (one row per sampled Skill), and `census` (one row per population Skill; no text or evidence stored).
 
 | Variable | Type | Definition |
 |---|---|---|
@@ -60,7 +60,9 @@ Computed by `python -m skillguard index` (one row per hash) and `python -m skill
 | `reuse_group` | category | `singleton` (1), `reused` (2–4), `widely_reused` (5 or more) by `repository_count` |
 | `length_lines`, `length_chars` | int | Lines and characters of the stored text |
 | `has_CMD`, `has_NET`, `has_FS`, `has_CRED`, `has_INST`, `has_SCRIPT` | 0/1 | At least one *review* or *high* finding in that category |
-| `any_risky` | 0/1 | Any category flagged |
+| `any_risky` | 0/1 | Any category flagged (primary outcome) |
+| `any_risky_without_CMD` | 0/1 | Any category other than CMD flagged (robustness: CMD-001 is the broadest rule) |
+| `has_scripts` | 0/1 | Any copy's folder ships scripts (`artifacts.has_scripts`); used for the subgroup analysis |
 | `n_categories`, `n_findings` | int | Distinct categories flagged; counted findings |
 
 ## 4. Population filter

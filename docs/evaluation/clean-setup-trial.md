@@ -15,9 +15,9 @@ Copy this file to `docs/evaluation/trial-<github-username>-<date>.md` and fill i
 |---|---|---|---|---|
 | 1 | `git clone https://github.com/Ibrahimatatri/SWE-330-and-380 && cd SWE-330-and-380` | | | |
 | 2 | Download and check the release as in `data/README.md` | | | |
-| 3 | `make setup` | | | |
+| 3 | `python3 -m venv .venv && source .venv/bin/activate && make setup` | | | |
 | 4 | `make test` | | | |
-| 5 | `make pipeline DB=/path/to/agent_skills_release.db` | | | |
+| 5 | `make pipeline DB=/path/to/agent_skills_release.db` (optional: `make census DB=...`, about 25 minutes) | | | |
 | 6 | `git status --short results/ figures/` (no changes = identical outputs) | | | |
 
 ## Results (metrics M3.1–M3.5)

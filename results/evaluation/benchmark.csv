@@ -1,0 +1,5 @@
+variant,skills,runs,median_seconds,skills_per_second,peak_traced_mib,findings,runtime_ratio_vs_baseline,machine
+"baseline (Sprint 1, CMD+NET regexes)",3000,5,1.0232,2932.1097,0.2686,35894,1.0000,arm64 Darwin Python 3.15.1
+"modular framework, baseline's 4 rules",3000,5,1.4959,2005.5224,0.4764,36111,1.4620,arm64 Darwin Python 3.15.1
+"modular, CMD+NET detectors",3000,5,2.3389,1282.6359,0.4764,37311,2.2860,arm64 Darwin Python 3.15.1
+"modular, all 6 detectors",3000,5,10.7241,279.7449,0.4767,51488,10.4814,arm64 Darwin Python 3.15.1

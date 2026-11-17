@@ -1,6 +1,6 @@
 # ADR-0009: Local single-process Python 3.10+; no containers or services
 
-**Status:** Proposed · **Date:** 2026-10-26 · **Issues:** #15, #28
+**Status:** Accepted (approved in the PR #34 review, 2026-10-28) · **Date:** 2026-10-26 · **Issues:** #15, #28
 
 ## Context
 Four students run the pipeline on their own laptops (development machine: 8 GB RAM, Apple arm64, macOS). The release is 44 GB, and no shared server is available.

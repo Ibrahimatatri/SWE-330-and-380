@@ -1,6 +1,6 @@
 # ADR-0003: Detectors are declarative rule modules in one registry
 
-**Status:** Proposed · **Date:** 2026-10-26 · **Issues:** #15, #16, #20
+**Status:** Superseded by [ADR-0010](0010-plugin-interface-consolidation.md) on 2026-11-16 · **Date:** 2026-10-26 · **Issues:** #15, #16, #20
 
 ## Context
 Capability categories (CMD, NET, FS, CRED, INST, SCRIPT, and later PRIV) will be added and tuned by different members. GQM Q1 measures the effort of adding one, so "what is core" must be fixed before measuring.

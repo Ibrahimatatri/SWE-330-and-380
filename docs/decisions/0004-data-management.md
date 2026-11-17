@@ -1,6 +1,6 @@
 # ADR-0004: Read the SQLite release in place; derive a small hash index
 
-**Status:** Proposed · **Date:** 2026-10-26 · **Issues:** #4, #8, #15
+**Status:** Accepted (approved in the PR #34 review, 2026-10-28) · **Date:** 2026-10-26 · **Issues:** #4, #8, #15
 
 ## Context
 The release is one 44 GB SQLite file. Skill text is stored once per content hash (on a representative row), and only 9 GB of disk was free on the development laptop. The Phase 1 plan deferred the choice of pandas, Polars, or DuckDB until the data could be measured.

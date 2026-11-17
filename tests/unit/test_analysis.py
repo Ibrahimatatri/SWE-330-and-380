@@ -5,7 +5,7 @@ from skillguard.domain import Finding
 
 
 def f(cat, level):
-    return Finding(cat, f"{cat}-001", 1, "e", "x", level, "prose")
+    return Finding("o/r/SKILL.md", 1, cat, f"{cat}-001", "e", "x", "prose", level)
 
 
 def test_reuse_group_thresholds():

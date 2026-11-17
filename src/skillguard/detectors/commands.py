@@ -6,7 +6,7 @@ negated instructions to info; PowerShell and prompt-style commands are added.
 
 import re
 
-from domain import Finding, ParsedSkill
+from skillguard.domain import Finding, ParsedSkill
 from .interface import Detector
 from ._rules import make_finding, review_level
 

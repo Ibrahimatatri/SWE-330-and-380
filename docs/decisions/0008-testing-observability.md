@@ -1,6 +1,6 @@
 # ADR-0008: Layered tests, conformance test, deterministic outputs, counted logs
 
-**Status:** Proposed · **Date:** 2026-10-26 · **Issues:** #18
+**Status:** Accepted (approved in the PR #34 review, 2026-10-28) · **Date:** 2026-10-26 · **Issues:** #18
 
 ## Context
 Detector rules will be tuned during validation, and every change must show what it broke. Runs on 15,000 Skills cannot be checked by eye.
