@@ -1,6 +1,6 @@
-# Annotation Guide: Manual Validation of SkillGuard v0.2
+# Annotation Guide: Manual Validation of SkillGuard v1.0
 
-**Courses:** SWE 380 Sprint 2 (validation protocol) and SWE 330 Q5 · **Issue:** #19 · **Status:** Ready to use; labelling not started.
+**Courses:** SWE 380 Sprint 2 (validation protocol) and SWE 330 Q5 · **Issue:** #19 · **Status:** Ready to use for the final detectors (v1.0, 2026-11-16); labelling not started.
 
 The goal is to measure how often SkillGuard's category flags are right (precision) and how often it misses a capability (recall), and whether two people label consistently (Cohen's kappa). Labelling must happen **before** detector rules are tuned further.
 
@@ -8,8 +8,8 @@ The goal is to measure how often SkillGuard's category flags are right (precisio
 
 | File | Use |
 |---|---|
-| `data/annotations/sprint2_validation_sheet.csv` | 120 Skills: 60 that SkillGuard flagged in at least one category and 60 it did not, spread across the three reuse groups. **It does not show predictions.** |
-| `data/annotations/sprint2_validation_key.csv` | Predictions and reuse groups. **Do not open until both raters have finished.** |
+| `data/annotations/validation_sheet.csv` | 120 Skills: 60 that SkillGuard flagged in at least one category and 60 it did not, spread across the three reuse groups. **It does not show predictions.** |
+| `data/annotations/validation_key.csv` | Predictions and reuse groups. **Do not open until both raters have finished.** |
 | `scripts/score_validation.py` | Computes kappa and precision/recall/F1 per category |
 
 To read a Skill exactly as it was collected (line numbers, read-only):
@@ -27,7 +27,7 @@ The sheet's GitHub link shows the current file, which may have changed since Jul
 | Rater A | the 30 `double_coded = 1` items + even-numbered remaining items | 75 Skills |
 | Rater B | the 30 `double_coded = 1` items + odd-numbered remaining items | 75 Skills |
 
-Suggested raters: skyr-csc (validation lead) and ixmecrash (detector lead). Work independently, without discussing items until both are done. Plan about 3 minutes per Skill (about 4 hours each). Each rater copies the sheet to `data/annotations/sprint2_rater_<github-username>.csv`, fills in `rater`, and labels only their items.
+Suggested raters: skyr-csc (validation lead) and ixmecrash (detector lead). Work independently, without discussing items until both are done. Plan about 3 minutes per Skill (about 4 hours each). Each rater copies the sheet to `data/annotations/rater_<github-username>.csv`, fills in `rater`, and labels only their items.
 
 ## 3. Labels
 
@@ -46,9 +46,9 @@ Write any of these codes in `notes` when they explain a hard case: `doc-url`, `q
 
 ## 4. Agreement and resolution
 
-1. Run `PYTHONPATH=src python3 scripts/score_validation.py data/annotations/sprint2_rater_<rater-A>.csv data/annotations/sprint2_rater_<rater-B>.csv`. It reports Cohen's kappa per category on the 30 shared items.
+1. Run `PYTHONPATH=src python3 scripts/score_validation.py data/annotations/rater_<rater-A>.csv data/annotations/rater_<rater-B>.csv`. It reports Cohen's kappa per category on the 30 shared items.
 2. For each disagreement, the two raters discuss and record the agreed value in a `resolved_<CAT>` column (add it to either sheet). If they cannot agree, a third member decides. Keep both original labels.
-3. Re-run the script. Precision, recall, and F1 use the resolved label where present, else rater A's, else rater B's. Results go to `results/sprint2/validation_scores.csv` and the error codes feed the error analysis (#24).
+3. Re-run the script. Precision, recall, and F1 use the resolved label where present, else rater A's, else rater B's. Results go to `results/validation/validation_scores.csv` and the error codes feed the error analysis (#24).
 
 ## 5. Caveats to report
 
