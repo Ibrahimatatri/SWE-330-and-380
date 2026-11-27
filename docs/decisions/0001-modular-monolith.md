@@ -1,6 +1,6 @@
 # ADR-0001: Modular monolith with ports-and-adapters boundaries
 
-**Status:** Proposed · **Date:** 2026-10-26 · **Issues:** #14, #15
+**Status:** Accepted (approved in the PR #34 review, 2026-10-28) · **Date:** 2026-10-26 · **Issues:** #14, #15
 
 ## Context
 SkillGuard must scan 1.6 million distinct Skills from one SQLite file, let four part-time students add detector categories without breaking each other's work, and produce evidence for the GQM questions (extensibility, change isolation, reproducibility, performance, explainability). The Sprint 1 baseline is a single 100-line file.

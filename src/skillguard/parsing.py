@@ -9,7 +9,7 @@ not classified. No data is executed and no files or network resources are opened
 
 import re
 
-from domain import ParsedLine, ParsedSkill, Skill
+from skillguard.domain import ParsedLine, ParsedSkill, Skill
 
 FENCE = re.compile(r"^ {0,3}(`{3,}|~{3,})(.*)$")
 

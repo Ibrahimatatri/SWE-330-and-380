@@ -11,7 +11,7 @@ from dataclasses import asdict
 from pathlib import Path
 from collections.abc import Iterable, Mapping
 
-from pipeline import PipelineResult, counted_categories
+from skillguard.pipeline import PipelineResult, counted_categories
 
 
 def write_csv(path: Path, rows: Iterable[Mapping], fields: list[str]) -> None:

@@ -1,6 +1,6 @@
 # ADR-0007: Never execute content; read-only data; masked secrets; blind validation
 
-**Status:** Proposed · **Date:** 2026-10-26 · **Issues:** #5, #10, #19
+**Status:** Accepted (approved in the PR #34 review, 2026-10-28) · **Date:** 2026-10-26 · **Issues:** #5, #10, #19
 
 ## Context
 Skill text contains shell commands, URLs, install steps, and sometimes secrets. The team's work must not run any of it, must not modify the release, and must not expose people or credentials in reports.

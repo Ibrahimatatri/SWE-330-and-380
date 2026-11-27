@@ -7,10 +7,10 @@ info findings are retained. SHA-256 grouping concerns exact bytes, not lineage.
 from dataclasses import dataclass
 from collections.abc import Iterable
 
-from domain import COUNTED_LEVELS, Finding, Skill
-from parsing import parse_skill
-from detectors import default_detectors
-from detectors.interface import Detector
+from skillguard.domain import COUNTED_LEVELS, Finding, Skill
+from skillguard.parsing import parse_skill
+from skillguard.detectors import default_detectors
+from skillguard.detectors.interface import Detector
 
 
 @dataclass(frozen=True, slots=True)
