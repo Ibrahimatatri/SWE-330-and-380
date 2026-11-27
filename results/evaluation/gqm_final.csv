@@ -13,5 +13,6 @@ Q4 performance,runtime vs baseline with the same 4 rules,1.46x,<= 2x,yes,results
 Q4 performance,runtime vs baseline with all 6 plugins,10.48x (280 Skills/s per core),n/a,n/a,results/evaluation/benchmark.csv
 Q4 performance,whole population (1612927 Skills),1473 s with 8 workers (second run; first run 1461 s),n/a,n/a,make census
 Q5 explainability,findings with every required field,272075 of 272075 (100%),100%,yes,scripts/check_outputs.py
+Q5 explainability,flag precision / recall vs one manual reviewer (120 Skills),0.71-1.00 / 0.23-0.71 by category,n/a,n/a,results/validation/validation_scores.csv
 Q5 testability,line+branch coverage detectors and parsing / core,99% / 94%,n/a,n/a,coverage.py --branch
 Q5 testability,automated tests,188 passed,n/a,n/a,make test

@@ -6,8 +6,8 @@
 ## 1. Construct validity and measurement error
 | Threat | Mitigation | Status / evidence |
 |---|---|---|
-| Rule matches may not reflect real capabilities (documentation URLs, quoted examples, negations, mislabeled code fences) | Context handling (`THREAT_MODEL.md` §4); info-level findings never count; manual validation of 120 Skills with two raters | AI-assisted inspection judged 93 of 98 decidable findings as describing the capability; patterns listed in `docs/validation/error-analysis.md`. Human precision and recall pending (#19). |
-| Missed capabilities (false negatives), such as permission grants in front matter | 60 unflagged Skills in the validation sheet to estimate recall | Known gap: front matter is never scanned (ADR-0010) |
+| Rule matches may not reflect real capabilities (documentation URLs, quoted examples, negations, mislabeled code fences) | Context handling (`THREAT_MODEL.md` §4); info-level findings never count; manual validation of 120 Skills with two raters | AI-assisted inspection judged 93 of 98 decidable findings as describing the capability. One manual reviewer (120 Skills): precision 0.71–1.00 by category (`results/validation/validation_scores.csv`). |
+| Missed capabilities (false negatives), such as permission grants in front matter | 60 unflagged Skills in the validation sheet to estimate recall | Measured: recall 0.23–0.71 by category against one reviewer, lowest for file changes and network access, so prevalences are lower bounds. Recall is not higher in widely reused Skills (0.37 vs 0.50 for singletons), so their elevated rates are not over-flagging. Front matter is never scanned (ADR-0010) |
 | One broad rule (CMD-001: any shell line) dominates the "any category" outcome | Report every category separately; robustness outcome `any_risky_without_CMD` | `results/census/comparisons.csv`, `robustness.csv` |
 | `repository_count` may not measure reuse (forks, mirrors, monorepos) | Threshold sensitivity (3, 5, 10 repositories) and continuous reuse | `robustness.csv` |
 | Exact hashes miss near-identical copies, so reuse is undercounted | Stated as a limitation; near-duplicates are out of scope by team agreement | — |
@@ -17,7 +17,7 @@
 |---|---|---|
 | Skill length confounds reuse and flags (longer text has more chances to match) | Length-only baseline (AUC), prevalence within length quartiles, logistic models adjusted for log length | `length_baseline.csv`, `subgroups.csv`, `comparisons.csv` |
 | Purpose of the Skill (automation vs writing guidance) and repository characteristics are not adjusted | Subgroup by bundled scripts; stated as residual confounding | Any remaining association could reflect purpose rather than reuse itself |
-| Annotator bias in validation | Written guide; blind sheet without predictions; 30 double-coded items; kappa; documented resolution | Pending (#19) |
+| Annotator bias in validation | Written guide; blind sheet without predictions; 30 double-coded items; kappa; documented resolution | One reviewer so far, using a form that showed predictions and reuse group (not blind); second rater pending (#19) |
 | Detector tuned on the evaluation data | Rules frozen before the validation sheet was drawn; no tuning before labels are scored | Rules frozen 2026-11-16 |
 
 ## 3. Dataset bias, missing data, and external validity (generalizability)

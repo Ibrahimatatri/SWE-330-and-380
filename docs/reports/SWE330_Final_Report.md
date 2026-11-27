@@ -99,11 +99,13 @@ Full views: `docs/architecture/README.md`. Decisions: `docs/decisions/` (ADR-000
 | Q4 | Whole population (1,612,927 Skills), 8 workers | about 24.5 minutes (1,473 s) with 8 worker processes on an 8-core laptop |
 | Q5 | Findings with every required field | 272,075 of 272,075 sample findings (100%); schema check passed |
 | Q5 | Coverage, detectors and parsing / core | 99% / 94% |
+| Q5 | Flag accuracy vs one manual reviewer (120 Skills) | Precision 0.71–1.00, recall 0.23–0.71 by category (`results/validation/validation_scores.csv`) |
 
 ### Interpretation
 
 - **Extensibility.** The plugin boundary works as intended once the shared rule engine exists. The first addition paid a one-time cost to build reusable rule machinery; every later category stayed inside the extension point. The baseline needs fewer lines for a small change, but it spreads them across rules, table layout, counters, and column lists, and it broke an existing test.
 - **Isolation.** No change leaked into other modules or broke unrelated behavior. The finding checks in the pipeline also mean a buggy plugin fails loudly rather than producing silent wrong outputs.
+- **Explainability is not the same as accuracy.** Every flag can be checked, and a manual review found most flags correct, but the rules miss many capabilities (file changes most of all). Because detectors are plugins, improving recall is a change to one module per category, which is exactly the change the architecture is built to isolate.
 - **Reproducibility** holds on one machine: deterministic sampling, sorted outputs, and fixed precision make reruns identical.
 - **Performance.** The framework's own overhead is modest. Most of the cost of the full scanner comes from running more rules on every line, which is the price of detecting six categories instead of two. The parallel census makes whole-population analysis practical on a laptop.
 
@@ -113,6 +115,7 @@ Full views: `docs/architecture/README.md`. Decisions: `docs/decisions/` (ADR-000
 - The first and later additions differ (a learning effect).
 - Performance was measured on one laptop.
 - No clean-setup trial by a non-author has been run yet.
+- The manual validation has one reviewer so far, and the review was not blind.
 - See `THREATS_TO_VALIDITY.md` §8.
 
 ### Supported conclusions
@@ -125,6 +128,7 @@ Full views: `docs/architecture/README.md`. Decisions: `docs/decisions/` (ADR-000
 ### Not yet supported
 
 - That the design reduces human implementation time.
+- That SkillGuard finds most capabilities: recall is 0.23–0.71 by category.
 - That results reproduce on other machines and operating systems; the non-author trial is pending.
 
 ## 10. Trade-offs and limitations
@@ -148,14 +152,14 @@ Full views: `docs/architecture/README.md`. Decisions: `docs/decisions/` (ADR-000
 - Run the human-timed PRIV experiment, and the clean-setup trial by a non-author.
 - Add a front-matter rule for permission grants.
 - Report one finding per shell block instead of one per line.
-- Complete the manual validation and tune the rules with the labels.
+- Add a second rater to the validation and use the labels to raise recall, starting with file changes and network access.
 
 ## 13. Individual contributions
 
-- **Ibrahimatatri:** Phase 1 proposal; repository setup and documentation; Sprint 1 baseline; Sprint 2 dataset pipeline and analysis; Phase 3 integration, census, evaluation, and reports (AI-assisted, logged).
+- **Ibrahimatatri:** Phase 1 proposal; repository setup and documentation; Sprint 1 baseline; Sprint 2 dataset pipeline and analysis; Phase 3 integration and repair of `main`, census, evaluation, validation scoring, reports, and presentation template (AI-assisted, logged).
 - **Baiselaired:** architecture lead and reviewer of every pull request; shaped the scope through review; merged the team's PRs; elicitation interview log.
 - **ixmecrash:** the final detector architecture (#36: domain, parsing, plugin interface, pipeline, input checks, 106 tests); four detector categories (#38); code reading guide.
-- **skyr-csc:** user persona; review of #36 and #39; first inspection of the dataset with Baiselaired.
+- **skyr-csc:** user persona; review of #36 and #39; first inspection of the dataset with Baiselaired; manual validation of 120 Skills (#41).
 
 *(Each member should confirm or edit their line.)*
 

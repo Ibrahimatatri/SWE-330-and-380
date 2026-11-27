@@ -9,7 +9,7 @@
 |---|---|---|
 | Final or near-final results | Done | `results/census/` (whole population), `results/sample/` |
 | Robustness, sensitivity, subgroup comparisons | Done | `robustness.csv`, `subgroups.csv` (threshold, continuous reuse, without CMD, length quartiles, bundled scripts) |
-| Error analysis and manually inspected examples | Partial | AI-assisted inspection of 102 findings (`docs/validation/error-analysis.md`); human validation of 120 Skills _TBD_ |
+| Error analysis and manually inspected examples | Done (second rater pending) | AI-assisted inspection of 102 findings and skyr-csc's manual review of 120 Skills (#41), scored in `results/validation/validation_scores.csv` |
 | Final figures and tables from the pipeline | Done | `make pipeline`, `make census` |
 | Complete cited report draft, findings separate from interpretation | Done | `report/final.md` |
 | Threats: dataset bias, measurement error, confounding, missing data, reproducibility, generalizability | Done | `THREATS_TO_VALIDITY.md` |

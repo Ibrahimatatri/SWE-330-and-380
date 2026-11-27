@@ -60,6 +60,7 @@ make census DB=/path/to/agent_skills_release.db     # whole population, about 25
 | `results/sample/*.csv`, `figures/prevalence_by_reuse_sample.png` | The same analysis on the 15,000-Skill sample used for validation |
 | `results/evaluation/*.csv` | SWE 330 GQM evidence (benchmark, extensibility, reproducibility, explainability) |
 | `data/annotations/validation_sheet.csv` | Blind manual-validation sheet (predictions are in `validation_key.csv`) |
+| `data/annotations/SkillGuard_validation.csv`, `results/validation/validation_scores.csv` | Manual review of the 120 Skills and its precision/recall per category (`python3 scripts/score_validation.py data/annotations/SkillGuard_validation.csv`) |
 | `data/interim/` | Index, sample, findings, and outcomes; regenerated and never committed |
 
 Other commands: `python -m skillguard scan-folder <root>` scans a folder of `<repository>/**/SKILL.md` files; `python -m skillguard show <file_sha> --db ...` prints one Skill from the release for raters.
@@ -79,9 +80,13 @@ GitSkills v1.0.0 is a single SQLite file (44,388,249,600 bytes, CC-BY-4.0) from 
 
 Roles may rotate at sprint boundaries. The working agreement is in [docs/team-working-agreement.md](docs/team-working-agreement.md).
 
+## License
+
+Code: MIT (`LICENSE`). The GitSkills dataset is CC-BY-4.0 and is not redistributed; Skill excerpts in `data/annotations/` keep that license and attribution.
+
 ## Limitations
 
-- Rule-based detection produces false positives (for example, documentation links or quoted examples) and false negatives. Its precision and recall come from the manual validation of 120 Skills (`docs/validation/`); until that is complete, results are preliminary.
+- Rule-based detection produces false positives (for example, documentation links or quoted examples) and false negatives. Against a manual review of 120 Skills, precision is 0.71–1.00 and recall 0.23–0.71 by category (`results/validation/`), so reported rates are lower bounds. A second rater is still needed.
 - Only exact copies are grouped; near-identical copies count as different Skills.
 - Identical content hashes show duplication. They do not show who copied whom, or the direction of copying.
 - Presence of a Skill in a repository does not show that it was executed or actively used.

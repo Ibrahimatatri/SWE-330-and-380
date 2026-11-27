@@ -46,7 +46,7 @@ Write any of these codes in `notes` when they explain a hard case: `doc-url`, `q
 
 ## 4. Agreement and resolution
 
-1. Run `PYTHONPATH=src python3 scripts/score_validation.py data/annotations/rater_<rater-A>.csv data/annotations/rater_<rater-B>.csv`. It reports Cohen's kappa per category on the 30 shared items.
+1. Run `PYTHONPATH=src python3 scripts/score_validation.py data/annotations/rater_<rater-A>.csv data/annotations/rater_<rater-B>.csv`. It reports Cohen's kappa per category on the 30 shared items. With a single rater (for example the review form `data/annotations/SkillGuard_validation.csv`), pass one file: precision, recall, and F1 are computed and kappa is left blank.
 2. For each disagreement, the two raters discuss and record the agreed value in a `resolved_<CAT>` column (add it to either sheet). If they cannot agree, a third member decides. Keep both original labels.
 3. Re-run the script. Precision, recall, and F1 use the resolved label where present, else rater A's, else rater B's. Results go to `results/validation/validation_scores.csv` and the error codes feed the error analysis (#24).
 

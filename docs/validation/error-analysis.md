@@ -52,8 +52,27 @@ Among findings the reader could judge, 93 of 98 (95%) describe the capability. T
 
 - **Skill-level outcomes are less affected than finding counts.** A Skill flagged for CMD usually has several shell lines, so one mislabeled block rarely flips the whole flag. The broadest rule (CMD-001) is the main risk, which is why the analysis reports `any_risky_without_CMD` as a robustness check.
 - **The categories that stay elevated after length adjustment** (INST, NET, CRED) had high finding-level precision in this inspection (INST 17/18 judged TP, NET 11/12, CRED 15/18).
-- **Recall is unknown.** The human validation sheet includes 60 Skills that SkillGuard did not flag, specifically to estimate misses.
+- **Recall was unknown here;** the manual review below measures it.
+
+## Comparison with the manual review (#41)
+
+skyr-csc reviewed all 120 Skills in the validation sheet and listed the categories each one contains (`data/annotations/SkillGuard_validation.csv`). Scored against the frozen predictions (`results/validation/validation_scores.csv`):
+
+| Category | Flagged by SkillGuard | Marked by reviewer | Precision | Recall | F1 |
+|---|---|---|---|---|---|
+| Commands (CMD) | 56 | 77 | 0.96 | 0.70 | 0.81 |
+| Network (NET) | 26 | 60 | 0.85 | 0.37 | 0.51 |
+| File changes (FS) | 21 | 91 | 1.00 | 0.23 | 0.38 |
+| Credentials (CRED) | 15 | 22 | 0.73 | 0.50 | 0.59 |
+| Installs (INST) | 21 | 21 | 0.71 | 0.71 | 0.71 |
+| Scripts (SCRIPT) | 14 | 21 | 0.71 | 0.48 | 0.57 |
+
+- **The precision picture agrees with this inspection.** Both find that flags are mostly correct.
+- **Most errors are misses.** Of 292 reviewer labels across the six categories, SkillGuard missed 159 and added 20 the reviewer did not see. Missed file changes (70) and network access (38) dominate.
+- **Typical misses** in the reviewer's excerpts: prose instructions with no command ("delete state files on completion", "read the confirmed repository's delivery instructions") and conditional or example commands.
+- **Different labelling rule.** The reviewer sometimes counted a line that forbids an action ("Do not run any publish/upload commands") as evidence for the category, while SkillGuard records negated lines as info on purpose, and counted reading files as a file change. Part of the low recall therefore reflects a broader labelling rule than ours; the second rater should settle this.
+- **The form's own prediction column** was filled before the final detectors and differs from `validation_key.csv` in 48 rows. Scoring always uses `validation_key.csv`.
 
 ## Next step
 
-Two raters label `data/annotations/validation_sheet.csv` (`ANNOTATION_GUIDE.md`), then `scripts/score_validation.py` computes kappa, precision, recall, and F1 per category. The codes above go in the `notes` column.
+A second rater labels the 30 double-coded items with the blind sheet (`ANNOTATION_GUIDE.md`); then `scripts/score_validation.py RATER_A.csv RATER_B.csv` adds Cohen's kappa. The two raters should agree on the "mention vs instruction" rule first.
