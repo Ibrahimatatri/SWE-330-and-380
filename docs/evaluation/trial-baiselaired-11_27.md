@@ -12,7 +12,7 @@ This is a failed test. It utilized the git-installed bash shell, as doing this f
 |---|---|---|---|---|
 | 1 | `git clone https://github.com/Ibrahimatatri/SWE-330-and-380 && cd SWE-330-and-380` | 0 | Y | N/A |
 | 2 | Download and check the release as in `data/README.md` | 60 or so | Y | N/A |
-| 3 | `python3 -m venv .venv && source .venv/bin/activate && make setup` | 1 | N | There is no bin subdirectory to .venv |
+| 3 | `python3 -m venv .venv && source .venv/bin/activate && make setup` | 1 | N | bash: make: command not found |
 | 4 | `make test` | 0 | N | bash: make: command not found |
 | 5 | `make pipeline DB=/path/to/agent_skills_release.db` (optional: `make census DB=...`, about 25 minutes) | 0 | N | bash: make: command not found |
 | 6 | `git status --short results/ figures/` (no changes = identical outputs) | 0 | N | No results directory, of course |
